@@ -31,7 +31,7 @@ export default function RootLayout({
             <SideBar className={""}/>
             <main className={"flex flex-col min-h-screen w-full"}>
                 <TopBar/>
-                <div className="flex p-8">
+                <div className="flex p-4">
                     {children}
                 </div>
             </main>
