@@ -11,10 +11,36 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 type NavLink = {
     title: string,
     path: string,
-    subLinks?: Array<Omit<NavLink, "subLink">>
+    subLinks?: Array<Omit<NavLink, "subLinks">>
 }
 
-export function Sidebar({className}: { className: string }) {
+export const navLinks: Array<NavLink> = [
+    {
+        title: "Dashboard",
+        path: "/dashboard"
+    }, {
+        title: "Orders",
+        path: "/orders"
+    }, {
+        title: "Production",
+        path: "/production",
+        subLinks: [{
+            title: "Production In-Line",
+            path: "/production/inLine"
+        }, {
+            title: "Pending Orders",
+            path: "/production/pendingOrders"
+        }, {
+            title: "Machinery Info",
+            path: "/production/machineryInfo"
+        },]
+    }, {
+        title: "Inventory",
+        path: "/inventory"
+    }
+]
+
+export function SideBar({className}: { className: string }) {
 
     const router = useRouter();
     const path = usePathname();
@@ -28,32 +54,6 @@ export function Sidebar({className}: { className: string }) {
             {children}
         </Button>
     }
-
-    const navLinks: Array<NavLink> = [
-        {
-            title: "Dashboard",
-            path: "/dashboard"
-        }, {
-            title: "Orders",
-            path: "/orders"
-        }, {
-            title: "Production",
-            path: "/production",
-            subLinks: [{
-                title: "Production In-Line",
-                path: "/production/inLine"
-            }, {
-                title: "Pending Orders",
-                path: "/production/pendingOrders"
-            }, {
-                title: "Machinery Info",
-                path: "/production/machineryInfo"
-            },]
-        }, {
-            title: "Inventory",
-            path: "/inventory"
-        }
-    ]
 
     return (
         <nav className={cn("max-w-min pb-12 bg-card", className)}>
