@@ -55,7 +55,6 @@ const InventoryPage = () => {
                       <TableCell className="font-medium">{data.ingredient}</TableCell>
                       <TableCell>{data.qty}</TableCell>
                       <TableCell>{data.refill}</TableCell>
-                    
                       
                     </TableRow>
                   ))}
