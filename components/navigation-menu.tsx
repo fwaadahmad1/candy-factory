@@ -6,9 +6,12 @@ import Logo from "@/public/logo.svg"
 import {LayoutDashboard, Notebook, Package, ShoppingBag} from "lucide-react";
 import {ReactNode} from "react";
 import {useRouter, usePathname} from "next/navigation";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 
 type NavLink = {
-    title: string, path: string
+    title: string,
+    path: string,
+    subLinks?: Array<Omit<NavLink, "subLink">>
 }
 
 export function Sidebar({className}: { className: string }) {
@@ -34,8 +37,18 @@ export function Sidebar({className}: { className: string }) {
             title: "Orders",
             path: "/orders"
         }, {
-            title: "Product",
-            path: "/product"
+            title: "Production",
+            path: "/production",
+            subLinks: [{
+                title: "Production In-Line",
+                path: "/production/inLine"
+            }, {
+                title: "Pending Orders",
+                path: "/production/pendingOrders"
+            }, {
+                title: "Machinery Info",
+                path: "/production/machineryInfo"
+            },]
         }, {
             title: "Inventory",
             path: "/inventory"
@@ -58,10 +71,27 @@ export function Sidebar({className}: { className: string }) {
                             <ShoppingBag className="mr-2 h-4 w-4"/>
                             {navLinks[1].title}
                         </NavLink>
-                        <NavLink navLink={navLinks[2]}>
-                            <Package className="mr-2 h-4 w-4"/>
-                            {navLinks[2].title}
-                        </NavLink>
+
+                        <Popover>
+                            <PopoverTrigger asChild={true}>
+                                <Button variant={path.includes(`${navLinks[2].path}`) ? "secondary" : "ghost"}
+                                        className="w-full justify-start pr-24">
+                                    <ShoppingBag className="mr-2 h-4 w-4"/>
+                                    {navLinks[2].title}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent asChild={true} side={"right"}>
+                                <div className="space-y-4 p-1">
+                                    {navLinks[2].subLinks?.map(
+                                        link => <NavLink key={link.path} navLink={link}>
+                                            {link.title}
+                                        </NavLink>)}
+
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+
+
                         <NavLink navLink={navLinks[3]}>
                             <Notebook className="mr-2 h-4 w-4"/>
                             {navLinks[3].title}
