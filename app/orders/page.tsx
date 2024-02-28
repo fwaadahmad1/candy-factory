@@ -11,7 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { dummyProductionInLineData } from "@/app/production/inLine/dummyProductionInLineData";
 import {
   Pagination,
   PaginationContent,
@@ -23,7 +22,6 @@ import {
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
 import { dummyOrderData } from "./dummyOrderData";
-import { Popover } from "@radix-ui/react-popover";
 
 const OrdersPage = () => {
     return (
