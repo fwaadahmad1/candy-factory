@@ -1,8 +1,7 @@
-'use client';
 import React from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -22,7 +21,6 @@ import {
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
 import { dummyInventoryData } from "./dummyInventoryData";
-
 
 const InventoryPage = () => {
     return (
