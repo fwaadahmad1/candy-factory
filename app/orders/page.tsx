@@ -98,8 +98,8 @@ const OrdersPage = () => {
             <TableBody>
               {dummyOrderData.map((data, index) => (
                 <TableRow key={index}>
-                  <TableCell className="font-medium">{data.orderId}</TableCell>
-                  <TableCell>{data.ClientName}</TableCell>
+                  <TableCell className="font-medium">{"7894"}</TableCell>
+                  <TableCell>{data.name}</TableCell>
                   <TableCell>{`${data.orderDate.toLocaleDateString("en-us", {
                     year: "numeric",
                     month: "short",
