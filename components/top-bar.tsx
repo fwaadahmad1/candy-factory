@@ -37,7 +37,7 @@ const TopBar = () => {
                         <AvatarFallback className={"bg-secondary/80 text-secondary-foreground"}>S</AvatarFallback>
                     </Avatar>
 
-                    <div className={"flex flex-col"}>
+                    <div className={"flex flex-col items-start"}>
                         <p className={"text-sm font-semibold"}>
                             Sabrina
                         </p>
