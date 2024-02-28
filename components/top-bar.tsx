@@ -4,8 +4,6 @@ import {navLinks} from "@/components/side-bar";
 import {Bell, ChevronDownCircle, ChevronRight} from "lucide-react";
 import {Avatar, AvatarFallback} from "@/components/ui/avatar";
 import {Button} from "@/components/ui/button";
-import {cn} from "@/lib/utils";
-
 const TopBar = () => {
 
     const path = usePathname().split("/").filter(Boolean)

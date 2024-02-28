@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Search } from "lucide-react";
@@ -20,8 +20,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {useRouter} from "next/navigation";
 
 const ProductsInLinePage = () => {
+  const router = useRouter();
   return (
     <div className={"flex flex-col w-full gap-2"}>
       <Card className={"w-full"}>
@@ -49,7 +51,7 @@ const ProductsInLinePage = () => {
             </TableHeader>
             <TableBody>
               {dummyProductionInLineData.map((data, index) => (
-                <TableRow key={index}>
+                <TableRow key={index} onClick={() => router.push(`/production/inLine/orderDetails?orderId=${data.orderId}`)}>
                   <TableCell className="font-medium">{data.orderId}</TableCell>
                   <TableCell>{data.candyType}</TableCell>
                   <TableCell>{data.quantity}</TableCell>

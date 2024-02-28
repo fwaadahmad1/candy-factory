@@ -45,8 +45,6 @@ export function SideBar({className}: { className: string }) {
     const router = useRouter();
     const path = usePathname();
 
-    console.log(path)
-
     function NavLink({children, navLink}: { children: ReactNode, navLink: NavLink }) {
         return <Button variant={path.includes(`${navLink.path}`) ? "secondary" : "ghost"}
                        className="w-full justify-start pr-24"
