@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Search } from "lucide-react";
@@ -21,8 +21,25 @@ import {
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
 import { dummyOrderData } from "./dummyOrderData";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AddOrderForm,
+  AddOrderFormHandle,
+} from "@/app/orders/form/addOrder.form";
+import { useRef } from "react";
 
 const OrdersPage = () => {
+  const addOrderFormRef = useRef<AddOrderFormHandle>(null);
+
   return (
     <div className={"flex flex-col w-full gap-2"}>
       <Card className={"w-full"}>
@@ -31,7 +48,37 @@ const OrdersPage = () => {
             <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Your search..." className="rounded-full pl-8" />
           </div>
-          <Button variant={"secondary"}>Add Item</Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant={"secondary"}>Add Item</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Add Order</DialogTitle>
+                <DialogDescription>Add an order to queue</DialogDescription>
+              </DialogHeader>
+              <AddOrderForm
+                ref={addOrderFormRef}
+                onSubmit={(values) => {
+                  console.log(values);
+                }}
+              />
+              <DialogFooter>
+                <DialogClose asChild={true}>
+                  <Button variant={"ghost"}>Cancel</Button>
+                </DialogClose>
+                <Button
+                  variant={"secondary"}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    addOrderFormRef.current?.submit();
+                  }}
+                >
+                  Confirm
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </CardContent>
       </Card>
 
@@ -67,10 +114,7 @@ const OrdersPage = () => {
                   <TableCell>{data.status}</TableCell>
 
                   <TableCell>
-                    <ArrowRight
-                      strokeWidth={1}
-                      className={"text-secondary"}
-                    />
+                    <ArrowRight strokeWidth={1} className={"text-secondary"} />
                   </TableCell>
                 </TableRow>
               ))}
