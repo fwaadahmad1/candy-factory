@@ -2,10 +2,10 @@ import React from "react";
 import {
   dummyProductionInLineData,
   ProductionInLineData,
-} from "@/app/production/inLine/dummyProductionInLineData";
+} from "@/app/production/pendingOrders/dummyProductionInLineData";
 import {Card, CardContent, CardHeader} from "@/components/ui/card";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
-import {dummyIngredientsData} from "@/app/production/inLine/orderDetails/dummyIngredientsData";
+import {dummyIngredientsData} from "@/app/production/pendingOrders/orderDetails/dummyIngredientsData";
 
 const ProductionOrderDetailsPage = ({
   searchParams,

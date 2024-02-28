@@ -20,16 +20,16 @@ export const NavRoutes: Array<NavRoute> = [
       {
         title: "Production In-Line",
         path: "/production/inLine",
-        subLinks: [
-          {
-            title: "Order Details",
-            path: "/production/inLine/orderDetails",
-          },
-        ],
       },
       {
         title: "Pending Orders",
         path: "/production/pendingOrders",
+        subLinks: [
+          {
+            title: "Order Details",
+            path: "/production/pendingOrders/orderDetails",
+          },
+        ],
       },
       {
         title: "Machinery Info",
