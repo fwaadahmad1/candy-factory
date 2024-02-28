@@ -44,8 +44,8 @@ export type AddOrderFormProps = {
   ) => void;
 };
 
-export const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
-  ({ onSubmit }, ref) => {
+const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
+  function AddOrderForm({ onSubmit }, ref) {
     const form = useForm<z.infer<typeof addOrderSchema>>({
       resolver: zodResolver(addOrderSchema),
       defaultValues: {
@@ -68,7 +68,7 @@ export const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
           },
         };
       },
-      [],
+      [form, onSubmit],
     );
 
     return (
@@ -226,8 +226,8 @@ export const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {field.value?.map((item) => (
-                        <TableRow>
+                      {field.value?.map((item, index) => (
+                        <TableRow key={index}>
                           <TableCell>{item.candyType}</TableCell>
                           <TableCell>{item.quantity}</TableCell>
                         </TableRow>
@@ -244,3 +244,5 @@ export const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
     );
   },
 );
+
+export default AddOrderForm;
