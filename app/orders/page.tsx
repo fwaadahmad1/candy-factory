@@ -20,7 +20,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
-import { dummyOrderData } from "./dummyOrderData";
+import { dummyOrderData, OrderItem } from "./dummyOrderData";
 import {
   Dialog,
   DialogClose,
@@ -34,10 +34,15 @@ import {
 import AddOrderForm, {
   AddOrderFormHandle,
 } from "@/app/orders/form/addOrder.form";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { capitalize, cn } from "@/lib/utils";
 
 const OrdersPage = () => {
   const addOrderFormRef = useRef<AddOrderFormHandle>(null);
+
+  const [orderDetailsDialog, setOrderDetailsDialog] = useState<
+    Array<OrderItem> | undefined
+  >(undefined);
 
   return (
     <div className={"flex flex-col w-full gap-2"}>
@@ -83,9 +88,41 @@ const OrdersPage = () => {
 
       <Card className={"w-full"}>
         <CardContent className={"p-2"}>
+          <Dialog
+            open={!!orderDetailsDialog}
+            onOpenChange={(open) => !open && setOrderDetailsDialog(undefined)}
+          >
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Order Details</DialogTitle>
+                <DialogDescription>
+                  <Table className={"w-full"}>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Candy Type</TableHead>
+                        <TableHead>Quantity</TableHead>
+                      </TableRow>
+                    </TableHeader>
+
+                    <TableBody>
+                      {orderDetailsDialog?.map((item, index) => {
+                        return (
+                          <TableRow key={index}>
+                            <TableCell>{item.candyType}</TableCell>
+                            <TableCell>{item.quantity}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+
           <Table className={"h-full w-full"}>
             <TableHeader>
-              <TableRow onClick={() => {}}>
+              <TableRow>
                 <TableHead className="w-[100px]">Order Id</TableHead>
                 <TableHead>Client Name</TableHead>
                 <TableHead>Order Date</TableHead>
@@ -97,7 +134,16 @@ const OrdersPage = () => {
             </TableHeader>
             <TableBody>
               {dummyOrderData.map((data, index) => (
-                <TableRow key={index}>
+                <TableRow
+                  key={index}
+                  onClick={() =>
+                    setOrderDetailsDialog(
+                      data.orderItems && data.orderItems.length > 0
+                        ? data.orderItems
+                        : undefined,
+                    )
+                  }
+                >
                   <TableCell className="font-medium">{"7894"}</TableCell>
                   <TableCell>{data.name}</TableCell>
                   <TableCell>{`${data.orderDate.toLocaleDateString("en-us", {
@@ -110,7 +156,20 @@ const OrdersPage = () => {
                     month: "short",
                     day: "numeric",
                   })}`}</TableCell>
-                  <TableCell>{data.status}</TableCell>
+                  <TableCell>
+                    <div
+                      className={cn(
+                        "max-w-max px-4 py-0.5 text-white rounded-sm",
+                        data.status == "completed"
+                          ? "bg-green-500"
+                          : data.status == "in-process"
+                            ? "bg-orange-500"
+                            : "bg-red-500",
+                      )}
+                    >
+                      {capitalize(data.status)}
+                    </div>
+                  </TableCell>
 
                   <TableCell>
                     <ArrowRight strokeWidth={1} className={"text-secondary"} />
