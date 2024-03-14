@@ -1,17 +1,93 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { Bell, ChevronDownCircle, ChevronRight } from "lucide-react";
+import { Bell, ChevronDownCircle } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { NavRoutes } from "@/lib/NavRoutes";
+import { NavRoute, NavRoutes } from "@/lib/NavRoutes";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { useMemo } from "react";
 
 const TopBar = () => {
   const path = usePathname().split("/").filter(Boolean);
 
   const navLink = NavRoutes.find((o) => o.path.includes(`/${path[0]}`));
-  const subNavLink = navLink?.subLinks?.find((o) =>
-    o.path.includes(`/${path[0]}/${path[1]}`),
-  );
+
+  const candyCrumbs: Array<NavRoute> = useMemo(() => {
+    const navRoutes: Array<NavRoute> = [];
+    navLink && navRoutes.push(navLink);
+    let subNavLink: NavRoute | undefined = navLink;
+    path.forEach((_, index) => {
+      if (index == 0 || !navLink) return;
+      path.slice(0, index).map(() => {
+        subNavLink = subNavLink?.subLinks?.find((o) =>
+          o.path.includes("/" + path.slice(0, index + 1).join("/")),
+        );
+        subNavLink && navRoutes.push(subNavLink);
+      });
+    });
+    return navRoutes;
+  }, [navLink, path]);
+
+  function BreadCrumbs() {
+    return (
+      <Breadcrumb>
+        <BreadcrumbList>
+          {candyCrumbs.length == 1 ? (
+            <>
+              <BreadcrumbItem>
+                <BreadcrumbPage>{candyCrumbs.at(-1)?.title}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </>
+          ) : candyCrumbs.length == 2 ? (
+            <>
+              <BreadcrumbItem>
+                <BreadcrumbLink href={navLink?.path}>
+                  {navLink?.title}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{candyCrumbs.at(-1)?.title}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </>
+          ) : candyCrumbs.length > 2 ? (
+            <>
+              <BreadcrumbItem>
+                <BreadcrumbLink href={navLink?.path}>
+                  {navLink?.title}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              {candyCrumbs.slice(1, -1).map((navLink) => {
+                return (
+                  <>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href={navLink.path}>
+                        {navLink.title}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                  </>
+                );
+              })}
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{candyCrumbs.at(-1)?.title}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </>
+          ) : (
+            <></>
+          )}
+        </BreadcrumbList>
+      </Breadcrumb>
+    );
+  }
 
   return (
     <div
@@ -20,38 +96,7 @@ const TopBar = () => {
       }
     >
       <div className={"flex flex-row items-center"}>
-        <div
-          className={`${path?.[1] && navLink?.subLinks ? "text-muted-foreground" : "font-semibold"}`}
-        >
-          {navLink?.title}
-        </div>
-        {path?.[1] && navLink?.subLinks ? (
-          <>
-            <div className={"flex flex-row font-semibold"}>
-              <div
-                className={"flex h-full justify-center items-center mx-2 w-4"}
-              >
-                <ChevronRight />
-              </div>
-              <div className={`${path?.[2] && subNavLink?.subLinks ? "text-muted-foreground font-normal" : "font-semibold"}`}>{subNavLink?.title}</div>
-            </div>
-
-            {path?.[2] && subNavLink?.subLinks && (
-              <div className={"flex flex-row font-semibold"}>
-                <div
-                  className={"flex h-full justify-center items-center mx-2 w-4"}
-                >
-                  <ChevronRight />
-                </div>
-                {
-                  subNavLink.subLinks.find((o) =>
-                    o.path.includes(`/${path[0]}/${path[1]}/${path[2]}`),
-                  )?.title
-                }
-              </div>
-            )}
-          </>
-        ) : null}
+        <BreadCrumbs />
       </div>
 
       <div className={"flex flex-row items-center"}>
