@@ -41,4 +41,8 @@ export const NavRoutes: Array<NavRoute> = [
     title: "Inventory",
     path: "/inventory",
   },
+  {
+    title: "CandyType",
+    path: "/candytype",
+  },
 ];
