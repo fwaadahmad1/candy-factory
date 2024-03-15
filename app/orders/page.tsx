@@ -20,7 +20,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
-import { dummyOrderData, OrderItem } from "./dummyOrderData";
+import { OrderItem } from "./dummyOrderData";
 import {
   Dialog,
   DialogClose,
@@ -29,71 +29,76 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import AddOrderForm, {
   AddOrderFormHandle,
 } from "@/app/orders/form/addOrder.form";
 import { useRef, useState } from "react";
 import { capitalize, cn } from "@/lib/utils";
-import { useAddOrdersMutation, useGetOrdersQuery } from "@/features/ApiSlice/orderSlice";
+import {
+  useAddOrdersMutation,
+  useGetOrdersQuery,
+} from "@/features/ApiSlice/orderSlice";
 
 type OrderData = {
-  date: String,
+  date: String;
   dueDate: String;
   client_name: string;
   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
   candies: [];
-  quantity_candies : [];
+  quantity_candies: [];
 };
 
-export type  orderItemSchema = {
-  candyType: String
-  quantity: String ,
-}
+export type orderItemSchema = {
+  candyType: String;
+  quantity: String;
+};
 
 export type addOrderSchema = {
-  client_name: String,
-  dueDate: Date,
-  candyType: String,
-  quantity: String,
-  orderItem: orderItemSchema[],
-}
+  client_name: String;
+  dueDate: Date;
+  candyType: String;
+  quantity: String;
+  orderItem: orderItemSchema[];
+};
 
 type orderPostSchema = {
-  date: String,
-  due_date: String,
-  client_name: String,
-  status: String,
-  candies: String[],
-  quantity_candies: String,
-}
+  date: String;
+  due_date: String;
+  client_name: String;
+  status: String;
+  candies: String[];
+  quantity_candies: String;
+};
 
 const OrdersPage = () => {
-  
   const addOrderFormRef = useRef<AddOrderFormHandle>(null);
 
-  const {data, isLoading, error}  = useGetOrdersQuery({});
+  const { data, isLoading, error } = useGetOrdersQuery({});
   const [addOrder] = useAddOrdersMutation();
-  const orders : OrderData[] = data
+  const orders: OrderData[] = data;
   console.log(orders);
   const [orderDetailsDialog, setOrderDetailsDialog] = useState<
     Array<OrderItem> | undefined
   >(undefined);
 
+  const [addOrderDialog, setAddOrderDialog] = useState<boolean>(false);
+
   return (
     <div className={"flex flex-col w-full gap-2"}>
       <Card className={"w-full"}>
         <CardContent className={"py-2 px-6 flex items-center justify-between"}>
-
           <div className="relative flex items-center max-w-md rounded-full my-2">
             <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Your search..." className="rounded-full pl-8" />
           </div>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant={"secondary"}>Add Item</Button>
-            </DialogTrigger>
+          <Button variant={"secondary"} onClick={() => setAddOrderDialog(true)}>
+            Add Item
+          </Button>
+          <Dialog
+            open={addOrderDialog}
+            onOpenChange={(open) => !open && setAddOrderDialog(false)}
+          >
             <DialogContent className="sm:max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Add Order</DialogTitle>
@@ -102,26 +107,24 @@ const OrdersPage = () => {
               <AddOrderForm
                 ref={addOrderFormRef}
                 onSubmit={(values) => {
-                  console.log(values)
-                  const candyTypes : String[] = [];
-                  const quantities : Number[] = [];
+                  setAddOrderDialog(false);
+                  const candyTypes: String[] = [];
+                  const quantities: Number[] = [];
                   values.orderItem.forEach((item, i) => {
-                      candyTypes[i] = item.candyType;
+                    candyTypes[i] = item.candyType;
                   });
                   values.orderItem.forEach((item, i) => {
                     quantities[i] = item.quantity;
-                });
-                  
-    
-                const orderPostData : orderPostSchema = {
+                  });
+
+                  const orderPostData: orderPostSchema = {
                     date: new Date().toDateString(),
                     due_date: values.dueDate.toISOString(),
                     client_name: values.client_name,
                     status: "PENDING",
-                    candies : [...candyTypes],
-                    quantity_candies:JSON.stringify(quantities),
-                }
-                                
+                    candies: [...candyTypes],
+                    quantity_candies: JSON.stringify(quantities),
+                  };
                   addOrder(orderPostData);
                 }}
               />
@@ -129,15 +132,17 @@ const OrdersPage = () => {
                 <DialogClose asChild={true}>
                   <Button variant={"ghost"}>Cancel</Button>
                 </DialogClose>
-                <Button
-                  variant={"secondary"}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    addOrderFormRef.current?.submit();
-                  }}
-                >
-                  Confirm
-                </Button>
+                <DialogClose>
+                  <Button
+                    variant={"secondary"}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      addOrderFormRef.current?.submit();
+                    }}
+                  >
+                    Confirm
+                  </Button>
+                </DialogClose>
               </DialogFooter>
             </DialogContent>
           </Dialog>

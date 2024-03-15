@@ -57,7 +57,6 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
       delete values.candyType;
       delete values.quantity;
       onSubmit(values);
-      console.log(values)
     }
 
     useImperativeHandle(
