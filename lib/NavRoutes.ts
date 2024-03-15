@@ -44,5 +44,11 @@ export const NavRoutes: Array<NavRoute> = [
   {
     title: "CandyType",
     path: "/candytype",
+    subLinks: [
+      {
+        title: "Add Candy",
+        path: "/candytype/add",
+      },
+    ],
   },
 ];
