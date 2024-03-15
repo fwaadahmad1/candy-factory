@@ -63,6 +63,10 @@ export function SideBar({className}: { className: string }) {
                             <Notebook className="mr-2 h-4 w-4"/>
                             {NavRoutes[3].title}
                         </NavLink>
+                        <NavLink navLink={NavRoutes[4]}>
+                            <Notebook className="mr-2 h-4 w-4"/>
+                            {NavRoutes[4].title}
+                        </NavLink>
                     </div>
                 </div>
             </div>

@@ -20,7 +20,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
-import { dummyOrderData } from "./dummyOrderData";
+import { dummyOrderData, OrderItem } from "./dummyOrderData";
 import {
   Dialog,
   DialogClose,
@@ -34,15 +34,34 @@ import {
 import AddOrderForm, {
   AddOrderFormHandle,
 } from "@/app/orders/form/addOrder.form";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { capitalize, cn } from "@/lib/utils";
+import { useGetOrdersQuery } from "@/features/ApiSlice/orderSlice";
+
+type OrderData = {
+  date: String,
+  dueDate: String;
+  client_name: string;
+  status: "COMPLETED" | "PENDING" | "IN-PROCESS";
+  candies: [];
+  quantity_candies : [];
+};
 
 const OrdersPage = () => {
   const addOrderFormRef = useRef<AddOrderFormHandle>(null);
+
+  const {data, isLoading, error}  = useGetOrdersQuery({});
+  const orders : OrderData[] = data
+  console.log(orders);
+  const [orderDetailsDialog, setOrderDetailsDialog] = useState<
+    Array<OrderItem> | undefined
+  >(undefined);
 
   return (
     <div className={"flex flex-col w-full gap-2"}>
       <Card className={"w-full"}>
         <CardContent className={"py-2 px-6 flex items-center justify-between"}>
+
           <div className="relative flex items-center max-w-md rounded-full my-2">
             <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Your search..." className="rounded-full pl-8" />
@@ -83,9 +102,41 @@ const OrdersPage = () => {
 
       <Card className={"w-full"}>
         <CardContent className={"p-2"}>
+          <Dialog
+            open={!!orderDetailsDialog}
+            onOpenChange={(open) => !open && setOrderDetailsDialog(undefined)}
+          >
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Order Details</DialogTitle>
+                <DialogDescription>
+                  <Table className={"w-full"}>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Candy Type</TableHead>
+                        <TableHead>Quantity</TableHead>
+                      </TableRow>
+                    </TableHeader>
+
+                    <TableBody>
+                      {orderDetailsDialog?.map((item, index) => {
+                        return (
+                          <TableRow key={index}>
+                            <TableCell>{item.candyType}</TableCell>
+                            <TableCell>{item.quantity}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+
           <Table className={"h-full w-full"}>
             <TableHeader>
-              <TableRow onClick={() => {}}>
+              <TableRow>
                 <TableHead className="w-[100px]">Order Id</TableHead>
                 <TableHead>Client Name</TableHead>
                 <TableHead>Order Date</TableHead>
@@ -96,21 +147,35 @@ const OrdersPage = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {dummyOrderData.map((data, index) => (
-                <TableRow key={index}>
+              {orders?.map((data, index) => (
+                <TableRow
+                  key={index}
+                  onClick={() =>
+                    setOrderDetailsDialog(
+                      data.candies && data.candies.length > 0
+                        ? data.candies
+                        : undefined,
+                    )
+                  }
+                >
                   <TableCell className="font-medium">{"7894"}</TableCell>
-                  <TableCell>{data.name}</TableCell>
-                  <TableCell>{`${data.orderDate.toLocaleDateString("en-us", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}`}</TableCell>
-                  <TableCell>{`${data.dueDate.toLocaleDateString("en-us", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}`}</TableCell>
-                  <TableCell>{data.status}</TableCell>
+                  <TableCell>{data.client_name}</TableCell>
+                  <TableCell>{`${data.date}`}</TableCell>
+                  <TableCell>{`${data.dueDate}`}</TableCell>
+                  <TableCell>
+                    <div
+                      className={cn(
+                        "max-w-max px-4 py-0.5 text-white rounded-sm",
+                        data.status == "COMPLETED"
+                          ? "bg-green-500"
+                          : data.status == "IN-PROCESS"
+                            ? "bg-orange-500"
+                            : "bg-red-500",
+                      )}
+                    >
+                      {capitalize(data.status)}
+                    </div>
+                  </TableCell>
 
                   <TableCell>
                     <ArrowRight strokeWidth={1} className={"text-secondary"} />

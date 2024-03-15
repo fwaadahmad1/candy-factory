@@ -6,6 +6,10 @@ const nextConfig = {
                 source: '/',
                 destination: '/dashboard',
                 permanent: true,
+            },{
+                source: '/production',
+                destination: '/production/inLine',
+                permanent: true,
             },
         ]
     },
