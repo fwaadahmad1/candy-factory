@@ -41,6 +41,8 @@ import {
 } from "@/features/ApiSlice/orderSlice";
 
 type OrderData = {
+  id:number,
+  due_date: String;
   date: String;
   dueDate: String;
   client_name: string;
@@ -75,14 +77,15 @@ const OrdersPage = () => {
   const addOrderFormRef = useRef<AddOrderFormHandle>(null);
 
   const { data, isLoading, error } = useGetOrdersQuery({});
-  const [addOrder] = useAddOrdersMutation();
   const orders: OrderData[] = data;
+  const [addOrder,err] = useAddOrdersMutation();
+  console.log(orders);
   const [orderDetailsDialog, setOrderDetailsDialog] = useState<
     Array<OrderItem> | undefined
   >(undefined);
-
+  
   const [addOrderDialog, setAddOrderDialog] = useState<boolean>(false);
-
+  console.log((new Date()).toLocaleDateString('as-IN').replaceAll('/','-'));
   return (
     <div className={"flex flex-col w-full gap-2"}>
       <Card className={"w-full"}>
@@ -117,8 +120,9 @@ const OrdersPage = () => {
                   });
 
                   const orderPostData: orderPostSchema = {
-                    date: new Date().toDateString(),
-                    due_date: values.dueDate.toISOString(),
+                   
+                    date: new Date().toLocaleDateString('arn-CL').replaceAll('/','-'),
+                    due_date: values.dueDate.toLocaleDateString('arn-CL').replaceAll('/','-'),
                     client_name: values.client_name,
                     status: "PENDING",
                     candies: [...candyTypes],
@@ -195,33 +199,33 @@ const OrdersPage = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {orders?.map((data, index) => (
+              {orders?.map((order, index) => (
                 <TableRow
                   key={index}
                   onClick={() =>
                     setOrderDetailsDialog(
-                      data.candies && data.candies.length > 0
+                      order.candies && order.candies.length > 0
                         ? data.candies
                         : undefined,
                     )
                   }
                 >
-                  <TableCell className="font-medium">{"7894"}</TableCell>
-                  <TableCell>{data.client_name}</TableCell>
-                  <TableCell>{`${data.date}`}</TableCell>
-                  <TableCell>{`${data.dueDate}`}</TableCell>
+                  <TableCell className="font-medium">{order.id}</TableCell>
+                  <TableCell>{order.client_name}</TableCell>
+                  <TableCell>{`${order.date}`}</TableCell>
+                  <TableCell>{`${order.due_date}`}</TableCell>
                   <TableCell>
                     <div
                       className={cn(
                         "max-w-max px-4 py-0.5 text-white rounded-sm",
-                        data.status == "COMPLETED"
+                        order.status == "COMPLETED"
                           ? "bg-green-500"
-                          : data.status == "IN-PROCESS"
+                          : order.status == "IN-PROCESS"
                             ? "bg-orange-500"
                             : "bg-red-500",
                       )}
                     >
-                      {capitalize(data.status)}
+                      {capitalize(order.status)}
                     </div>
                   </TableCell>
 
