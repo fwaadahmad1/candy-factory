@@ -12,31 +12,82 @@ import AddCandyForm, {
 import AddStageForm, {
   AddStageFormHandle,
 } from "@/app/candytype/add/form/addStage.form";
-import { z } from "zod";
+import { string, z } from "zod";
 import { addStageSchema } from "@/app/candytype/add/form/addStage.schema";
 import { Button } from "@/components/ui/button";
 import { addCandySchema } from "@/app/candytype/add/form/addCandy.schema";
 import { Separator } from "@/components/ui/separator";
 import { X } from "lucide-react";
+import { useAddCandyTypeMutation } from "@/features/ApiSlice/candyTypeSlice";
 
+type candyTypeData = {
+  
+    name : string,
+    ingredients : string[],
+    quantity_ingredient : string,
+   // total_time: number,
+    mixer_settings: string[],
+    cooker_settings:string[],
+    extruder_settings:string[],
+    packaging_settings:string[],
+    quantity_mixer_settings: string,
+    quantity_cooker_settings: string,
+    quantity_extruder_settings: string,
+    quantity_packaging_settings: string,
+  
+}
 const AddCandyType = () => {
   const [stageForms, setStageForms] = useState<
     Array<Omit<z.infer<typeof addStageSchema>, "conf_name" | "conf_setting">>
   >([]);
 
+  const [addCandy] = useAddCandyTypeMutation({});
   const stageFormRefs = useRef<Array<AddStageFormHandle | null>>([]);
   const candyFormRef = useRef<AddCandyFormHandle>(null);
   const [candyForm, setCandyForm] = useState<
     Omit<z.infer<typeof addCandySchema>, "ingredient" | "quantity">
-  >({ name: "", ingredientItem: [] });
+  >({ candyName: "", ingredientItem: [] });
 
   const [hasErrors, setHasErrors] = useState(true);
 
   useEffect(() => {
-    if (!hasErrors && candyForm.name) {
+    if (!hasErrors && candyForm.candyName) {
+      const ingredientName: string[] = [];
+        const ingQty: string[] = [];
+        candyForm.ingredientItem.forEach((item, i) => {
+          ingredientName[i] = item.ingredient;
+        });
+        candyForm.ingredientItem.forEach((item, i) => {
+          ingQty[i] = item.quantity;
+        });
       // API call for submit goes here
-      console.log(candyForm);
-      stageForms.forEach((form) => console.log(form));
+      // console.log(ingredientName,ingQty);
+
+      
+      const stageObj :any = {}
+      
+      
+      for(let i =0 ; i< (stageForms.length) ; i++){
+        const configSetting: String[] = [];
+        const quantitiesConfigSetting: string[] = [];
+        stageForms[i].conf_item.forEach((item, i) => {
+          configSetting[i] = item.conf_name;
+          
+        });
+        stageForms[i].conf_item.forEach((item, i) => {
+          quantitiesConfigSetting[i] = item.conf_setting;
+        });
+        stageObj[stageForms[i].name] = configSetting;
+        stageObj[`quantity_${stageForms[i].name}`] = JSON.stringify(quantitiesConfigSetting);
+      }
+      // console.log(stageObj)
+      const candyData : candyTypeData = {
+        name : candyForm.candyName,
+        ingredients : ingredientName,
+        quantity_ingredient : JSON.stringify(ingQty),
+        ...stageObj
+      }
+      addCandy(candyData);
     }
   }, [candyForm, hasErrors, stageForms]);
 

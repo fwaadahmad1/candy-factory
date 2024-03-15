@@ -13,10 +13,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
+import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 
-
+type candySchema = {
+  name : string,
+}
 const CandyTypePage = () => {
   const router = useRouter();
+  const {data} = useGetCandyTypeQuery({})
+  const candyData : candySchema[] = data;
   return (
     <div className={"flex flex-col w-full h-full gap-2"}>
       <Card className={"w-full"}>
@@ -44,9 +49,9 @@ const CandyTypePage = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {["Candy A", "Candy B"].map((data, index) => (
+              {candyData?.map((candy, index) => (
                 <TableRow key={index}>
-                  <TableCell className="font-medium">{data}</TableCell>
+                  <TableCell className="font-medium">{candy.name}</TableCell>
                   <TableCell>
                     <ArrowRight strokeWidth={1} className={"text-secondary"} />
                   </TableCell>
