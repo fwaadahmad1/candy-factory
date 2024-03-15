@@ -6,7 +6,7 @@ export const orderItemSchema = z.object({
 });
 
 export const addOrderSchema = z.object({
-  name: z.string().min(2).max(50),
+  client_name: z.string().min(2).max(50),
   dueDate: z.date(),
   candyType: z.string().optional(),
   quantity: z.number().optional(),

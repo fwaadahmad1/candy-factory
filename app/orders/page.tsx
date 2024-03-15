@@ -36,7 +36,7 @@ import AddOrderForm, {
 } from "@/app/orders/form/addOrder.form";
 import { useRef, useState } from "react";
 import { capitalize, cn } from "@/lib/utils";
-import { useGetOrdersQuery } from "@/features/ApiSlice/orderSlice";
+import { useAddOrdersMutation, useGetOrdersQuery } from "@/features/ApiSlice/orderSlice";
 
 type OrderData = {
   date: String,
@@ -47,10 +47,34 @@ type OrderData = {
   quantity_candies : [];
 };
 
+export type  orderItemSchema = {
+  candyType: String
+  quantity: String ,
+}
+
+export type addOrderSchema = {
+  client_name: String,
+  dueDate: Date,
+  candyType: String,
+  quantity: String,
+  orderItem: orderItemSchema[],
+}
+
+type orderPostSchema = {
+  date: String,
+  due_date: String,
+  client_name: String,
+  status: String,
+  candies: String[],
+  quantity_candies: String,
+}
+
 const OrdersPage = () => {
+  
   const addOrderFormRef = useRef<AddOrderFormHandle>(null);
 
   const {data, isLoading, error}  = useGetOrdersQuery({});
+  const [addOrder] = useAddOrdersMutation();
   const orders : OrderData[] = data
   console.log(orders);
   const [orderDetailsDialog, setOrderDetailsDialog] = useState<
@@ -78,7 +102,27 @@ const OrdersPage = () => {
               <AddOrderForm
                 ref={addOrderFormRef}
                 onSubmit={(values) => {
-                  console.log(values);
+                  console.log(values)
+                  const candyTypes : String[] = [];
+                  const quantities : Number[] = [];
+                  values.orderItem.forEach((item, i) => {
+                      candyTypes[i] = item.candyType;
+                  });
+                  values.orderItem.forEach((item, i) => {
+                    quantities[i] = item.quantity;
+                });
+                  
+    
+                const orderPostData : orderPostSchema = {
+                    date: new Date().toDateString(),
+                    due_date: values.dueDate.toISOString(),
+                    client_name: values.client_name,
+                    status: "PENDING",
+                    candies : [...candyTypes],
+                    quantity_candies:JSON.stringify(quantities),
+                }
+                                
+                  addOrder(orderPostData);
                 }}
               />
               <DialogFooter>
