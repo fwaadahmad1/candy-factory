@@ -13,6 +13,7 @@ export const orderSlice = createApi({
     }),
     addOrders: builder.mutation({
         query: (orderData) => {
+          console.log(orderData);
           return {
             url: "/order",
             method: "POST",

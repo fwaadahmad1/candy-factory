@@ -49,7 +49,7 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
     const form = useForm<z.infer<typeof addOrderSchema>>({
       resolver: zodResolver(addOrderSchema),
       defaultValues: {
-        name: "",
+        client_name: "",
       },
     });
 
@@ -81,7 +81,7 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
           {/* Client Name */}
           <FormField
             control={form.control}
-            name="name"
+            name="client_name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Client Name</FormLabel>
