@@ -79,7 +79,6 @@ const OrdersPage = () => {
   const { data, isLoading, error } = useGetOrdersQuery({});
   const orders: OrderData[] = data;
   const [addOrder,err] = useAddOrdersMutation();
-  console.log(orders);
   const [orderDetailsDialog, setOrderDetailsDialog] = useState<
     Array<OrderItem> | undefined
   >(undefined);
