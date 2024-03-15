@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
 
+
 const CandyTypePage = () => {
   const router = useRouter();
   return (

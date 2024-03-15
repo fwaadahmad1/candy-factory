@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,9 +22,12 @@ import {
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
 import { dummyinLineData } from "./dummyInLineData";
+import { useGetAssemblyLineQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
 
 const PendingOrdersPage = () => {
+  const {data} = useGetAssemblyLineQuery({});
+
     return (
         <div className={"flex flex-col w-full gap-2"}>
         <Card className={"w-full"}>

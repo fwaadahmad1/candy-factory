@@ -9,7 +9,7 @@ export const candyTypeSlice = createApi({
   endpoints: (builder) => ({
     getCandyType: builder.query({
       query: () => "/candy",
-      providesTags: [{ type: "CandyType", id: "orderItem" }],
+      providesTags: [{ type: "CandyType", id: "candyType" }],
     }),
     addCandyType: builder.mutation({
         query: (candyData) => {
@@ -21,7 +21,7 @@ export const candyTypeSlice = createApi({
           };
         },
         invalidatesTags: [
-          { type: "CandyType", id: "candyTypeItem" },
+          { type: "CandyType", id: "candyType" },
         ],
       }),
   }),
@@ -32,4 +32,4 @@ export const {
   useGetCandyTypeQuery,
 } = candyTypeSlice;
 
-export const orderReducer = candyTypeSlice.reducer;
+export const candyTypeReducer = candyTypeSlice.reducer;
