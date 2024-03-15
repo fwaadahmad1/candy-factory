@@ -21,8 +21,51 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import {useRouter} from "next/navigation";
+import { useGetOrdersQuery } from "@/features/ApiSlice/orderSlice";
 
+type OrderData = {
+  id:number,
+  due_date: String;
+  date: String;
+  dueDate: String;
+  client_name: string;
+  status: "COMPLETED" | "PENDING" | "IN-PROCESS";
+  candies: [];
+  quantity_candies: [];
+};
+
+type pendingOrderSchema = {
+  candyName: string,
+  qty: string,
+  id:number,
+  due_date: String;
+  date: String;
+  dueDate: String;
+  client_name: string;
+  status: "COMPLETED" | "PENDING" | "IN-PROCESS";
+  candies: [];
+  quantity_candies: [];
+}
+
+const convertTopending = (data : OrderData[]) => {
+  const candies: any =[];
+  data?.forEach(order => {
+    const quantity = JSON.parse(`${order.quantity_candies}`);
+    
+    order.candies.forEach(((candy,i) => {
+      const newObj = {...order, [`candyName`] : candy, [`qty`] : quantity[i]}
+      candies.push(newObj);
+    }))
+    
+  })
+  return candies;
+}
 const ProductsInLinePage = () => {
+
+  const { data, isLoading, error } = useGetOrdersQuery({});
+  const pendingOrders: OrderData[] = data;
+  const pen : pendingOrderSchema[] = convertTopending(pendingOrders);
+  console.log( pen)
   const router = useRouter();
   return (
     <div className={"flex flex-col w-full gap-2"}>
@@ -50,18 +93,14 @@ const ProductsInLinePage = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {dummyProductionInLineData.map((data, index) => (
-                <TableRow key={index} onClick={() => router.push(`/production/pendingOrders/orderDetails?orderId=${data.orderId}`)}>
-                  <TableCell className="font-medium">{data.orderId}</TableCell>
-                  <TableCell>{data.candyType}</TableCell>
-                  <TableCell>{data.quantity}</TableCell>
-                  <TableCell>{`${data.dueDate.toLocaleDateString("en-us", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}`}</TableCell>
-                  <TableCell>{data.estTime}</TableCell>
-                  <TableCell>{data.productionLine}</TableCell>
+              {pen.map((order, index) => (
+                <TableRow key={index} onClick={() => router.push(`/production/pendingOrders/orderDetails?orderId=${order.id}`)}>
+                  <TableCell className="font-medium">{order.id}</TableCell>
+                  <TableCell>{order.candyName}</TableCell>
+                  <TableCell>{order.qty}</TableCell>
+                  <TableCell>{`${order.due_date}`}</TableCell>
+                  {/* <TableCell>{order.estTime}</TableCell> */}
+                  {/* <TableCell>{order.productionLine}</TableCell> */}
                   <TableCell>
                     <ArrowRight strokeWidth={1} className={"text-secondary"} />
                   </TableCell>
