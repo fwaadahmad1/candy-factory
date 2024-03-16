@@ -5,6 +5,7 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { orderSlice } from "./ApiSlice/orderSlice";
 import { ingredientSlice } from "./ApiSlice/ingredientSlice";
 import { candyTypeSlice } from "./ApiSlice/candyTypeSlice";
+import { assemblyLineSlice } from "./ApiSlice/assemblyLineSlice";
 
 export const store = configureStore({
   reducer: rootReducer,
@@ -13,6 +14,7 @@ export const store = configureStore({
     orderSlice.middleware,
     ingredientSlice.middleware,
     candyTypeSlice.middleware,
+    assemblyLineSlice.middleware,
   ]),
 });
 

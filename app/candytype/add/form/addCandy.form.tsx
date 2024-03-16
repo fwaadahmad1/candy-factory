@@ -42,7 +42,7 @@ const AddCandyForm = forwardRef<AddCandyFormHandle, AddCandyFormProps>(
     const form = useForm<z.infer<typeof addCandySchema>>({
       resolver: zodResolver(addCandySchema),
       defaultValues: {
-        name: "",
+        candyName: "",
       },
     });
 
@@ -81,7 +81,7 @@ const AddCandyForm = forwardRef<AddCandyFormHandle, AddCandyFormProps>(
           {/* Candy Name */}
           <FormField
             control={form.control}
-            name="name"
+            name="candyName"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Candy Name</FormLabel>

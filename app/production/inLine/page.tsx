@@ -2,7 +2,7 @@
 import React from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -24,10 +24,18 @@ import { Button } from "@/components/ui/button";
 import { dummyinLineData } from "./dummyInLineData";
 import { useGetAssemblyLineQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
+type assemblyLineSchema = {
+  name: string,
+    total_time: string,
+    occupied: boolean,
+    candy: string,
+    order: string,
+    last_candy: string,
+}
 
 const PendingOrdersPage = () => {
   const {data} = useGetAssemblyLineQuery({});
-
+  const assemblyLineData : assemblyLineSchema[] = data;
     return (
         <div className={"flex flex-col w-full gap-2"}>
         <Card className={"w-full"}>
@@ -45,19 +53,22 @@ const PendingOrdersPage = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[150px]">Production Line</TableHead>
-                  <TableHead className="w-[150px]">Order Id</TableHead>
+                  {/* <TableHead className="w-[150px]">Order Id</TableHead> */}
                   <TableHead className="w-[150px]">Candy Type</TableHead>
-                  <TableHead className="w-[150px]">Time Remaining</TableHead>
+                  {/* <TableHead className="w-[150px]">Time Remaining</TableHead> */}
                   <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {dummyinLineData.map((data, index) => (
+                {assemblyLineData?.map((data, index) => (
                   <TableRow key={index}>
-                    <TableCell className="w-[150px]">{data.productionLine}</TableCell>
-                    <TableCell className="w-[150px]">{data.orderId}</TableCell>
-                    <TableCell className="w-[150px]">{data.candyType}</TableCell>
-                    <TableCell className="w-[150px]">{data.timeRemaining}</TableCell>
+                    <TableCell className="w-[150px]">{index + 1}</TableCell>
+                    {/* <TableCell className="w-[150px]">{data.orderId}</TableCell> */}
+                    <TableCell className="w-[150px]">{data.name}</TableCell>
+                    <TableCell>
+                    <ArrowRight strokeWidth={1} className={"text-secondary"} />
+                  </TableCell>
+                    {/* <TableCell className="w-[150px]">{data.timeRemaining}</TableCell> */}
                   </TableRow>
                 ))}
               </TableBody>
