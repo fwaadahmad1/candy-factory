@@ -2,7 +2,7 @@
 import React from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { dummyinLineData } from "./dummyInLineData";
 import { useGetAssemblyLineQuery } from "@/features/ApiSlice/assemblyLineSlice";
+import router from "next/router";
 
 type assemblyLineSchema = {
   name: string,
@@ -61,10 +62,13 @@ const PendingOrdersPage = () => {
               </TableHeader>
               <TableBody>
                 {assemblyLineData?.map((data, index) => (
-                  <TableRow key={index}>
+                  <TableRow key={index} onClick={() => router.push(`/production/inLine/orderDetails`)}>
                     <TableCell className="w-[150px]">{index + 1}</TableCell>
                     {/* <TableCell className="w-[150px]">{data.orderId}</TableCell> */}
                     <TableCell className="w-[150px]">{data.name}</TableCell>
+                    <TableCell>
+                    <ArrowRight strokeWidth={1} className={"text-secondary"} />
+                  </TableCell>
                     {/* <TableCell className="w-[150px]">{data.timeRemaining}</TableCell> */}
                   </TableRow>
                 ))}
