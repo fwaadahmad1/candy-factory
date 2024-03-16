@@ -12,24 +12,18 @@ export const orderSlice = createApi({
       providesTags: [{ type: "Orders", id: "orderItem" }],
     }),
     addOrders: builder.mutation({
-        query: (orderData) => {
-          console.log(orderData);
-          return {
-            url: "/order",
-            method: "POST",
-            body: orderData,
-          };
-        },
-        invalidatesTags: [
-          { type: "Orders", id: "orderItem" },
-        ],
-      }),
+      query: (orderData) => {
+        return {
+          url: "/order",
+          method: "POST",
+          body: orderData,
+        };
+      },
+      invalidatesTags: [{ type: "Orders", id: "orderItem" }],
+    }),
   }),
 });
 
-export const {
-  useGetOrdersQuery,
-  useAddOrdersMutation,
-} = orderSlice;
+export const { useGetOrdersQuery, useAddOrdersMutation } = orderSlice;
 
 export const orderReducer = orderSlice.reducer;
