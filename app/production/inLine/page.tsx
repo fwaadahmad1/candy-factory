@@ -25,9 +25,10 @@ import { dummyinLineData } from "./dummyInLineData";
 import { useGetAssemblyLineQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
 
+
 const PendingOrdersPage = () => {
   const {data} = useGetAssemblyLineQuery({});
-
+  const assemblyLineData : any = data;
     return (
         <div className={"flex flex-col w-full gap-2"}>
         <Card className={"w-full"}>
@@ -52,7 +53,7 @@ const PendingOrdersPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {dummyinLineData.map((data, index) => (
+                {assemblyLineData.map((data, index) => (
                   <TableRow key={index}>
                     <TableCell className="w-[150px]">{data.productionLine}</TableCell>
                     <TableCell className="w-[150px]">{data.orderId}</TableCell>

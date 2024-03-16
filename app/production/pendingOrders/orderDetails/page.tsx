@@ -1,3 +1,4 @@
+'use client';
 import React from "react";
 import {
   dummyProductionInLineData,
@@ -20,16 +21,38 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
+import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
+import { useSearchParams } from "next/navigation";
 
-const ProductionOrderDetailsPage = ({
-  searchParams,
-}: {
-  searchParams: {
-    orderId: string;
-  };
-}) => {
-  const order: ProductionInLineData | undefined =
-    dummyProductionInLineData.find((o) => o.orderId == searchParams.orderId);
+type candyTypeData = {
+  
+  name : string,
+  ingredients : string[],
+  quantity_ingredient : string,
+ // total_time: number,
+  mixer_settings: string[],
+  cooker_settings:string[],
+  extruder_settings:string[],
+  packaging_settings:string[],
+  quantity_mixer_settings: string,
+  quantity_cooker_settings: string,
+  quantity_extruder_settings: string,
+  quantity_packaging_settings: string,
+
+}
+
+const ProductionOrderDetailsPage = () => {
+  const {data} = useGetCandyTypeQuery({});
+  const orderDetails : candyTypeData[]  = data ?? [];
+  console.log(orderDetails);
+  const searchParams2 = useSearchParams();
+  const search = searchParams2.get('candyName');
+  console.log(search)
+  const order: candyTypeData | undefined =
+    orderDetails.find((order) => {
+      return order.name == search;
+    } );
+  console.log(order)
   return (
     <div
       className={
@@ -50,26 +73,26 @@ const ProductionOrderDetailsPage = ({
               className={"flex flex-row justify-between items-start pb-0"}
             >
               <h1 className={"text-4xl font-extrabold"}>
-                Candy {order.candyType} -{" "}
+              {order.name} 
                 <span className={"text-muted-foreground font-normal"}>
-                  #{order.orderId}
+                  #1
                 </span>
               </h1>
 
               <div className={"!mt-0"}>
-                <h1 className={"text-xl font-extrabold"}>Estimated time:</h1>
-                <text
+                {/* <h1 className={"text-xl font-extrabold"}>Estimated time:</h1> */}
+                {/* <text
                   className={"text-red-500 text-lg tracking-wide font-semibold"}
                 >
                   8h 20m
-                </text>
+                </text> */}
               </div>
             </CardHeader>
 
             <CardContent className={"flex flex-col gap-4"}>
-              <h2 className={"text-xl font-semibold text-muted-foreground"}>
+              {/* <h2 className={"text-xl font-semibold text-muted-foreground"}>
                 Production Line: {order.productionLine}
-              </h2>
+              </h2> */}
             </CardContent>
           </Card>
 
@@ -84,17 +107,17 @@ const ProductionOrderDetailsPage = ({
                   <TableRow>
                     <TableHead className={"w-1/2"}>Ingredients</TableHead>
                     <TableHead>Required Quantity</TableHead>
-                    <TableHead>Current Quantity</TableHead>
+                    {/* <TableHead>Current Quantity</TableHead> */}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {dummyIngredientsData.map((data, index) => (
+                  {order.ingredients.map((data, index) => (
                     <TableRow key={index}>
                       <TableCell className="font-medium">
-                        {data.ingredient}
+                        {data}
                       </TableCell>
-                      <TableCell>{data.requiredQuantity}</TableCell>
-                      <TableCell>{data.currentQuantity}</TableCell>
+                      <TableCell>{JSON.parse(order.quantity_ingredient)[index]}</TableCell>
+                      {/* <TableCell>{data.currentQuantity}</TableCell> */}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -107,61 +130,16 @@ const ProductionOrderDetailsPage = ({
             collapsible
             className={"flex flex-col gap-4 !p-0"}
           >
-            {/* STAGE 1 */}
-            <Card>
-              <AccordionItem value="item-1" className={"border-0 px-6"}>
-                <AccordionTrigger>
-                  <CardHeader className={"px-0 py-0 text-start"}>
-                    <h2 className={"text-2xl font-bold"}>Stage 1</h2>
-                    <h2
-                      className={"text-xl font-semibold text-muted-foreground"}
-                    >
-                      Ingredient Mixing
-                    </h2>
-                  </CardHeader>
-                </AccordionTrigger>
-
-                <AccordionContent asChild>
-                  <CardContent className={"p-0"}>
-                    Yes. It adheres to the WAI-ARIA design pattern.
-                  </CardContent>
-                </AccordionContent>
-              </AccordionItem>
-            </Card>
-
-            {/* STAGE 2 */}
-            <Card>
-              <AccordionItem value="item-2" className={"border-0 px-6"}>
-                <AccordionTrigger>
-                  <CardHeader className={"px-0 py-0 text-start"}>
-                    <h2 className={"text-2xl font-bold"}>Stage 2</h2>
-                    <h2
-                      className={"text-xl font-semibold text-muted-foreground"}
-                    >
-                      Cooking Mixture
-                    </h2>
-                  </CardHeader>
-                </AccordionTrigger>
-
-                <AccordionContent asChild>
-                  <CardContent className={"p-0"}>
-                    Yes. It adheres to the WAI-ARIA design pattern.
-                  </CardContent>
-                </AccordionContent>
-              </AccordionItem>
-            </Card>
-
-            {/* STAGE 3 */}
             <Card>
               <AccordionItem value="item-3" className={"border-0 px-6"}>
                 <AccordionTrigger>
                   <CardHeader className={"px-0 py-0 text-start"}>
-                    <h2 className={"text-2xl font-bold"}>Stage 3</h2>
-                    <h2
+                    <h2 className={"text-2xl font-bold"}>Mixing Mixture</h2>
+                    {/* <h2
                       className={"text-xl font-semibold text-muted-foreground"}
                     >
-                      Cooling Mixture
-                    </h2>
+                      Mixing Mixture
+                    </h2> */}
                   </CardHeader>
                 </AccordionTrigger>
 
@@ -184,24 +162,16 @@ const ProductionOrderDetailsPage = ({
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        <TableRow>
-                          <TableCell>Setting 1</TableCell>
+                        
+                        {order.mixer_settings.map((setting, i) => {
+                        return(<TableRow>
+                          <TableCell>{setting}</TableCell>
                           <TableCell>
-                            <Input type={"number"} />
+                            {`${JSON.parse(order.quantity_mixer_settings)[i]}`}
                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>Setting 1</TableCell>
-                          <TableCell>
-                            <Input type={"number"} />
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>Setting 1</TableCell>
-                          <TableCell>
-                            <Input type={"number"} />
-                          </TableCell>
-                        </TableRow>
+                        </TableRow>)  
+                        })}
+            
                       </TableBody>
                     </Table>
                   </CardContent>
@@ -209,49 +179,104 @@ const ProductionOrderDetailsPage = ({
               </AccordionItem>
             </Card>
 
-            {/* STAGE 4 */}
             <Card>
-              <AccordionItem value="item-4" className={"border-0 px-6"}>
+              <AccordionItem value="item-3" className={"border-0 px-6"}>
                 <AccordionTrigger>
                   <CardHeader className={"px-0 py-0 text-start"}>
-                    <h2 className={"text-2xl font-bold"}>Stage 4</h2>
-                    <h2
+                    <h2 className={"text-2xl font-bold"}>Cooking Mixture</h2>
+                    {/* <h2
                       className={"text-xl font-semibold text-muted-foreground"}
                     >
-                      Shaping Candies
-                    </h2>
+                      Cooking Mixture
+                    </h2> */}
                   </CardHeader>
                 </AccordionTrigger>
 
                 <AccordionContent asChild>
                   <CardContent className={"p-0"}>
-                    Yes. It adheres to the WAI-ARIA design pattern.
+                    <div className={"flex flex-row gap-2 items-center"}>
+                      <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
+                      <div
+                        className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
+                      >
+                        <text>Required</text>
+                      </div>
+                    </div>
+
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Setting</TableHead>
+                          <TableHead>Value</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        
+                        {order.cooker_settings.map((setting, i) => {
+                        return(<TableRow>
+                          <TableCell>{setting}</TableCell>
+                          <TableCell>
+                            {`${JSON.parse(order.quantity_cooker_settings)[i]}`}
+                          </TableCell>
+                        </TableRow>)  
+                        })}
+            
+                      </TableBody>
+                    </Table>
                   </CardContent>
                 </AccordionContent>
               </AccordionItem>
             </Card>
 
-            {/* STAGE 5 */}
             <Card>
-              <AccordionItem value="item-5" className={"border-0 px-6"}>
+              <AccordionItem value="item-3" className={"border-0 px-6"}>
                 <AccordionTrigger>
                   <CardHeader className={"px-0 py-0 text-start"}>
-                    <h2 className={"text-2xl font-bold"}>Stage 5</h2>
-                    <h2
+                    <h2 className={"text-2xl font-bold"}>Extruder Mixture</h2>
+                    {/* <h2
                       className={"text-xl font-semibold text-muted-foreground"}
                     >
-                      Packing Candies
-                    </h2>
+                      Extruder Mixture
+                    </h2> */}
                   </CardHeader>
                 </AccordionTrigger>
 
                 <AccordionContent asChild>
                   <CardContent className={"p-0"}>
-                    Yes. It adheres to the WAI-ARIA design pattern.
+                    <div className={"flex flex-row gap-2 items-center"}>
+                      <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
+                      <div
+                        className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
+                      >
+                        <text>Required</text>
+                      </div>
+                    </div>
+
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Setting</TableHead>
+                          <TableHead>Value</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        
+                        {/* {order.extruder_settings.map((setting, i) => {
+                        return(<TableRow>
+                          <TableCell>{setting}</TableCell>
+                          <TableCell>
+                            {`${JSON.parse(order.quantity_extruder_settings)[i]}`}
+                          </TableCell>
+                        </TableRow>)  
+                        })}
+             */}
+                      </TableBody>
+                    </Table>
                   </CardContent>
                 </AccordionContent>
               </AccordionItem>
             </Card>
+
           </Accordion>
         </>
       )}
@@ -260,3 +285,58 @@ const ProductionOrderDetailsPage = ({
 };
 
 export default ProductionOrderDetailsPage;
+
+
+
+
+
+
+
+
+
+
+
+
+            // {/* STAGE 1 */}
+            // <Card>
+            //   <AccordionItem value="item-1" className={"border-0 px-6"}>
+            //     <AccordionTrigger>
+            //       <CardHeader className={"px-0 py-0 text-start"}>
+            //         <h2 className={"text-2xl font-bold"}>Stage 1</h2>
+            //         <h2
+            //           className={"text-xl font-semibold text-muted-foreground"}
+            //         >
+            //           Ingredient Mixing
+            //         </h2>
+            //       </CardHeader>
+            //     </AccordionTrigger>
+
+            //     <AccordionContent asChild>
+            //       <CardContent className={"p-0"}>
+            //         Yes. It adheres to the WAI-ARIA design pattern.
+            //       </CardContent>
+            //     </AccordionContent>
+            //   </AccordionItem>
+            // </Card>
+
+            // {/* STAGE 2 */}
+            // <Card>
+            //   <AccordionItem value="item-2" className={"border-0 px-6"}>
+            //     <AccordionTrigger>
+            //       <CardHeader className={"px-0 py-0 text-start"}>
+            //         <h2 className={"text-2xl font-bold"}>Stage 2</h2>
+            //         <h2
+            //           className={"text-xl font-semibold text-muted-foreground"}
+            //         >
+            //           Cooking Mixture
+            //         </h2>
+            //       </CardHeader>
+            //     </AccordionTrigger>
+
+            //     <AccordionContent asChild>
+            //       <CardContent className={"p-0"}>
+            //         Yes. It adheres to the WAI-ARIA design pattern.
+            //       </CardContent>
+            //     </AccordionContent>
+            //   </AccordionItem>
+            // </Card>
