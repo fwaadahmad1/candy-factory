@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const assemblyLineSlice = createApi({
-  reducerPath: "candyType",
+  reducerPath: "assemblyLine",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://127.0.0.1:8000",
   }),
@@ -32,4 +32,4 @@ export const {
   useGetAssemblyLineQuery,
 } = assemblyLineSlice;
 
-export const candyTypeReducer = assemblyLineSlice.reducer;
+export const assemblyLineReducer = assemblyLineSlice.reducer;
