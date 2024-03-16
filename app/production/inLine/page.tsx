@@ -23,7 +23,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { dummyinLineData } from "./dummyInLineData";
 import { useGetAssemblyLineQuery } from "@/features/ApiSlice/assemblyLineSlice";
-import router from "next/router";
 
 type assemblyLineSchema = {
   name: string,
@@ -62,7 +61,7 @@ const PendingOrdersPage = () => {
               </TableHeader>
               <TableBody>
                 {assemblyLineData?.map((data, index) => (
-                  <TableRow key={index} onClick={() => router.push(`/production/inLine/orderDetails`)}>
+                  <TableRow key={index}>
                     <TableCell className="w-[150px]">{index + 1}</TableCell>
                     {/* <TableCell className="w-[150px]">{data.orderId}</TableCell> */}
                     <TableCell className="w-[150px]">{data.name}</TableCell>
