@@ -94,7 +94,7 @@ const ProductsInLinePage = () => {
             </TableHeader>
             <TableBody>
               {pen.map((order, index) => (
-                <TableRow key={index} onClick={() => router.push(`/production/pendingOrders/orderDetails?orderId=${order.id}`)}>
+                <TableRow key={index} onClick={() => router.push(`/production/pendingOrders/orderDetails?candyName=${order.candyName}`)}>
                   <TableCell className="font-medium">{order.id}</TableCell>
                   <TableCell>{order.candyName}</TableCell>
                   <TableCell>{order.qty}</TableCell>
