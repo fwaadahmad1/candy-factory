@@ -56,6 +56,7 @@ function Page() {
   const order: candyTypeData | undefined = orderDetails.find((order) => {
     return order.name == search ?? "";
   });
+  console.log(order)
   return (
     <div
       className={
