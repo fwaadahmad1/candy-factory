@@ -1,3 +1,4 @@
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const assemblyLineSlice = createApi({
@@ -11,25 +12,47 @@ export const assemblyLineSlice = createApi({
       query: () => "/assembly_line",
       providesTags: [{ type: "AssemblyLine", id: "assemblyLine" }],
     }),
-    addAssemblyLine: builder.mutation({
-        query: (candyData) => {
-          console.log(candyData);
-          return {
-            url: "/assembly_line",
-            method: "POST",
-            body: candyData,
-          };
-        },
-        invalidatesTags: [
-          { type: "AssemblyLine", id: "assemblyLine" },
-        ],
-      }),
+    getAssemblyLineSuggestions: builder.query({
+      query: ({candyName}) => `/assembly_line/suggestion/${candyName}`,
+      providesTags: [{ type: "AssemblyLine", id: "assemblyLineSuggestion" }],
+    }),
+    addCandyToAssemblyLine: builder.mutation({
+      query: ({assemblyLine , candyType}) => {
+        console.log(assemblyLine , candyType);
+        return {
+          url: `/assembly_line/start/${assemblyLine}/${candyType}`,
+          method: "PUT",
+          body: {},
+        };
+      },
+      invalidatesTags: [
+        { type: "AssemblyLine", id: "assemblyLine" },
+        { type: "AssemblyLine", id: "assemblyLineSuggestion" }
+      ],
+    }),
+    addStopAssemblyLine: builder.mutation({
+      query: (assemblyLine) => {
+        
+        return {
+          url: `/assembly_line/stop/${assemblyLine}`,
+          method: "PUT",
+          body: {},
+        };
+        
+      },
+      invalidatesTags: [
+        { type: "AssemblyLine", id: "assemblyLine" },
+        { type: "AssemblyLine", id: "assemblyLineSuggestion" }
+      ],
+    }),
   }),
 });
 
 export const {
-  useAddAssemblyLineMutation,
   useGetAssemblyLineQuery,
+  useGetAssemblyLineSuggestionsQuery,
+  useAddCandyToAssemblyLineMutation,
+  useAddStopAssemblyLineMutation
 } = assemblyLineSlice;
 
 export const assemblyLineReducer = assemblyLineSlice.reducer;

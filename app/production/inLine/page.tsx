@@ -22,7 +22,8 @@ import {
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
 import { dummyinLineData } from "./dummyInLineData";
-import { useGetAssemblyLineQuery } from "@/features/ApiSlice/assemblyLineSlice";
+import { useAddStopAssemblyLineMutation, useGetAssemblyLineQuery } from "@/features/ApiSlice/assemblyLineSlice";
+import { cn } from "@/lib/utils";
 
 type assemblyLineSchema = {
   name: string,
@@ -36,6 +37,8 @@ type assemblyLineSchema = {
 const PendingOrdersPage = () => {
   const {data} = useGetAssemblyLineQuery({});
   const assemblyLineData : assemblyLineSchema[] = data;
+  const [stopAssemblyLine] = useAddStopAssemblyLineMutation({});
+  console.log(assemblyLineData);
     return (
         <div className={"flex flex-col w-full gap-2"}>
         <Card className={"w-full"}>
@@ -62,11 +65,26 @@ const PendingOrdersPage = () => {
               <TableBody>
                 {assemblyLineData?.map((data, index) => (
                   <TableRow key={index}>
-                    <TableCell className="w-[150px]">{index + 1}</TableCell>
-                    {/* <TableCell className="w-[150px]">{data.orderId}</TableCell> */}
                     <TableCell className="w-[150px]">{data.name}</TableCell>
+                    {/* <TableCell className="w-[150px]">{data.orderId}</TableCell> */}
+                    <TableCell className="w-[150px]">{data.candy ? data.candy : "No candy"}</TableCell>
+                    <TableCell onClick={
+                      () => {
+                        console.log(`l${data.name.trim()}l`, 'clicked');
+                        stopAssemblyLine(data.name)
+                      }
+                    }>
+                    <div
+                      className={cn(
+                        "max-w-max px-4 py-0.5 text-white rounded-sm", "bg-red-500",
+                      )}
+                    >
+                      STOP
+                    </div>
+                    </TableCell>
                     <TableCell>
                     <ArrowRight strokeWidth={1} className={"text-secondary"} />
+                    
                   </TableCell>
                     {/* <TableCell className="w-[150px]">{data.timeRemaining}</TableCell> */}
                   </TableRow>
