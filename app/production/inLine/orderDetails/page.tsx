@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -34,16 +34,21 @@ type candyTypeData = {
 };
 
 const ProductionOrderDetailsPage = () => {
+  return (
+    <Suspense>
+      <Page />
+    </Suspense>
+  );
+};
+
+function Page() {
   const { data } = useGetCandyTypeQuery({});
   const orderDetails: candyTypeData[] = data ?? [];
-  console.log(orderDetails);
   const searchParams2 = useSearchParams();
   const search = searchParams2.get("candyName");
-  console.log(search);
   const order: candyTypeData | undefined = orderDetails.find((order) => {
-    return order.name == search;
+    return order.name == search ?? "";
   });
-  console.log(order);
   return (
     <div
       className={
@@ -269,7 +274,7 @@ const ProductionOrderDetailsPage = () => {
       )}
     </div>
   );
-};
+}
 
 export default ProductionOrderDetailsPage;
 
