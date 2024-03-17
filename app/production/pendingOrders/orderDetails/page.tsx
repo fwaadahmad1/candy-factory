@@ -29,7 +29,7 @@ type candyTypeData = {
   name : string,
   ingredients : string[],
   quantity_ingredient : string,
- // total_time: number,
+  total_time: number,
   mixer_settings: string[],
   cooker_settings:string[],
   extruder_settings:string[],
@@ -39,6 +39,12 @@ type candyTypeData = {
   quantity_extruder_settings: string,
   quantity_packaging_settings: string,
 
+}
+
+const toHoursAndMinutes = (totalMinutes : number) => {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours}h${minutes}min`;
 }
 
 const ProductionOrderDetailsPage = () => {
@@ -73,7 +79,7 @@ const ProductionOrderDetailsPage = () => {
               className={"flex flex-row justify-between items-start pb-0"}
             >
               <h1 className={"text-4xl font-extrabold"}>
-              {order.name} 
+              {order.name.toUpperCase()} 
                 <span className={"text-muted-foreground font-normal"}>
                   #1
                 </span>
@@ -81,11 +87,11 @@ const ProductionOrderDetailsPage = () => {
 
               <div className={"!mt-0"}>
                 {/* <h1 className={"text-xl font-extrabold"}>Estimated time:</h1> */}
-                {/* <text
+                <text
                   className={"text-red-500 text-lg tracking-wide font-semibold"}
                 >
-                  8h 20m
-                </text> */}
+                  {toHoursAndMinutes(order.total_time)}
+                </text>
               </div>
             </CardHeader>
 
@@ -261,7 +267,7 @@ const ProductionOrderDetailsPage = () => {
                       </TableHeader>
                       <TableBody>
                         
-                        {/* {order.extruder_settings.map((setting, i) => {
+                        {order.extruder_settings.map((setting, i) => {
                         return(<TableRow>
                           <TableCell>{setting}</TableCell>
                           <TableCell>
@@ -269,7 +275,7 @@ const ProductionOrderDetailsPage = () => {
                           </TableCell>
                         </TableRow>)  
                         })}
-             */}
+            
                       </TableBody>
                     </Table>
                   </CardContent>
@@ -277,6 +283,54 @@ const ProductionOrderDetailsPage = () => {
               </AccordionItem>
             </Card>
 
+            <Card>
+              <AccordionItem value="item-3" className={"border-0 px-6"}>
+                <AccordionTrigger>
+                  <CardHeader className={"px-0 py-0 text-start"}>
+                    <h2 className={"text-2xl font-bold"}>Packaging Settings</h2>
+                    {/* <h2
+                      className={"text-xl font-semibold text-muted-foreground"}
+                    >
+                      Extruder Mixture
+                    </h2> */}
+                  </CardHeader>
+                </AccordionTrigger>
+
+                <AccordionContent asChild>
+                  <CardContent className={"p-0"}>
+                    <div className={"flex flex-row gap-2 items-center"}>
+                      <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
+                      <div
+                        className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
+                      >
+                        <text>Required</text>
+                      </div>
+                    </div>
+
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Setting</TableHead>
+                          <TableHead>Value</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        
+                        {order.packaging_settings.map((setting, i) => {
+                        return(<TableRow>
+                          <TableCell>{setting}</TableCell>
+                          <TableCell>
+                            {`${JSON.parse(order.quantity_packaging_settings)[i]}`}
+                          </TableCell>
+                        </TableRow>)  
+                        })}
+            
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </AccordionContent>
+              </AccordionItem>
+            </Card>
           </Accordion>
         </>
       )}

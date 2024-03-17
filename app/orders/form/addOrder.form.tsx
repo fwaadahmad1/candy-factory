@@ -34,6 +34,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { forwardRef, useImperativeHandle } from "react";
+import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 
 export type AddOrderFormHandle = {
   submit: () => void;
@@ -72,6 +73,15 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
       [form, onSubmit],
     );
 
+    const {data} = useGetCandyTypeQuery({})
+    const candyType = data;
+
+    let candyName : string[] = []; // Use this for drop down
+    candyType?.forEach((candy : any , i : number) => {
+      candyName[i] = candy.name
+    });
+
+    console.log(candyName)
     return (
       <Form {...form}>
         <form

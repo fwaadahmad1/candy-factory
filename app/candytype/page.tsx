@@ -41,6 +41,8 @@ const CandyTypePage = () => {
 
       <Card className={"w-full h-full"}>
         <CardContent className={"p-2"}>
+        
+
           <Table className={"h-full w-full"}>
             <TableHeader>
               <TableRow>

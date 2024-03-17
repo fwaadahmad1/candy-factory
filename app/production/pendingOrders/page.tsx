@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/pagination";
 import {useRouter} from "next/navigation";
 import { useGetOrdersQuery } from "@/features/ApiSlice/orderSlice";
+import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 
 type OrderData = {
   id:number,
@@ -62,8 +63,9 @@ const convertTopending = (data : OrderData[]) => {
 }
 const ProductsInLinePage = () => {
 
-  const { data, isLoading, error } = useGetOrdersQuery({});
-  const pendingOrders: OrderData[] = data;
+  const { data: orderData, isLoading, error } = useGetOrdersQuery({});
+  const {data : candyData} = useGetCandyTypeQuery({});
+  const pendingOrders: OrderData[] = orderData;
   const pen : pendingOrderSchema[] = convertTopending(pendingOrders);
   console.log( pen)
   const router = useRouter();
@@ -99,7 +101,7 @@ const ProductsInLinePage = () => {
                   <TableCell>{order.candyName}</TableCell>
                   <TableCell>{order.qty}</TableCell>
                   <TableCell>{`${order.due_date}`}</TableCell>
-                  {/* <TableCell>{order.estTime}</TableCell> */}
+                  <TableCell>{candyData?.find((candy : any) => candy.name === order.candyName).total_time}</TableCell>
                   {/* <TableCell>{order.productionLine}</TableCell> */}
                   <TableCell>
                     <ArrowRight strokeWidth={1} className={"text-secondary"} />

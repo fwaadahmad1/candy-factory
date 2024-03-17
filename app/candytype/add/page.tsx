@@ -81,7 +81,7 @@ const AddCandyType = () => {
         const configSetting: String[] = [];
         const quantitiesConfigSetting: number[] = [];
         stageForms[i].conf_item.forEach((item, i) => {
-          if(item.conf_name === 'time'){
+          if(item.conf_name === 'estimated time'){
             totalTime +=Number(item.conf_setting);
             console.log(totalTime,item.conf_name,item.conf_setting )
           }
@@ -105,7 +105,7 @@ const AddCandyType = () => {
         name : candyForm.candyName,
         ingredients : ingredientName,
         quantity_ingredient : JSON.stringify(ingQty),
-        total_time:totalTime + 0.0,
+        total_time:totalTime,
         ...stageObj
       }
       addCandyType(candyData);

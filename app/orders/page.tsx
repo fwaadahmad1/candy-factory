@@ -173,7 +173,15 @@ const OrdersPage = () => {
                       
                       {orderDetailsDialog?.map((item, index) => {
                         return (
-                          <TableRow key={index}>
+                          <TableRow key={index}                        
+                            onClick={() =>
+                              setOrderDetailsDialog(
+                                data.candies && data.candies.length > 0
+                                  ? data.candies
+                                  : undefined,
+                              )
+                            }
+                          >
                             <TableCell>{item.candyType}</TableCell>
                             <TableCell>{item.quantity}</TableCell>
                           </TableRow>
