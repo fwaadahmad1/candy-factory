@@ -25,7 +25,7 @@ type candyTypeData = {
     name : string,
     ingredients : string[],
     quantity_ingredient : string,
-   // total_time: number,
+    total_time: number,
     mixer_settings: string[],
     cooker_settings:string[],
     extruder_settings:string[],
@@ -36,12 +36,20 @@ type candyTypeData = {
     quantity_packaging_settings: string,
   
 }
+
+// type addSettings = {
+//   mixer_settings: string[],
+//     cooker_settings:string[],
+//     extruder_settings:string[],
+//     packaging_settings:string[],
+// }
 const AddCandyType = () => {
   const [stageForms, setStageForms] = useState<
     Array<Omit<z.infer<typeof addStageSchema>, "conf_name" | "conf_setting">>
   >([]);
 
-  const [addCandy] = useAddCandyTypeMutation({});
+  const [addCandyType] = useAddCandyTypeMutation({});
+  // const[addAddSettings] = useAddCandyTypeMutation({})
   const stageFormRefs = useRef<Array<AddStageFormHandle | null>>([]);
   const candyFormRef = useRef<AddCandyFormHandle>(null);
   const [candyForm, setCandyForm] = useState<
@@ -53,41 +61,54 @@ const AddCandyType = () => {
   useEffect(() => {
     if (!hasErrors && candyForm.candyName) {
       const ingredientName: string[] = [];
-        const ingQty: string[] = [];
+        const ingQty: number[] = [];
         candyForm.ingredientItem.forEach((item, i) => {
           ingredientName[i] = item.ingredient;
         });
         candyForm.ingredientItem.forEach((item, i) => {
-          ingQty[i] = item.quantity;
+          ingQty[i] = Number(item.quantity);
         });
       // API call for submit goes here
       // console.log(ingredientName,ingQty);
 
       
       const stageObj :any = {}
+      //const addSettingsObj : any ={}
+      let totalTime : number = 0.0 ;
       
       
       for(let i =0 ; i< (stageForms.length) ; i++){
         const configSetting: String[] = [];
-        const quantitiesConfigSetting: string[] = [];
+        const quantitiesConfigSetting: number[] = [];
         stageForms[i].conf_item.forEach((item, i) => {
+          if(item.conf_name === 'time'){
+            totalTime +=Number(item.conf_setting);
+            console.log(totalTime,item.conf_name,item.conf_setting )
+          }
           configSetting[i] = item.conf_name;
           
         });
         stageForms[i].conf_item.forEach((item, i) => {
-          quantitiesConfigSetting[i] = item.conf_setting;
+          quantitiesConfigSetting[i] = Number(item.conf_setting);
         });
+        
         stageObj[stageForms[i].name] = configSetting;
+        //addSettingsObj[stageForms[i].name] = configSetting;
         stageObj[`quantity_${stageForms[i].name}`] = JSON.stringify(quantitiesConfigSetting);
       }
       // console.log(stageObj)
+      //console.log(addSettingsObj);
+    //   for (const entry of addSettingsObj) {
+    //     console.log(entry)
+    // }
       const candyData : candyTypeData = {
         name : candyForm.candyName,
         ingredients : ingredientName,
         quantity_ingredient : JSON.stringify(ingQty),
+        total_time:totalTime + 0.0,
         ...stageObj
       }
-      addCandy(candyData);
+      addCandyType(candyData);
     }
   }, [candyForm, hasErrors, stageForms]);
 

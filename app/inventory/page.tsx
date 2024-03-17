@@ -21,7 +21,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
-import { useGetIngredientQuery } from "@/features/ApiSlice/ingredientSlice";
+import { useAddIngredientMutation, useGetIngredientQuery } from "@/features/ApiSlice/ingredientSlice";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
@@ -41,8 +41,14 @@ type ingredientSchema = {
   need_to_refill: boolean;
   reorder_level: number;
 };
+type ingredientAddSchema = {
+  name: String;
+  current_quantity: number;
+  reorder_level: number;
+};
 const InventoryPage = () => {
   const { data } = useGetIngredientQuery({});
+  const [addInventory] = useAddIngredientMutation({});
   const ingredientsData: ingredientSchema[] = data;
 
   const addInventoryFormRef = useRef<AddInventoryFormHandle | null>(null);
@@ -74,8 +80,13 @@ const InventoryPage = () => {
               <AddInventoryForm
                 ref={addInventoryFormRef}
                 onSubmit={(values) => {
+                  const ingredientData : ingredientAddSchema = {
+                    name : values.ingredient,
+                    current_quantity : values.quantity,
+                    reorder_level : 5000,
+                  }
+                  addInventory(ingredientData);
                   setAddInventoryDialog(false);
-                  console.log(values)
                 }}
               />
               <DialogFooter>
@@ -122,12 +133,12 @@ const InventoryPage = () => {
                     <div
                       className={cn(
                         "max-w-max px-4 py-0.5 text-white rounded-sm",
-                        ingredient.need_to_refill
+                        ingredient.current_quantity > ingredient.reorder_level
                           ? "bg-green-500"
                           : "bg-red-500",
                       )}
                     >
-                      {ingredient.need_to_refill ? "Not Required" : "Required"}
+                      {ingredient.current_quantity > ingredient.reorder_level ? "Not Required" : "Required"}
                     </div>
                   </TableCell>
                 </TableRow>

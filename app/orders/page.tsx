@@ -238,7 +238,7 @@ const OrdersPage = () => {
         </CardContent>
 
         <CardFooter>
-          <Pagination>
+          {/* <Pagination>
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious href="#" />
@@ -261,7 +261,7 @@ const OrdersPage = () => {
                 <PaginationNext href="#" />
               </PaginationItem>
             </PaginationContent>
-          </Pagination>
+          </Pagination> */}
         </CardFooter>
       </Card>
     </div>
