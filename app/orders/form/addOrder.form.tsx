@@ -21,10 +21,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { capitalize, cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { CalendarIcon, Plus } from "lucide-react";
+import { CalendarIcon, Check, ChevronsUpDown, Plus } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -33,8 +33,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 
 export type AddOrderFormHandle = {
   submit: () => void;
@@ -48,6 +56,9 @@ export type AddOrderFormProps = {
 
 const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
   function AddOrderForm({ onSubmit }, ref) {
+    const [open, setOpen] = useState(true);
+    // const [value, setValue] = useState("");
+
     const form = useForm<z.infer<typeof addOrderSchema>>({
       resolver: zodResolver(addOrderSchema),
       defaultValues: {
@@ -73,15 +84,42 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
       [form, onSubmit],
     );
 
-    const {data} = useGetCandyTypeQuery({})
-    const candyType = data;
+    const { data } = useGetCandyTypeQuery({});
 
-    let candyName : string[] = []; // Use this for drop down
-    candyType?.forEach((candy : any , i : number) => {
-      candyName[i] = candy.name
-    });
+    let candyNameOptions: Array<{ value: string; label: string }> =
+      useMemo(() => {
+        return (
+          [
+            ...(data ? data : []),
+            ...[
+              {
+                name: "candy a",
+              },
+              {
+                name: "candy b",
+              },
+              {
+                name: "candy c",
+              },
+              {
+                name: "candy d",
+              },
+            ],
+          ] as Array<{ name: string }>
+        )?.reduce(
+          (a, v) => {
+            return v?.name
+              ? [
+                  ...a,
+                  { value: v.name.toLowerCase(), label: capitalize(v.name) },
+                ]
+              : a;
+          },
+          [] as Array<{ value: string; label: string }>,
+        );
+      }, [data]); // Use this for drop down
 
-    console.log(candyName)
+    console.log(candyNameOptions);
     return (
       <Form {...form}>
         <form
@@ -150,10 +188,64 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
             control={form.control}
             name="candyType"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Candy Type</FormLabel>
+              <FormItem className={"flex flex-col justify-between"}>
+                <FormLabel className={"mt-1.5"}>Candy Type</FormLabel>
                 <FormControl>
-                  <Input placeholder="Type of Candy" {...field} />
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="justify-between"
+                      >
+                        {field.value
+                          ? candyNameOptions?.find(
+                              (candyName) => candyName.value === field.value,
+                            )?.label
+                          : "Select Candy Type..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandList>
+                          <CommandInput placeholder="Search candy type..." />
+                          <CommandEmpty>No Candy Types found.</CommandEmpty>
+                          <CommandGroup>
+                            {candyNameOptions?.map((candyName) => {
+                              return candyName?.value ? (
+                                <CommandItem
+                                  key={candyName.value}
+                                  value={candyName.value}
+                                  onSelect={(currentValue) => {
+                                    field.onChange(
+                                      currentValue === field.value
+                                        ? ""
+                                        : currentValue,
+                                    );
+                                    setOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      field.value === candyName.value
+                                        ? "opacity-100"
+                                        : "opacity-0",
+                                    )}
+                                  />
+                                  {candyName.label}
+                                </CommandItem>
+                              ) : (
+                                <></>
+                              );
+                            })}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </FormControl>
                 <FormMessage />
               </FormItem>
