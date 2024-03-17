@@ -1,5 +1,5 @@
 "use client";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Search } from "lucide-react";
 import {
@@ -10,22 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { dummyProductionInLineData } from "@/app/production/pendingOrders/dummyProductionInLineData";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useGetOrdersQuery } from "@/features/ApiSlice/orderSlice";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 
 type OrderData = {
-  id:number,
+  id: number;
   due_date: String;
   date: String;
   dueDate: String;
@@ -36,9 +26,9 @@ type OrderData = {
 };
 
 type pendingOrderSchema = {
-  candyName: string,
-  qty: string,
-  id:number,
+  candyName: string;
+  qty: string;
+  id: number;
   due_date: String;
   date: String;
   dueDate: String;
@@ -46,25 +36,23 @@ type pendingOrderSchema = {
   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
   candies: [];
   quantity_candies: [];
-}
+};
 
-const convertTopending = (data : OrderData[]) => {
-  const candies: any =[];
-  data?.forEach(order => {
+const convertTopending = (data: OrderData[]) => {
+  const candies: any = [];
+  data?.forEach((order) => {
     const quantity = JSON.parse(`${order.quantity_candies}`);
-    
-    order.candies.forEach(((candy,i) => {
-      const newObj = {...order, [`candyName`] : candy, [`qty`] : quantity[i]}
-      candies.push(newObj);
-    }))
-    
-  })
-  return candies;
-}
-const ProductsInLinePage = () => {
 
+    order.candies.forEach((candy, i) => {
+      const newObj = { ...order, [`candyName`]: candy, [`qty`]: quantity[i] };
+      candies.push(newObj);
+    });
+  });
+  return candies;
+};
+const ProductsInLinePage = () => {
   const { data: orderData, isLoading, error } = useGetOrdersQuery({});
-  const {data : candyData} = useGetCandyTypeQuery({});
+  const { data: candyData } = useGetCandyTypeQuery({});
   const pendingOrders: OrderData[] = orderData;
   const pen : pendingOrderSchema[] = convertTopending(pendingOrders);
   console.log( pen)
@@ -96,12 +84,25 @@ const ProductsInLinePage = () => {
             </TableHeader>
             <TableBody>
               {pen.map((order, index) => (
-                <TableRow key={index} onClick={() => router.push(`/production/pendingOrders/orderDetails?candyName=${order.candyName}`)}>
+                <TableRow
+                  key={index}
+                  onClick={() =>
+                    router.push(
+                      `/production/pendingOrders/orderDetails?candyName=${order.candyName}`,
+                    )
+                  }
+                >
                   <TableCell className="font-medium">{order.id}</TableCell>
                   <TableCell>{order.candyName}</TableCell>
                   <TableCell>{order.qty}</TableCell>
                   <TableCell>{`${order.due_date}`}</TableCell>
-                  <TableCell>{candyData?.find((candy : any) => candy.name === order.candyName).total_time}</TableCell>
+                  <TableCell>
+                    {
+                      candyData?.find(
+                        (candy: any) => candy.name === order.candyName,
+                      ).total_time
+                    }
+                  </TableCell>
                   {/* <TableCell>{order.productionLine}</TableCell> */}
                   <TableCell>
                     <ArrowRight strokeWidth={1} className={"text-secondary"} />
