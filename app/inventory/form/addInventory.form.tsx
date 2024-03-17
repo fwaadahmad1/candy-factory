@@ -18,6 +18,7 @@ export type AddInventoryFormHandle = {
 };
 
 export type AddInventoryFormProps = {
+  formData?: z.infer<typeof addInventorySchema>;
   onSubmit: (values: z.infer<typeof addInventorySchema>) => void;
   onError?: () => void;
 };
@@ -25,10 +26,10 @@ export type AddInventoryFormProps = {
 const AddInventoryForm = forwardRef<
   AddInventoryFormHandle,
   AddInventoryFormProps
->(function AddInventoryForm({ onSubmit, onError }, ref) {
+>(function AddInventoryForm({ formData, onSubmit, onError }, ref) {
   const form = useForm<z.infer<typeof addInventorySchema>>({
     resolver: zodResolver(addInventorySchema),
-    defaultValues: {
+    defaultValues: formData ?? {
       ingredient: "",
     },
   });
