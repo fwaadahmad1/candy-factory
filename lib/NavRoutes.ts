@@ -37,10 +37,10 @@ export const NavRoutes: Array<NavRoute> = [
           },
         ],
       },
-      {
-        title: "Machinery Info",
-        path: "/production/machineryInfo",
-      },
+      // {
+      //   title: "Machinery Info",
+      //   path: "/production/machineryInfo",
+      // },
     ],
   },
   {
