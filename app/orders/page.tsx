@@ -52,8 +52,8 @@ type OrderData = {
 };
 
 export type orderItemSchema = {
-  candyType: String;
-  quantity: String;
+  candyType: String[];
+  quantity: String[];
 };
 
 export type addOrderSchema = {
@@ -76,15 +76,24 @@ type orderPostSchema = {
 const OrdersPage = () => {
   const addOrderFormRef = useRef<AddOrderFormHandle>(null);
 
-  const { data, isLoading, error } = useGetOrdersQuery({});
-  const orders: OrderData[] = data;
+  const { data : orderData, isLoading, error } = useGetOrdersQuery({});
+  const orders: OrderData[] = orderData;
+  let orderItem : orderItemSchema[] = [] ;
+
+  orders?.forEach((order,i) => {
+  
+    const qty = JSON.parse(`${order.quantity_candies}`)
+    orderItem[i] = {
+      candyType : order.candies,
+      quantity : qty,
+    }
+  });
   const [addOrder,err] = useAddOrdersMutation();
   const [orderDetailsDialog, setOrderDetailsDialog] = useState<
-    Array<OrderItem> | undefined
+    Array<orderItemSchema> | undefined
   >(undefined);
   
   const [addOrderDialog, setAddOrderDialog] = useState<boolean>(false);
-  console.log((new Date()).toLocaleDateString('as-IN').replaceAll('/','-'));
   return (
     <div className={"flex flex-col w-full gap-2"}>
       <Card className={"w-full"}>
@@ -174,13 +183,13 @@ const OrdersPage = () => {
                       {orderDetailsDialog?.map((item, index) => {
                         return (
                           <TableRow key={index}                        
-                            onClick={() =>
-                              setOrderDetailsDialog(
-                                data.candies && data.candies.length > 0
-                                  ? data.candies
-                                  : undefined,
-                              )
-                            }
+                            // onClick={() =>
+                            //   setOrderDetailsDialog(
+                            //     // orderItem[index].candyType && orderItem[index].candyType.length > 0
+                            //     //   ? data.candies
+                            //     //   : undefined,
+                            //   )
+                            // }
                           >
                             <TableCell>{item.candyType}</TableCell>
                             <TableCell>{item.quantity}</TableCell>
@@ -210,13 +219,13 @@ const OrdersPage = () => {
               {orders?.map((order, index) => (
                 <TableRow
                   key={index}
-                  onClick={() =>
-                    setOrderDetailsDialog(
-                      order.candies && order.candies.length > 0
-                        ? data.candies
-                        : undefined,
-                    )
-                  }
+                  // onClick={() =>
+                  //   setOrderDetailsDialog(
+                  //     order.candies && order.candies.length > 0
+                  //       ? data.candies
+                  //       : undefined,
+                  //   )
+                  // }
                 >
                   <TableCell className="font-medium">{order.id}</TableCell>
                   <TableCell>{order.client_name}</TableCell>

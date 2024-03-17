@@ -23,6 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 type candyTypeData = {
   
@@ -332,7 +333,13 @@ const ProductionOrderDetailsPage = () => {
               </AccordionItem>
             </Card>
           </Accordion>
+          <Button variant={"secondary"} onClick={()=>{
+            ////Add order to assembly line
+          }}>
+            Add Item
+          </Button>
         </>
+        
       )}
     </div>
   );
