@@ -168,8 +168,9 @@ const OrdersPage = () => {
                         <TableHead>Quantity</TableHead>
                       </TableRow>
                     </TableHeader>
-
+                    
                     <TableBody>
+                      
                       {orderDetailsDialog?.map((item, index) => {
                         return (
                           <TableRow key={index}>
