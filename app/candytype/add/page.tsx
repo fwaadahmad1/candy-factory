@@ -110,7 +110,7 @@ const AddCandyType = () => {
       }
       addCandyType(candyData);
     }
-  }, [candyForm, hasErrors, stageForms]);
+  }, [addCandyType, candyForm, hasErrors, stageForms]);
 
   function onError() {
     setHasErrors(true);

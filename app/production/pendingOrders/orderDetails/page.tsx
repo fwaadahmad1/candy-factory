@@ -1,9 +1,5 @@
-'use client';
-import React from "react";
-import {
-  dummyProductionInLineData,
-  ProductionInLineData,
-} from "@/app/production/pendingOrders/dummyProductionInLineData";
+"use client";
+import React, { Suspense } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -13,14 +9,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { dummyIngredientsData } from "@/app/production/pendingOrders/orderDetails/dummyIngredientsData";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Input } from "@/components/ui/input";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -28,31 +22,35 @@ import { useAddCandyToAssemblyLineMutation, useGetAssemblyLineQuery, useGetAssem
 //import { useGetAssemblyLineSuggestionQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
 type candyTypeData = {
-  
-  name : string,
-  ingredients : string[],
-  quantity_ingredient : string,
-  total_time: number,
-  mixer_settings: string[],
-  cooker_settings:string[],
-  extruder_settings:string[],
-  packaging_settings:string[],
-  quantity_mixer_settings: string,
-  quantity_cooker_settings: string,
-  quantity_extruder_settings: string,
-  quantity_packaging_settings: string,
+  name: string;
+  ingredients: string[];
+  quantity_ingredient: string;
+  total_time: number;
+  mixer_settings: string[];
+  cooker_settings: string[];
+  extruder_settings: string[];
+  packaging_settings: string[];
+  quantity_mixer_settings: string;
+  quantity_cooker_settings: string;
+  quantity_extruder_settings: string;
+  quantity_packaging_settings: string;
+};
 
-}
-
-const toHoursAndMinutes = (totalMinutes : number) => {
+const toHoursAndMinutes = (totalMinutes: number) => {
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
   return `${hours}h${minutes}min`;
-}
+};
 
 const ProductionOrderDetailsPage = () => {
+  return (
+    <Suspense>
+      <Page />
+    </Suspense>
+  );
+};
 
-  
+function Page() {
   const {data} = useGetCandyTypeQuery({});
   const orderDetails : candyTypeData[]  = data ?? [];
   console.log(orderDetails);
@@ -65,9 +63,9 @@ const ProductionOrderDetailsPage = () => {
   
   const order: candyTypeData | undefined =
     orderDetails.find((order) => {
-      return order.name == search;
+      return order.name == search?? "";
     } );
-  
+  console.log(order)
   return (
     <div
       className={
@@ -88,10 +86,8 @@ const ProductionOrderDetailsPage = () => {
               className={"flex flex-row justify-between items-start pb-0"}
             >
               <h1 className={"text-4xl font-extrabold"}>
-              {order.name.toUpperCase()} 
-                <span className={"text-muted-foreground font-normal"}>
-                  #1
-                </span>
+                {order.name.toUpperCase()}
+                <span className={"text-muted-foreground font-normal"}>#1</span>
               </h1>
 
               <div className={"!mt-0"}>
@@ -128,10 +124,10 @@ const ProductionOrderDetailsPage = () => {
                 <TableBody>
                   {order.ingredients.map((data, index) => (
                     <TableRow key={index}>
-                      <TableCell className="font-medium">
-                        {data}
+                      <TableCell className="font-medium">{data}</TableCell>
+                      <TableCell>
+                        {JSON.parse(order.quantity_ingredient)[index]}
                       </TableCell>
-                      <TableCell>{JSON.parse(order.quantity_ingredient)[index]}</TableCell>
                       {/* <TableCell>{data.currentQuantity}</TableCell> */}
                     </TableRow>
                   ))}
@@ -177,16 +173,16 @@ const ProductionOrderDetailsPage = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        
                         {order.mixer_settings.map((setting, i) => {
-                        return(<TableRow>
-                          <TableCell>{setting}</TableCell>
-                          <TableCell>
-                            {`${JSON.parse(order.quantity_mixer_settings)[i]}`}
-                          </TableCell>
-                        </TableRow>)  
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>{setting}</TableCell>
+                              <TableCell>
+                                {`${JSON.parse(order.quantity_mixer_settings)[i]}`}
+                              </TableCell>
+                            </TableRow>
+                          );
                         })}
-            
                       </TableBody>
                     </Table>
                   </CardContent>
@@ -226,16 +222,16 @@ const ProductionOrderDetailsPage = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        
                         {order.cooker_settings.map((setting, i) => {
-                        return(<TableRow>
-                          <TableCell>{setting}</TableCell>
-                          <TableCell>
-                            {`${JSON.parse(order.quantity_cooker_settings)[i]}`}
-                          </TableCell>
-                        </TableRow>)  
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>{setting}</TableCell>
+                              <TableCell>
+                                {`${JSON.parse(order.quantity_cooker_settings)[i]}`}
+                              </TableCell>
+                            </TableRow>
+                          );
                         })}
-            
                       </TableBody>
                     </Table>
                   </CardContent>
@@ -275,16 +271,16 @@ const ProductionOrderDetailsPage = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        
                         {order.extruder_settings.map((setting, i) => {
-                        return(<TableRow>
-                          <TableCell>{setting}</TableCell>
-                          <TableCell>
-                            {`${JSON.parse(order.quantity_extruder_settings)[i]}`}
-                          </TableCell>
-                        </TableRow>)  
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>{setting}</TableCell>
+                              <TableCell>
+                                {`${JSON.parse(order.quantity_extruder_settings)[i]}`}
+                              </TableCell>
+                            </TableRow>
+                          );
                         })}
-            
                       </TableBody>
                     </Table>
                   </CardContent>
@@ -324,16 +320,16 @@ const ProductionOrderDetailsPage = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        
                         {order.packaging_settings.map((setting, i) => {
-                        return(<TableRow>
-                          <TableCell>{setting}</TableCell>
-                          <TableCell>
-                            {`${JSON.parse(order.quantity_packaging_settings)[i]}`}
-                          </TableCell>
-                        </TableRow>)  
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>{setting}</TableCell>
+                              <TableCell>
+                                {`${JSON.parse(order.quantity_packaging_settings)[i]}`}
+                              </TableCell>
+                            </TableRow>
+                          );
                         })}
-            
                       </TableBody>
                     </Table>
                   </CardContent>
@@ -351,68 +347,57 @@ const ProductionOrderDetailsPage = () => {
               addCandyToAssemblyLine({assemblyLine : suggestion.name, candyType : search})
             }
           }}>
-            Start Production
+            Add Item
           </Button>
         </>
-        
       )}
     </div>
   );
-};
+}
 
 export default ProductionOrderDetailsPage;
 
 
+// {/* STAGE 1 */}
+// <Card>
+//   <AccordionItem value="item-1" className={"border-0 px-6"}>
+//     <AccordionTrigger>
+//       <CardHeader className={"px-0 py-0 text-start"}>
+//         <h2 className={"text-2xl font-bold"}>Stage 1</h2>
+//         <h2
+//           className={"text-xl font-semibold text-muted-foreground"}
+//         >
+//           Ingredient Mixing
+//         </h2>
+//       </CardHeader>
+//     </AccordionTrigger>
 
+//     <AccordionContent asChild>
+//       <CardContent className={"p-0"}>
+//         Yes. It adheres to the WAI-ARIA design pattern.
+//       </CardContent>
+//     </AccordionContent>
+//   </AccordionItem>
+// </Card>
 
+// {/* STAGE 2 */}
+// <Card>
+//   <AccordionItem value="item-2" className={"border-0 px-6"}>
+//     <AccordionTrigger>
+//       <CardHeader className={"px-0 py-0 text-start"}>
+//         <h2 className={"text-2xl font-bold"}>Stage 2</h2>
+//         <h2
+//           className={"text-xl font-semibold text-muted-foreground"}
+//         >
+//           Cooking Mixture
+//         </h2>
+//       </CardHeader>
+//     </AccordionTrigger>
 
-
-
-
-
-
-
-
-            // {/* STAGE 1 */}
-            // <Card>
-            //   <AccordionItem value="item-1" className={"border-0 px-6"}>
-            //     <AccordionTrigger>
-            //       <CardHeader className={"px-0 py-0 text-start"}>
-            //         <h2 className={"text-2xl font-bold"}>Stage 1</h2>
-            //         <h2
-            //           className={"text-xl font-semibold text-muted-foreground"}
-            //         >
-            //           Ingredient Mixing
-            //         </h2>
-            //       </CardHeader>
-            //     </AccordionTrigger>
-
-            //     <AccordionContent asChild>
-            //       <CardContent className={"p-0"}>
-            //         Yes. It adheres to the WAI-ARIA design pattern.
-            //       </CardContent>
-            //     </AccordionContent>
-            //   </AccordionItem>
-            // </Card>
-
-            // {/* STAGE 2 */}
-            // <Card>
-            //   <AccordionItem value="item-2" className={"border-0 px-6"}>
-            //     <AccordionTrigger>
-            //       <CardHeader className={"px-0 py-0 text-start"}>
-            //         <h2 className={"text-2xl font-bold"}>Stage 2</h2>
-            //         <h2
-            //           className={"text-xl font-semibold text-muted-foreground"}
-            //         >
-            //           Cooking Mixture
-            //         </h2>
-            //       </CardHeader>
-            //     </AccordionTrigger>
-
-            //     <AccordionContent asChild>
-            //       <CardContent className={"p-0"}>
-            //         Yes. It adheres to the WAI-ARIA design pattern.
-            //       </CardContent>
-            //     </AccordionContent>
-            //   </AccordionItem>
-            // </Card>
+//     <AccordionContent asChild>
+//       <CardContent className={"p-0"}>
+//         Yes. It adheres to the WAI-ARIA design pattern.
+//       </CardContent>
+//     </AccordionContent>
+//   </AccordionItem>
+// </Card>
