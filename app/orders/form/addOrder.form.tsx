@@ -57,7 +57,6 @@ export type AddOrderFormProps = {
 const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
   function AddOrderForm({ onSubmit }, ref) {
     const [open, setOpen] = useState(true);
-    // const [value, setValue] = useState("");
 
     const form = useForm<z.infer<typeof addOrderSchema>>({
       resolver: zodResolver(addOrderSchema),
@@ -84,29 +83,11 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
       [form, onSubmit],
     );
 
-    const { data } = useGetCandyTypeQuery({});
+    const { data: candyTypeOptions } = useGetCandyTypeQuery({});
 
     let candyNameOptions: Array<{ value: string; label: string }> =
       useMemo(() => {
-        return (
-          [
-            ...(data ? data : []),
-            ...[
-              {
-                name: "candy a",
-              },
-              {
-                name: "candy b",
-              },
-              {
-                name: "candy c",
-              },
-              {
-                name: "candy d",
-              },
-            ],
-          ] as Array<{ name: string }>
-        )?.reduce(
+        return ((candyTypeOptions ?? []) as Array<{ name: string }>)?.reduce(
           (a, v) => {
             return v?.name
               ? [
@@ -117,7 +98,7 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
           },
           [] as Array<{ value: string; label: string }>,
         );
-      }, [data]); // Use this for drop down
+      }, [candyTypeOptions]); // Use this for drop down
 
     console.log(candyNameOptions);
     return (
