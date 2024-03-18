@@ -142,7 +142,7 @@ function Page() {
             className={"flex flex-col gap-4 !p-0"}
           >
             <Card>
-              <AccordionItem value="item-3" className={"border-0 px-6"}>
+              <AccordionItem value="item-1" className={"border-0 px-6"}>
                 <AccordionTrigger>
                   <CardHeader className={"px-0 py-0 text-start"}>
                     <h2 className={"text-2xl font-bold"}>Mixing Mixture</h2>
@@ -191,7 +191,7 @@ function Page() {
             </Card>
 
             <Card>
-              <AccordionItem value="item-3" className={"border-0 px-6"}>
+              <AccordionItem value="item-2" className={"border-0 px-6"}>
                 <AccordionTrigger>
                   <CardHeader className={"px-0 py-0 text-start"}>
                     <h2 className={"text-2xl font-bold"}>Cooking Mixture</h2>
@@ -289,7 +289,7 @@ function Page() {
             </Card>
 
             <Card>
-              <AccordionItem value="item-3" className={"border-0 px-6"}>
+              <AccordionItem value="item-4" className={"border-0 px-6"}>
                 <AccordionTrigger>
                   <CardHeader className={"px-0 py-0 text-start"}>
                     <h2 className={"text-2xl font-bold"}>Packaging Settings</h2>
