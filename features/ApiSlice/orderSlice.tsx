@@ -4,6 +4,7 @@ export const orderSlice = createApi({
   reducerPath: "orders",
   baseQuery: fetchBaseQuery({
     baseUrl: "https://15.206.80.216",
+
   }),
   tagTypes: ["Orders"],
   endpoints: (builder) => ({

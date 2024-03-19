@@ -4,6 +4,7 @@ export const ingredientSlice = createApi({
   reducerPath: "ingredient",
   baseQuery: fetchBaseQuery({
     baseUrl: "https://15.206.80.216",
+
   }),
   tagTypes: ["Ingredient"],
   endpoints: (builder) => ({
