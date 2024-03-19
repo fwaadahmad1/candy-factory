@@ -1,12 +1,10 @@
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { API_BASE_URL } from "@/constants";
 export const assemblyLineSlice = createApi({
   reducerPath: "assemblyLine",
   baseQuery: fetchBaseQuery({
-
-    baseUrl: "https://15.206.80.216",
-
+    baseUrl: API_BASE_URL,
   }),
   tagTypes: ["AssemblyLine"],
   endpoints: (builder) => ({
