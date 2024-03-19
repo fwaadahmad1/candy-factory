@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const ingredientSlice = createApi({
   reducerPath: "ingredient",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://127.0.0.1:8000",
+    baseUrl: "https://15.206.80.216",
   }),
   tagTypes: ["Ingredient"],
   endpoints: (builder) => ({

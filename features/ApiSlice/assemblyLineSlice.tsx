@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const assemblyLineSlice = createApi({
   reducerPath: "assemblyLine",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://127.0.0.1:8000",
+    baseUrl: "https://15.206.80.216",
   }),
   tagTypes: ["AssemblyLine"],
   endpoints: (builder) => ({
