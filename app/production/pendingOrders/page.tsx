@@ -29,14 +29,28 @@ type pendingOrderSchema = {
   candyName: string;
   qty: string;
   id: number;
-  due_date: String;
-  date: String;
-  dueDate: String;
+  due_date: string;
+  date: string;
+  dueDate: string;
   client_name: string;
   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
   candies: [];
   quantity_candies: [];
 };
+
+const converDate = (dateString : String) =>{
+   // Oct 23
+
+  const dateParts = dateString?.split("-");
+  let newDate = "";
+  if(dateParts){
+  newDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`
+  }
+  
+  // month is 0-based, that's why we need dataParts[1] - 1
+  var dateObject = new Date(newDate).getTime();
+  return dateObject 
+}
 
 const convertTopending = (data: OrderData[]) => {
   const candies: any = [];
@@ -48,6 +62,7 @@ const convertTopending = (data: OrderData[]) => {
       candies.push(newObj);
     });
   });
+  
   return candies;
 };
 const ProductsInLinePage = () => {
@@ -55,8 +70,19 @@ const ProductsInLinePage = () => {
   const { data: candyData } = useGetCandyTypeQuery({});
   const pendingOrders: OrderData[] = orderData;
   const pen : pendingOrderSchema[] = convertTopending(pendingOrders);
-  console.log( pen)
   const router = useRouter();
+  console.log(converDate(pen[0]?.due_date))
+  pen?.sort((a,b) => {
+    let d1 = converDate(a.due_date);
+      let d2 = converDate(b.due_date);
+    
+      if (d1 < d2) {
+        return -1;
+      } else if (d1 > d2) {
+        return 1;
+      }
+      return 0;
+  });
   return (
     <div className={"flex flex-col w-full gap-2"}>
       <Card className={"w-full"}>
@@ -78,7 +104,7 @@ const ProductsInLinePage = () => {
                 <TableHead className="w-[100px]">Qty</TableHead>
                 <TableHead>Due Date</TableHead>
                 <TableHead>Estimated Time</TableHead>
-                <TableHead>Production Line</TableHead>
+                {/* <TableHead>Production Line</TableHead> */}
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
@@ -88,7 +114,7 @@ const ProductsInLinePage = () => {
                   key={index}
                   onClick={() =>
                     router.push(
-                      `/production/pendingOrders/orderDetails?candyName=${order.candyName}`,
+                      `/production/pendingOrders/orderDetails?candyName=${order.candyName}&orderId=${order.id}`,
                     )
                   }
                 >

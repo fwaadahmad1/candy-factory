@@ -46,19 +46,27 @@ const CandyTypePage = () => {
           <Table className={"h-full w-full"}>
             <TableHeader>
               <TableRow>
-                <TableHead>Ingredient</TableHead>
+                <TableHead>Candy Type</TableHead>
                 <TableHead className={"w-2"}></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {candyData?.map((candy, index) => (
-                <TableRow key={index}>
+              {candyData ? candyData.map((candy, index) => (
+                <TableRow key={index} onClick={() =>
+                  router.push(
+                    `candytype/candyDescription?candyName=${candy.name}`,
+                  )
+                }>
                   <TableCell className="font-medium">{candy.name}</TableCell>
                   <TableCell>
                     <ArrowRight strokeWidth={1} className={"text-secondary"} />
                   </TableCell>
                 </TableRow>
-              ))}
+              )) :
+              <TableRow> 
+                <TableCell>No Data Available</TableCell>
+              </TableRow>
+              }
             </TableBody>
           </Table>
         </CardContent>

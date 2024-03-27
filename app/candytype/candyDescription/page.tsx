@@ -53,10 +53,10 @@ const ProductionOrderDetailsPage = () => {
 function Page() {
   const {data} = useGetCandyTypeQuery({});
   const orderDetails : candyTypeData[]  = data ?? [];
+  console.log(orderDetails);
   const searchParams2 = useSearchParams();
   const search = searchParams2.get('candyName');
-  const orderId = searchParams2.get('orderId');
-  console.log(orderId)
+  console.log(search)
   const {data : suggestion , isLoading,isSuccess,isError,error} = useGetAssemblyLineSuggestionsQuery({search});
   
   const [addCandyToAssemblyLine] = useAddCandyToAssemblyLineMutation({})
@@ -65,6 +65,7 @@ function Page() {
     orderDetails.find((order) => {
       return order.name == search?? "";
     } );
+  console.log(order)
   return (
     <div
       className={
@@ -86,7 +87,7 @@ function Page() {
             >
               <h1 className={"text-4xl font-extrabold"}>
                 {order.name.toUpperCase()}
-                <span className={"text-muted-foreground font-normal"}> #{orderId}</span>
+                {/* <span className={"text-muted-foreground font-normal"}>#1</span> */}
               </h1>
 
               <div className={"!mt-0"}>
@@ -155,14 +156,14 @@ function Page() {
 
                 <AccordionContent asChild>
                   <CardContent className={"p-0"}>
-                    <div className={"flex flex-row gap-2 items-center"}>
+                    {/* <div className={"flex flex-row gap-2 items-center"}>
                       <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
                       <div
                         className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
                       >
                         <text>Required</text>
                       </div>
-                    </div>
+                    </div> */}
 
                     <Table>
                       <TableHeader>
@@ -204,14 +205,14 @@ function Page() {
 
                 <AccordionContent asChild>
                   <CardContent className={"p-0"}>
-                    <div className={"flex flex-row gap-2 items-center"}>
+                    {/* <div className={"flex flex-row gap-2 items-center"}>
                       <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
                       <div
                         className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
                       >
                         <text>Required</text>
                       </div>
-                    </div>
+                    </div> */}
 
                     <Table>
                       <TableHeader>
@@ -253,14 +254,14 @@ function Page() {
 
                 <AccordionContent asChild>
                   <CardContent className={"p-0"}>
-                    <div className={"flex flex-row gap-2 items-center"}>
+                    {/* <div className={"flex flex-row gap-2 items-center"}>
                       <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
                       <div
                         className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
                       >
                         <text>Required</text>
                       </div>
-                    </div>
+                    </div> */}
 
                     <Table>
                       <TableHeader>
@@ -302,14 +303,14 @@ function Page() {
 
                 <AccordionContent asChild>
                   <CardContent className={"p-0"}>
-                    <div className={"flex flex-row gap-2 items-center"}>
+                    {/* <div className={"flex flex-row gap-2 items-center"}>
                       <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
                       <div
                         className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
                       >
                         <text>Required</text>
                       </div>
-                    </div>
+                    </div> */}
 
                     <Table>
                       <TableHeader>
@@ -343,7 +344,7 @@ function Page() {
               alert("All Assembly Line are occupied")
             }else if(isSuccess){
               console.log(suggestion.name)
-              addCandyToAssemblyLine({assemblyLine : suggestion.name, candyType : search, order: orderId})
+              addCandyToAssemblyLine({assemblyLine : suggestion.name, candyType : search})
             }
           }}>
             Add Item
