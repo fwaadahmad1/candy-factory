@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useImperativeHandle } from "react";
+import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
+import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -25,7 +25,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { useGetIngredientQuery } from "@/features/ApiSlice/ingredientSlice";
+import { capitalize, cn } from "@/lib/utils";
 
+type ingredientSchema = {
+  name: string;
+  current_quantity: number;
+  need_to_refill: boolean;
+  reorder_level: number;
+};
 export type AddCandyFormHandle = {
   submit: () => void;
 };
@@ -39,6 +49,24 @@ export type AddCandyFormProps = {
 
 const AddCandyForm = forwardRef<AddCandyFormHandle, AddCandyFormProps>(
   function AddCandyForm({ onSubmit, onError }, ref) {
+    const {data : ingredients} = useGetIngredientQuery({});
+
+    let ingredientsNameOptions: Array<{ value: string; label: string }> =
+      useMemo(() => {
+        return ((ingredients ?? []) as Array<{ name: string }>)?.reduce(
+          (a, v) => {
+            return v?.name
+              ? [
+                  ...a,
+                  { value: v.name.toLowerCase(), label: capitalize(v.name) },
+                ]
+              : a;
+          },
+          [] as Array<{ value: string; label: string }>,
+        );
+      }, [ingredients]); // Use this for drop down
+
+    const [open, setOpen] = useState(false);
     const form = useForm<z.infer<typeof addCandySchema>>({
       resolver: zodResolver(addCandySchema),
       defaultValues: {
@@ -101,7 +129,64 @@ const AddCandyForm = forwardRef<AddCandyFormHandle, AddCandyFormProps>(
               <FormItem className={"row-start-2"}>
                 <FormLabel>Ingredient</FormLabel>
                 <FormControl>
-                  <Input placeholder="Type of Ingredient" {...field} />
+                  {/* <Input placeholder="Type of Ingredient" {...field} /> */}
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="justify-between"
+                      >
+                        {field.value
+                          ? ingredientsNameOptions?.find(
+                              (ingredient) => ingredient.value === field.value,
+                            )?.label
+                          : "Select Ingredient..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandList>
+                          <CommandInput placeholder="Search candy type..." />
+                          <CommandEmpty>No Ingredients found.</CommandEmpty>
+                          <CommandGroup>
+                            {ingredientsNameOptions?.map((ingredient) => {
+                              return ingredient?.value ? (
+                                <CommandItem
+                                  key={ingredient.value}
+                                  value={ingredient.value}
+                                  onSelect={(currentValue) => {
+                                    
+                                    field.onChange(
+                                      currentValue === field.value
+                                        ? ""
+                                        : currentValue,
+                                    );
+                                    console.log(field.value);
+                                    setOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      field.value === ingredient.value
+                                        ? "opacity-100"
+                                        : "opacity-0",
+                                    )}
+                                  />
+                                  {ingredient.value}
+                                </CommandItem>
+                              ) : (
+                                <></>
+                              );
+                            })}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </FormControl>
                 <FormMessage />
               </FormItem>
