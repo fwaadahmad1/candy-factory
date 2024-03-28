@@ -72,17 +72,22 @@ const PendingOrdersPage = () => {
                     <TableCell className="w-[150px]">{data.name}</TableCell>
                     {/* <TableCell className="w-[150px]">{data.orderId}</TableCell> */}
                     <TableCell className="w-[150px]">{data.candy ? data.candy : "No candy"}</TableCell>
-                    <TableCell onClick={
-                      () => {
-                        console.log(`l${data.name.trim()}l`, 'clicked');
-                        stopAssemblyLine(data.name)
-                      }
-                    }>
+                    <TableCell >
                     {
                       data.candy ? <div
                       className={cn(
                         "max-w-max px-4 py-0.5 text-white rounded-sm", "bg-red-500",
                       )} 
+                      onClick={
+                        () => {
+                         const isTrue = window.confirm("Do you really want to stop the production");
+                         console.log(isTrue)
+                         if(isTrue){
+                           console.log(`l${data.name.trim()}l`, 'clicked');
+                         stopAssemblyLine(data.name);
+                         }
+                        }
+                      }
                     >
                       STOP
                     </div>
