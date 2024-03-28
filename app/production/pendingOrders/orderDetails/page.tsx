@@ -16,9 +16,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useAddCandyToAssemblyLineMutation, useGetAssemblyLineQuery, useGetAssemblyLineSuggestionsQuery } from "@/features/ApiSlice/assemblyLineSlice";
+
 //import { useGetAssemblyLineSuggestionQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
 type candyTypeData = {
@@ -51,6 +52,7 @@ const ProductionOrderDetailsPage = () => {
 };
 
 function Page() {
+  const router = useRouter();
   const {data} = useGetCandyTypeQuery({});
   const orderDetails : candyTypeData[]  = data ?? [];
   const searchParams2 = useSearchParams();
@@ -343,7 +345,9 @@ function Page() {
               alert("All Assembly Line are occupied")
             }else if(isSuccess){
               console.log(suggestion.name)
-              addCandyToAssemblyLine({assemblyLine : suggestion.name, candyType : search, order: orderId})
+              addCandyToAssemblyLine({assemblyLine : suggestion.name, candyType : search, order: orderId});
+              alert(`This order has been added to the production line number : ${suggestion.name}`)
+              router.push(`/production/inLine/orderDetails?candyName=${search}&orderId=${orderId}`)
             }
           }}>
             Add Item

@@ -139,14 +139,14 @@ function Page() {
 
                 <AccordionContent asChild>
                   <CardContent className={"p-0"}>
-                    <div className={"flex flex-row gap-2 items-center"}>
+                    {/* <div className={"flex flex-row gap-2 items-center"}>
                       <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
                       <div
                         className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
                       >
                         <text>Required</text>
                       </div>
-                    </div>
+                    </div> */}
 
                     <Table>
                       <TableHeader>
@@ -188,14 +188,14 @@ function Page() {
 
                 <AccordionContent asChild>
                   <CardContent className={"p-0"}>
-                    <div className={"flex flex-row gap-2 items-center"}>
+                    {/* <div className={"flex flex-row gap-2 items-center"}>
                       <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
                       <div
                         className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
                       >
                         <text>Required</text>
                       </div>
-                    </div>
+                    </div> */}
 
                     <Table>
                       <TableHeader>
@@ -237,14 +237,14 @@ function Page() {
 
                 <AccordionContent asChild>
                   <CardContent className={"p-0"}>
-                    <div className={"flex flex-row gap-2 items-center"}>
+                    {/* <div className={"flex flex-row gap-2 items-center"}>
                       <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
                       <div
                         className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
                       >
                         <text>Required</text>
                       </div>
-                    </div>
+                    </div> */}
 
                     <Table>
                       <TableHeader>
