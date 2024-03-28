@@ -30,12 +30,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { useGetIngredientQuery } from "@/features/ApiSlice/ingredientSlice";
 import { capitalize, cn } from "@/lib/utils";
 
-type ingredientSchema = {
-  name: string;
-  current_quantity: number;
-  need_to_refill: boolean;
-  reorder_level: number;
-};
+
 export type AddCandyFormHandle = {
   submit: () => void;
 };
@@ -50,6 +45,7 @@ export type AddCandyFormProps = {
 const AddCandyForm = forwardRef<AddCandyFormHandle, AddCandyFormProps>(
   function AddCandyForm({ onSubmit, onError }, ref) {
     const {data : ingredients} = useGetIngredientQuery({});
+    
 
     let ingredientsNameOptions: Array<{ value: string; label: string }> =
       useMemo(() => {
@@ -58,7 +54,7 @@ const AddCandyForm = forwardRef<AddCandyFormHandle, AddCandyFormProps>(
             return v?.name
               ? [
                   ...a,
-                  { value: v.name.toLowerCase(), label: capitalize(v.name) },
+                  { value: v.name.toLowerCase(), label: v.name.toLowerCase() },
                 ]
               : a;
           },
@@ -67,6 +63,7 @@ const AddCandyForm = forwardRef<AddCandyFormHandle, AddCandyFormProps>(
       }, [ingredients]); // Use this for drop down
 
     const [open, setOpen] = useState(false);
+   
     const form = useForm<z.infer<typeof addCandySchema>>({
       resolver: zodResolver(addCandySchema),
       defaultValues: {

@@ -22,7 +22,7 @@ type candyTypeData = {
   name: string;
   ingredients: string[];
   quantity_ingredient: string;
-  // total_time: number,
+  total_time: number,
   mixer_settings: string[];
   cooker_settings: string[];
   extruder_settings: string[];
@@ -33,6 +33,11 @@ type candyTypeData = {
   quantity_packaging_settings: string;
 };
 
+const toHoursAndMinutes = (totalMinutes: number) => {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours}h${minutes}min`;
+};
 const ProductionOrderDetailsPage = () => {
   return (
     <Suspense>
@@ -74,12 +79,12 @@ function Page() {
               </h1>
 
               <div className={"!mt-0"}>
-                {/* <h1 className={"text-xl font-extrabold"}>Estimated time:</h1> */}
-                {/* <text
+                <h1 className={"text-xl font-extrabold"}>Estimated time:</h1>
+                <text
                   className={"text-red-500 text-lg tracking-wide font-semibold"}
                 >
-                  8h 20m
-                </text> */}
+                  {toHoursAndMinutes(order.total_time)}
+                </text>
               </div>
             </CardHeader>
 
