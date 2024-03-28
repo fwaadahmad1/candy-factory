@@ -337,7 +337,7 @@ function Page() {
               </AccordionItem>
             </Card>
           </Accordion>
-          <Button variant={"secondary"} onClick={()=>{
+          {/* <Button variant={"secondary"} onClick={()=>{
             ////Add order to assembly line
             console.log('click')
             if(isError){
@@ -348,7 +348,7 @@ function Page() {
             }
           }}>
             Add Item
-          </Button>
+          </Button> */}
         </>
       )}
     </div>

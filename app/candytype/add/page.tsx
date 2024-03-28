@@ -48,7 +48,7 @@ const AddCandyType = () => {
     Array<Omit<z.infer<typeof addStageSchema>, "conf_name" | "conf_setting">>
   >([]);
 
-  const [addCandyType] = useAddCandyTypeMutation({});
+  const [addCandyType,error] = useAddCandyTypeMutation({});
   // const[addAddSettings] = useAddCandyTypeMutation({})
   const stageFormRefs = useRef<Array<AddStageFormHandle | null>>([]);
   const candyFormRef = useRef<AddCandyFormHandle>(null);
@@ -105,10 +105,15 @@ const AddCandyType = () => {
         name : candyForm.candyName,
         ingredients : ingredientName,
         quantity_ingredient : JSON.stringify(ingQty),
-        total_time:totalTime,
+        total_time:totalTime + 0.0,
         ...stageObj
       }
-      addCandyType(candyData);
+      console.log(candyData);
+      try {
+        addCandyType(candyData);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }, [addCandyType, candyForm, hasErrors, stageForms]);
 

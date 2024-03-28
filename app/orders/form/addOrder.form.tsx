@@ -43,6 +43,8 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { useGetOrdersQuery } from "@/features/ApiSlice/orderSlice";
+//import { orderItemSchema } from "../helper";
 
 export type AddOrderFormHandle = {
   submit: () => void;
@@ -53,6 +55,32 @@ export type AddOrderFormProps = {
     values: Omit<z.infer<typeof addOrderSchema>, "candyType" | "quantity">,
   ) => void;
 };
+
+type OrderData = {
+  id:number,
+  due_date: String;
+  date: String;
+  dueDate: String;
+  client_name: string;
+  status: "COMPLETED" | "PENDING" | "IN-PROCESS";
+  candies: [];
+  quantity_candies: [];
+};
+
+const converDate = (dateString : String) =>{
+  // Oct 23
+
+ const dateParts = dateString?.split("-");
+ let newDate = "";
+ if(dateParts){
+ newDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`
+ }
+ 
+ // month is 0-based, that's why we need dataParts[1] - 1
+ var dateObject = new Date(newDate).getTime();
+ return dateObject 
+}
+
 
 const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
   function AddOrderForm({ onSubmit }, ref) {
@@ -99,8 +127,18 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
           [] as Array<{ value: string; label: string }>,
         );
       }, [candyTypeOptions]); // Use this for drop down
-
-    console.log(candyNameOptions);
+      const {data : orderDetails} = useGetOrdersQuery({})
+      
+      //// USE THIS LAST ORDER'S DUE DATE lastOrder.due_data
+      const lastOrder : OrderData = orderDetails.reduce((acc : OrderData , curr : OrderData) => {
+        let date1 = converDate(curr.due_date);
+        let date2 = converDate(acc.due_date)
+        if(date1 > date2){
+          return curr
+        }
+        return acc;
+      });
+      console.log(lastOrder)
     return (
       <Form {...form}>
         <form

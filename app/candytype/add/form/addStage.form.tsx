@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useImperativeHandle } from "react";
+import React, { forwardRef, useCallback, useImperativeHandle, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
+import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -25,6 +25,9 @@ import {
   addStageSchema,
   confItemSchema,
 } from "@/app/candytype/add/form/addStage.schema";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
 
 export type AddStageFormHandle = {
   submit: () => void;
@@ -46,7 +49,55 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
         name: name ?? "",
       },
     });
+    // "mixer_settings","cooker_settings", "extruder_settings", "packaging_settings"
+// "mixer_settings": ["torque","estimated time"],
+// "cooker_settings":["temperature", "estimated time"],
+// "extruder_settings":["shaper", "estimated time"],
+// "packaging_settings":["per quantity", "estimated time"],
 
+    const stagesName : Array<{ value: string; label: string }> = [
+      {
+        value : "mixer_settings" ,
+        label: "mixer_settings",
+      },
+      {
+        value : "cooker_settings" ,
+        label: "cooker_settings",
+      },
+      {
+        value : "extruder_settings" ,
+        label: "extruder_settings",
+      },
+      {
+        value : "packaging_settings" ,
+        label: "packaging_settings",
+      }
+    ];
+    const configNames : Array<{ value: string; label: string }> = [
+      {
+        value : "torque" ,
+        label: "torque",
+      },
+      {
+        value : "temperature" ,
+        label: "temperature",
+      },
+      {
+        value : "shaper" ,
+        label: "shaper",
+      },
+      {
+        value : "packet size" ,
+        label: "packet size",
+      },
+      {
+        value : "estimated time" ,
+        label: "estimated time",
+      }
+    ];
+
+    const [open, setOpen] = useState(false);
+    const [openConfig, setOpenConfig] = useState(false);
     const onSubmitData = useCallback(
       (values: z.infer<typeof addStageSchema>) => {
         delete values.conf_name;
@@ -87,7 +138,64 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
                   Stage Name
                 </FormLabel>
                 <FormControl>
-                  <Input placeholder="Full Name" {...field} />
+                  {/* <Input placeholder="Full Name" {...field} /> */}
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="justify-between"
+                      >
+                        {field.value
+                          ? stagesName?.find(
+                              (stage) => stage.value === field.value,
+                            )?.label
+                          : "Select Stage..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandList>
+                          <CommandInput placeholder="Search candy type..." />
+                          <CommandEmpty>No Stage found.</CommandEmpty>
+                          <CommandGroup>
+                            {stagesName?.map((stage) => {
+                              return stage?.value ? (
+                                <CommandItem
+                                  key={stage.value}
+                                  value={stage.value}
+                                  onSelect={(currentValue) => {
+                                    
+                                    field.onChange(
+                                      currentValue === field.value
+                                        ? ""
+                                        : currentValue,
+                                    );
+                                    console.log(field.value);
+                                    setOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      field.value === stage.value
+                                        ? "opacity-100"
+                                        : "opacity-0",
+                                    )}
+                                  />
+                                  {stage.value}
+                                </CommandItem>
+                              ) : (
+                                <></>
+                              );
+                            })}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -102,7 +210,63 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
               <FormItem className={"row-start-2"}>
                 <FormLabel>Configuration Setting Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Config setting name" {...field} />
+                <Popover open={openConfig} onOpenChange={setOpenConfig}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="justify-between"
+                      >
+                        {field.value
+                          ? configNames?.find(
+                              (config) => config.value === field.value,
+                            )?.label
+                          : "Select config..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandList>
+                          <CommandInput placeholder="Search candy type..." />
+                          <CommandEmpty>No Ingredients found.</CommandEmpty>
+                          <CommandGroup>
+                            {configNames?.map((config) => {
+                              return config?.value ? (
+                                <CommandItem
+                                  key={config.value}
+                                  value={config.value}
+                                  onSelect={(currentValue) => {
+                                    
+                                    field.onChange(
+                                      currentValue === field.value
+                                        ? ""
+                                        : currentValue,
+                                    );
+                                    console.log(field.value);
+                                    setOpenConfig(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      field.value === config.value
+                                        ? "opacity-100"
+                                        : "opacity-0",
+                                    )}
+                                  />
+                                  {config.value}
+                                </CommandItem>
+                              ) : (
+                                <></>
+                              );
+                            })}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </FormControl>
                 <FormMessage />
               </FormItem>

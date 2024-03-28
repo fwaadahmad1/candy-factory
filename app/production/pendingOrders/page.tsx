@@ -83,6 +83,9 @@ const ProductsInLinePage = () => {
       }
       return 0;
   });
+  pen.filter((candy) => {
+    candy.status === "PENDING";
+  })
   return (
     <div className={"flex flex-col w-full gap-2"}>
       <Card className={"w-full"}>
