@@ -8,6 +8,7 @@ export default function useDashboard(): {
   assemblyLines: Array<AssemblyLineSchema>;
   totalOrders: number;
   pendingOrders: number;
+  activeOrders: number;
   chartData: Array<{
     type: "pending" | "completed";
     date: string;
@@ -28,11 +29,11 @@ export default function useDashboard(): {
       orders: number;
     }> = [];
 
-    for (let i = 1; i < 10; i++) {
+    for (let i = 9; i >= 0; i--) {
       const date: Date = new Date();
       date.setDate(date.getDate() - i);
       const totalOrders = (orders ?? []).filter(
-        (o) => o.date === date.toLocaleDateString(),
+        (o) => new Date(o.date) === date,
       );
       if (totalOrders.length > maxOrdersInChartsData)
         maxOrdersInChartsData = totalOrders.length;
@@ -57,7 +58,8 @@ export default function useDashboard(): {
     }, [] as Array<string>),
     assemblyLines: assemblyLineData ?? [],
     totalOrders: orders?.length ?? 0,
-    pendingOrders: (orders ?? []).filter((o) => (o.status === "PENDING"))
+    pendingOrders: (orders ?? []).filter((o) => o.status === "PENDING").length,
+    activeOrders: (orders ?? []).filter((o) => o.status === "IN-PROCESS")
       .length,
     chartData: parseChartData(),
     maxOrdersInChartsData,

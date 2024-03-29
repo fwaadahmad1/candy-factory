@@ -22,6 +22,7 @@ const DashboardPage = () => {
     assemblyLines,
     totalOrders,
     pendingOrders,
+    activeOrders,
     chartData,
     maxOrdersInChartsData,
   } = useDashboard();
@@ -49,7 +50,7 @@ const DashboardPage = () => {
         className={"col-span-2"}
         title={"Production Lines"}
         description={"Active production lines"}
-        quantity={`${assemblyLines.length}`}
+        quantity={`${activeOrders}`}
         text={"lines"}
         href={"/production/inLine"}
       />

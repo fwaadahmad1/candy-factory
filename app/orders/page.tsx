@@ -1,5 +1,5 @@
 "use client";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Search } from "lucide-react";
 import {
@@ -10,17 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
-import { OrderItem } from "./dummyOrderData";
 import {
   Dialog,
   DialogClose,
@@ -41,10 +31,10 @@ import {
 } from "@/features/ApiSlice/orderSlice";
 
 export type OrderData = {
-  id:number,
-  due_date: String;
-  date: String;
-  dueDate: String;
+  id: number;
+  due_date: string;
+  date: string;
+  dueDate: string;
   client_name: string;
   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
   candies: [];
@@ -52,44 +42,44 @@ export type OrderData = {
 };
 
 export type orderItemSchema = {
-  candyType: String;
-  quantity: String;
+  candyType: string;
+  quantity: string;
 };
 
 export type addOrderSchema = {
-  client_name: String;
+  client_name: string;
   dueDate: Date;
-  candyType: String;
-  quantity: String;
+  candyType: string;
+  quantity: string;
   orderItem: orderItemSchema[];
 };
 
 type orderPostSchema = {
-  date: String;
-  due_date: String;
-  client_name: String;
-  status: String;
-  candies: String[];
-  quantity_candies: String;
+  date: string;
+  due_date: string;
+  client_name: string;
+  status: string;
+  candies: string[];
+  quantity_candies: string;
 };
 
 const OrdersPage = () => {
   const addOrderFormRef = useRef<AddOrderFormHandle>(null);
 
-  const { data : orders, isLoading, error } = useGetOrdersQuery({});
+  const { data: orders, isLoading, error } = useGetOrdersQuery({});
   // orders?.forEach((order,i) => {
-  
+
   //   const qty = JSON.parse(`${order.quantity_candies}`)
   //   orderItemPopup[i] = {
   //     candyType : order.candies,
   //     quantity : qty,
   //   }
   // });
-  const [addOrder,err] = useAddOrdersMutation();
+  const [addOrder, err] = useAddOrdersMutation();
   const [orderDetailsDialog, setOrderDetailsDialog] = useState<
     Array<orderItemSchema> | undefined
   >(undefined);
-  
+
   const [addOrderDialog, setAddOrderDialog] = useState<boolean>(false);
   return (
     <div className={"flex flex-col w-full gap-2"}>
@@ -115,7 +105,7 @@ const OrdersPage = () => {
                 ref={addOrderFormRef}
                 onSubmit={(values) => {
                   setAddOrderDialog(false);
-                  const candyTypes: String[] = [];
+                  const candyTypes: string[] = [];
                   const quantities: Number[] = [];
                   values.orderItem.forEach((item, i) => {
                     candyTypes[i] = item.candyType;
@@ -125,9 +115,12 @@ const OrdersPage = () => {
                   });
 
                   const orderPostData: orderPostSchema = {
-                   
-                    date: new Date().toLocaleDateString('arn-CL').replaceAll('/','-'),
-                    due_date: values.dueDate.toLocaleDateString('arn-CL').replaceAll('/','-'),
+                    date: new Date()
+                      .toLocaleDateString("arn-CL")
+                      .replaceAll("/", "-"),
+                    due_date: values.dueDate
+                      .toLocaleDateString("arn-CL")
+                      .replaceAll("/", "-"),
                     client_name: values.client_name,
                     status: "PENDING",
                     candies: [...candyTypes],
@@ -174,23 +167,20 @@ const OrdersPage = () => {
                         <TableHead>Quantity</TableHead>
                       </TableRow>
                     </TableHeader>
-                    
-                    <TableBody>
-                      
-                      {orderDetailsDialog?.map((item, index) => {
-                        
-                        return (
-                          <TableRow key={index}                        
-                            onClick={() =>
-                              {
 
+                    <TableBody>
+                      {orderDetailsDialog?.map((item, index) => {
+                        return (
+                          <TableRow
+                            key={index}
+                            onClick={() => {
                               setOrderDetailsDialog(
                                 // item && item.candyType.length > 0
                                 //   ? item
                                 //   : undefined,
-                                undefined
-                              )}
-                            }
+                                undefined,
+                              );
+                            }}
                           >
                             <TableCell>{item.candyType}</TableCell>
                             <TableCell>{item.quantity}</TableCell>
@@ -220,18 +210,16 @@ const OrdersPage = () => {
               {orders?.map((order, index) => (
                 <TableRow
                   key={index}
-                  onClick={() =>{
-                    
-                    let orderItemPopup : orderItemSchema[] = [] ;
+                  onClick={() => {
+                    let orderItemPopup: orderItemSchema[] = [];
 
-                    for(let i = 0; i<order.candies.length ; i++){
+                    for (let i = 0; i < order.candies.length; i++) {
                       orderItemPopup[i] = {
-                        candyType : order.candies[i],
-                        quantity : JSON.parse(`${order.quantity_candies}`)[i],
-                      }
+                        candyType: order.candies[i],
+                        quantity: JSON.parse(`${order.quantity_candies}`)[i],
+                      };
                     }
 
-                    
                     // console.log("click")
                     // const candiesQty = JSON.parse(`${order.quantity_candies}`);
                     // console.log(candiesQty)
@@ -244,10 +232,8 @@ const OrdersPage = () => {
                       orderItemPopup && orderItemPopup.length > 0
                         ? orderItemPopup
                         : undefined,
-                    )
-                  }
-                    
-                  }
+                    );
+                  }}
                 >
                   <TableCell className="font-medium">{order.id}</TableCell>
                   <TableCell>{order.client_name}</TableCell>
