@@ -10,27 +10,51 @@ export const ingredientSlice = createApi({
   endpoints: (builder) => ({
     getIngredient: builder.query({
       query: () => "/ingredient",
-      providesTags: [{ type: "Ingredient", id: "ingredient" }],
+      providesTags: [
+        {
+          type: "Ingredient",
+          id: "ingredient",
+        },
+      ],
     }),
     addIngredient: builder.mutation({
-        query: (candyData) => {
-          console.log(candyData);
-          return {
-            url: "/ingredient",
-            method: "POST",
-            body: candyData,
-          };
+      query: (candyData) => {
+        console.log(candyData);
+        return {
+          url: "/ingredient",
+          method: "POST",
+          body: candyData,
+        };
+      },
+      invalidatesTags: [
+        {
+          type: "Ingredient",
+          id: "ingredient",
         },
-        invalidatesTags: [
-          { type: "Ingredient", id: "ingredient" },
-        ],
-      }),
+      ],
+    }),
+    updateIngredient: builder.mutation({
+      query: (ingredientData) => {
+        return {
+          url: `/ingredient/update/${ingredientData.name}`,
+          method: "PUT",
+          body: ingredientData,
+        };
+      },
+      invalidatesTags: [
+        {
+          type: "Ingredient",
+          id: "ingredient",
+        },
+      ],
+    }),
   }),
 });
 
 export const {
   useAddIngredientMutation,
   useGetIngredientQuery,
+  useUpdateIngredientMutation,
 } = ingredientSlice;
 
 export const ingredientReducer = ingredientSlice.reducer;

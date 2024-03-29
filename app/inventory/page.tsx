@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import {
   useAddIngredientMutation,
   useGetIngredientQuery,
+  useUpdateIngredientMutation,
 } from "@/features/ApiSlice/ingredientSlice";
 import { cn } from "@/lib/utils";
 import {
@@ -45,6 +46,7 @@ type ingredientAddSchema = {
 const InventoryPage = () => {
   const { data } = useGetIngredientQuery({});
   const [addInventory] = useAddIngredientMutation({});
+  const [updateInventory] = useUpdateIngredientMutation({});
   const ingredientsData: ingredientSchema[] = data;
 
   const addInventoryFormRef = useRef<AddInventoryFormHandle | null>(null);
@@ -86,9 +88,11 @@ const InventoryPage = () => {
                   const ingredientData: ingredientAddSchema = {
                     name: values.ingredient,
                     current_quantity: values.quantity,
-                    reorder_level: 5000,
+                    reorder_level: values.reorderLevel,
                   };
-                  addInventory(ingredientData);
+                  if (typeof addInventoryDialog === "boolean")
+                    addInventory(ingredientData);
+                  else updateInventory(ingredientData);
                   setAddInventoryDialog(false);
                 }}
               />
@@ -132,6 +136,7 @@ const InventoryPage = () => {
                     setAddInventoryDialog({
                       ingredient: ingredient.name,
                       quantity: ingredient.current_quantity,
+                      reorderLevel: ingredient.reorder_level,
                     })
                   }
                 >

@@ -31,6 +31,7 @@ const AddInventoryForm = forwardRef<
     resolver: zodResolver(addInventorySchema),
     defaultValues: formData ?? {
       ingredient: "",
+      reorderLevel: 5000,
     },
   });
 
@@ -68,7 +69,7 @@ const AddInventoryForm = forwardRef<
           control={form.control}
           name="ingredient"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className={"col-span-2"}>
               <FormLabel>Ingredient Name</FormLabel>
               <FormControl>
                 <Input placeholder="Ingredient Name" {...field} />
@@ -92,6 +93,37 @@ const AddInventoryForm = forwardRef<
                     <Input
                       type={"number"}
                       placeholder="Quantity"
+                      value={field.value ?? undefined}
+                      onChange={(e) => {
+                        field.onChange(
+                          isNaN(parseInt(e.target.value))
+                            ? undefined
+                            : parseInt(e.target.value),
+                        );
+                      }}
+                    />
+                  </div>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Reorder Level */}
+        <FormField
+          control={form.control}
+          name="reorderLevel"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Re-order Level</FormLabel>
+
+              <FormControl>
+                <div className={"flex flex-col gap-3"}>
+                  <div className={"flex flex-row gap-2"}>
+                    <Input
+                      type={"number"}
+                      placeholder="Re-Order Level"
                       value={field.value ?? undefined}
                       onChange={(e) => {
                         field.onChange(
