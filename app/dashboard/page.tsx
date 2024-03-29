@@ -86,14 +86,17 @@ const DashboardPage = () => {
 
     return (
       <Card className={className}>
-        <Link href={"/production/inLine"}>
+        <Link
+          href={"/production/inLine"}
+          className={"h-full flex flex-col justify-between"}
+        >
           <CardHeader>
             <CardTitle>Assembly Lines Status</CardTitle>
             <CardDescription>Status of each Assembly Line</CardDescription>
           </CardHeader>
           <CardContent className={"py-0"}>
             <ul>
-              {assemblyLines?.map((assemblyLine) => (
+              {assemblyLines?.slice(0,3).map((assemblyLine) => (
                 <SingleLine
                   key={assemblyLine.name}
                   lineName={assemblyLine.name}
@@ -105,6 +108,9 @@ const DashboardPage = () => {
                 />
               ))}
             </ul>
+            {assemblyLines?.length > 3 && (
+              <div className={"text-muted-foreground"}>...more</div>
+            )}
           </CardContent>
           <CardFooter className={"text-muted-foreground justify-end py-2"}>
             <ArrowRight />
@@ -130,7 +136,7 @@ const DashboardPage = () => {
     }) {
       return (
         <li className={"flex flex-row gap-2"}>
-          <div className={"font-semibold"}>Candy {candyName}</div>
+          <div>Candy {candyName}</div>
           {status && <div>:{status}</div>}
         </li>
       );
@@ -148,10 +154,15 @@ const DashboardPage = () => {
           </CardHeader>
           <CardContent className={"py-0"}>
             <ul>
-              {candyTypes?.map((candyType, index) => (
-                <SingleCandy key={index} candyName={candyType} />
-              ))}
+              {candyTypes
+                ?.slice(0, 3)
+                .map((candyType, index) => (
+                  <SingleCandy key={index} candyName={candyType} />
+                ))}
             </ul>
+            {candyTypes?.length > 3 && (
+              <div className={"text-muted-foreground"}>...more</div>
+            )}
           </CardContent>
           <CardFooter className={"text-muted-foreground justify-end py-2"}>
             <ArrowRight />

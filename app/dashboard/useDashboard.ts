@@ -59,8 +59,7 @@ export default function useDashboard(): {
     assemblyLines: assemblyLineData ?? [],
     totalOrders: orders?.length ?? 0,
     pendingOrders: (orders ?? []).filter((o) => o.status === "PENDING").length,
-    activeOrders: (orders ?? []).filter((o) => o.status === "IN-PROCESS")
-      .length,
+    activeOrders: (assemblyLineData ?? []).filter((o) => o.occupied).length,
     chartData: parseChartData(),
     maxOrdersInChartsData,
   };
