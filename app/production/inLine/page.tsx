@@ -94,8 +94,9 @@ const PendingOrdersPage = () => {
                     : <></> 
                     }
                     </TableCell>
-                    {data.candy ? <TableCell  onClick={() =>
-                    router.push(`/production/inLine/orderDetails`)
+                    {data.candy ? <TableCell  onClick={() =>{
+                 
+                    router.push(`/production/inLine/orderDetails?candyName=${data.candy}&orderId=${data.order}&assemblyLine=${data.name}`)}
                   }>
                     <ArrowRight strokeWidth={1} className={"text-secondary"} />
                     

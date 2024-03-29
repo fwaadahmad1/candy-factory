@@ -12,15 +12,19 @@ export const assemblyLineSlice = createApi({
       query: () => "/assembly_line",
       providesTags: [{ type: "AssemblyLine", id: "assemblyLine" }],
     }),
+    getAssemblyLineTimeStamp: builder.query({
+      query: ({assemblyLine}) => `/assembly_line/${assemblyLine}`,
+      providesTags: [{ type: "AssemblyLine", id: "assemblyLine" }],
+    }),
     getAssemblyLineSuggestions: builder.query({
       query: ({candyName}) => `/assembly_line/suggestion/${candyName}`,
       providesTags: [{ type: "AssemblyLine", id: "assemblyLineSuggestion" }],
     }),
     addCandyToAssemblyLine: builder.mutation({
-      query: ({assemblyLine , candyType}) => {
+      query: ({assemblyLine , candyType,order}) => {
         console.log(assemblyLine , candyType);
         return {
-          url: `/assembly_line/start/${assemblyLine}/${candyType}`,
+          url: `/assembly_line/start/${assemblyLine}/${candyType}/${Number(order)}`,
           method: "PUT",
           body: {},
         };
@@ -52,7 +56,8 @@ export const {
   useGetAssemblyLineQuery,
   useGetAssemblyLineSuggestionsQuery,
   useAddCandyToAssemblyLineMutation,
-  useAddStopAssemblyLineMutation
+  useAddStopAssemblyLineMutation,
+  useGetAssemblyLineTimeStampQuery
 } = assemblyLineSlice;
 
 export const assemblyLineReducer = assemblyLineSlice.reducer;
