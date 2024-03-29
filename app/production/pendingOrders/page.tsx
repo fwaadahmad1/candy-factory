@@ -46,13 +46,13 @@ const converDate = (dateString : String) =>{
   if(dateParts){
   newDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`
   }
-  
+
   // month is 0-based, that's why we need dataParts[1] - 1
   var dateObject = new Date(newDate).getTime();
-  return dateObject 
+  return dateObject
 }
 
-const convertTopending = (data: OrderData[]) => {
+const convertToPending = (data?: OrderData[]) => {
   const candies: any = [];
   data?.forEach((order) => {
     const quantity = JSON.parse(`${order.quantity_candies}`);
@@ -62,20 +62,20 @@ const convertTopending = (data: OrderData[]) => {
       candies.push(newObj);
     });
   });
-  
+
   return candies;
 };
 const ProductsInLinePage = () => {
-  const { data: orderData, isLoading, error } = useGetOrdersQuery({});
+  const { data: pendingOrders, isLoading, error } = useGetOrdersQuery({});
   const { data: candyData } = useGetCandyTypeQuery({});
-  const pendingOrders: OrderData[] = orderData;
-  const pen : pendingOrderSchema[] = convertTopending(pendingOrders);
+  const pen: pendingOrderSchema[] = convertToPending(pendingOrders);
+  console.log(pen);
   const router = useRouter();
   console.log(converDate(pen[0]?.due_date))
   pen?.sort((a,b) => {
     let d1 = converDate(a.due_date);
       let d2 = converDate(b.due_date);
-    
+
       if (d1 < d2) {
         return -1;
       } else if (d1 > d2) {
@@ -129,7 +129,7 @@ const ProductsInLinePage = () => {
                     {
                       candyData?.find(
                         (candy: any) => candy.name === order.candyName,
-                      ).total_time
+                      )?.total_time
                     }
                   </TableCell>
                   {/* <TableCell>{order.productionLine}</TableCell> */}

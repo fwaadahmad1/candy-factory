@@ -40,7 +40,7 @@ import {
   useGetOrdersQuery,
 } from "@/features/ApiSlice/orderSlice";
 
-type OrderData = {
+export type OrderData = {
   id:number,
   due_date: String;
   date: String;
@@ -76,9 +76,7 @@ type orderPostSchema = {
 const OrdersPage = () => {
   const addOrderFormRef = useRef<AddOrderFormHandle>(null);
 
-  const { data : orderData, isLoading, error } = useGetOrdersQuery({});
-  const orders: OrderData[] = orderData;
-
+  const { data : orders, isLoading, error } = useGetOrdersQuery({});
   // orders?.forEach((order,i) => {
   
   //   const qty = JSON.parse(`${order.quantity_candies}`)

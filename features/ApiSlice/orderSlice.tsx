@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL } from "@/constants";
+import { OrderData } from "@/app/orders/page";
 
 export const orderSlice = createApi({
   reducerPath: "orders",
@@ -8,9 +9,14 @@ export const orderSlice = createApi({
   }),
   tagTypes: ["Orders"],
   endpoints: (builder) => ({
-    getOrders: builder.query({
+    getOrders: builder.query<Array<OrderData>, any>({
       query: () => "/order",
-      providesTags: [{ type: "Orders", id: "orderItem" }],
+      providesTags: [
+        {
+          type: "Orders",
+          id: "orderItem",
+        },
+      ],
     }),
     addOrders: builder.mutation({
       query: (orderData) => {
@@ -20,7 +26,12 @@ export const orderSlice = createApi({
           body: orderData,
         };
       },
-      invalidatesTags: [{ type: "Orders", id: "orderItem" }],
+      invalidatesTags: [
+        {
+          type: "Orders",
+          id: "orderItem",
+        },
+      ],
     }),
   }),
 });

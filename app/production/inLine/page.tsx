@@ -1,6 +1,6 @@
-'use client'
+"use client";
 import React from "react";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Search } from "lucide-react";
 import {
@@ -12,34 +12,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
-import { dummyinLineData } from "./dummyInLineData";
-import { useAddStopAssemblyLineMutation, useGetAssemblyLineQuery } from "@/features/ApiSlice/assemblyLineSlice";
+  useAddStopAssemblyLineMutation,
+  useGetAssemblyLineQuery,
+} from "@/features/ApiSlice/assemblyLineSlice";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 
-type assemblyLineSchema = {
-  name: string,
-    total_time: string,
-    occupied: boolean,
-    candy: string,
-    order: string,
-    last_candy: string,
-}
+export type AssemblyLineSchema = {
+  name: string;
+  total_time: string;
+  occupied: boolean;
+  candy: string;
+  order: string;
+  last_candy: string;
+};
 
 const PendingOrdersPage = () => {
   const router = useRouter();
-  const {data} = useGetAssemblyLineQuery({});
-  const assemblyLineData : assemblyLineSchema[] = data;
+  const { data: assemblyLineData } = useGetAssemblyLineQuery({});
   const [stopAssemblyLine] = useAddStopAssemblyLineMutation({});
   console.log(assemblyLineData);
     return (
@@ -67,7 +58,7 @@ const PendingOrdersPage = () => {
               </TableHeader>
               <TableBody>
                 {assemblyLineData?.map((data, index) => (
-                  <TableRow key={index} 
+                  <TableRow key={index}
                  >
                     <TableCell className="w-[150px]">{data.name}</TableCell>
                     {/* <TableCell className="w-[150px]">{data.orderId}</TableCell> */}
@@ -77,7 +68,7 @@ const PendingOrdersPage = () => {
                       data.candy ? <div
                       className={cn(
                         "max-w-max px-4 py-0.5 text-white rounded-sm", "bg-red-500",
-                      )} 
+                      )}
                       onClick={
                         () => {
                          const isTrue = window.confirm("Do you really want to stop the production");
@@ -91,11 +82,11 @@ const PendingOrdersPage = () => {
                     >
                       STOP
                     </div>
-                    : <></> 
+                    : <></>
                     }
                     </TableCell>
                     {data.candy ? <TableCell  onClick={() =>{
-                 
+
                     router.push(`/production/inLine/orderDetails?candyName=${data.candy}&orderId=${data.order}&assemblyLine=${data.name}`)}
                   }>
                     <ArrowRight strokeWidth={1} className={"text-secondary"} />

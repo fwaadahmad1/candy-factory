@@ -15,13 +15,13 @@ import {
 import { useRouter } from "next/navigation";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 
-type candySchema = {
-  name : string,
-}
+export type CandySchema = {
+  name: string;
+  total_time: string;
+};
 const CandyTypePage = () => {
   const router = useRouter();
-  const {data} = useGetCandyTypeQuery({})
-  const candyData : candySchema[] = data;
+  const { data: candyData } = useGetCandyTypeQuery({});
   return (
     <div className={"flex flex-col w-full h-full gap-2"}>
       <Card className={"w-full"}>
@@ -41,8 +41,6 @@ const CandyTypePage = () => {
 
       <Card className={"w-full h-full"}>
         <CardContent className={"p-2"}>
-        
-
           <Table className={"h-full w-full"}>
             <TableHeader>
               <TableRow>
