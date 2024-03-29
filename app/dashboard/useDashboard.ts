@@ -31,10 +31,18 @@ export default function useDashboard(): {
 
     for (let i = 9; i >= 0; i--) {
       const date: Date = new Date();
+      date.setHours(0, 0, 0, 0);
       date.setDate(date.getDate() - i);
-      const totalOrders = (orders ?? []).filter(
-        (o) => new Date(o.date) === date,
-      );
+      const totalOrders = (orders ?? []).filter((o) => {
+        const orderDateSplit = o.date.split("-");
+        return (
+          new Date(
+            parseInt(orderDateSplit?.[2]),
+            parseInt(orderDateSplit?.[1]) - 1,
+            parseInt(orderDateSplit?.[0]),
+          ).toLocaleDateString() === date.toLocaleDateString()
+        );
+      });
       if (totalOrders.length > maxOrdersInChartsData)
         maxOrdersInChartsData = totalOrders.length;
       chartData.push({
