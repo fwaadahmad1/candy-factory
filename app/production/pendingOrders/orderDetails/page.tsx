@@ -16,9 +16,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useAddCandyToAssemblyLineMutation, useGetAssemblyLineQuery, useGetAssemblyLineSuggestionsQuery } from "@/features/ApiSlice/assemblyLineSlice";
+
 //import { useGetAssemblyLineSuggestionQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
 type candyTypeData = {
@@ -51,12 +52,13 @@ const ProductionOrderDetailsPage = () => {
 };
 
 function Page() {
+  const router = useRouter();
   const {data} = useGetCandyTypeQuery({});
   const orderDetails : candyTypeData[]  = data ?? [];
-  console.log(orderDetails);
   const searchParams2 = useSearchParams();
   const search = searchParams2.get('candyName');
-  console.log(search)
+  const orderId = searchParams2.get('orderId');
+  console.log(orderId)
   const {data : suggestion , isLoading,isSuccess,isError,error} = useGetAssemblyLineSuggestionsQuery({search});
   
   const [addCandyToAssemblyLine] = useAddCandyToAssemblyLineMutation({})
@@ -65,7 +67,6 @@ function Page() {
     orderDetails.find((order) => {
       return order.name == search?? "";
     } );
-  console.log(order)
   return (
     <div
       className={
@@ -87,13 +88,13 @@ function Page() {
             >
               <h1 className={"text-4xl font-extrabold"}>
                 {order.name.toUpperCase()}
-                <span className={"text-muted-foreground font-normal"}>#1</span>
+                <span className={"text-muted-foreground font-normal"}> #{orderId}</span>
               </h1>
 
               <div className={"!mt-0"}>
                 {/* <h1 className={"text-xl font-extrabold"}>Estimated time:</h1> */}
                 <text
-                  className={"text-red-500 text-lg tracking-wide font-semibold"}
+                  className={"text-blue-500 text-lg tracking-wide font-semibold"}
                 >
                   {toHoursAndMinutes(order.total_time)}
                 </text>
@@ -344,7 +345,9 @@ function Page() {
               alert("All Assembly Line are occupied")
             }else if(isSuccess){
               console.log(suggestion.name)
-              addCandyToAssemblyLine({assemblyLine : suggestion.name, candyType : search})
+              addCandyToAssemblyLine({assemblyLine : suggestion.name, candyType : search, order: orderId});
+              alert(`This order has been added to the production line number : ${suggestion.name}`)
+              router.push(`/production/inLine/orderDetails?candyName=${search}&orderId=${orderId}&assemblyLine=${suggestion.name}`)
             }
           }}>
             Add Item

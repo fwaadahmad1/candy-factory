@@ -17,13 +17,15 @@ import {
 } from "@/components/ui/accordion";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 import { useSearchParams } from "next/navigation";
-import { useGetAssemblyLineTimeStampQuery } from "@/features/ApiSlice/assemblyLineSlice";
+import { Button } from "@/components/ui/button";
+import { useAddCandyToAssemblyLineMutation, useGetAssemblyLineQuery, useGetAssemblyLineSuggestionsQuery } from "@/features/ApiSlice/assemblyLineSlice";
+//import { useGetAssemblyLineSuggestionQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
 type candyTypeData = {
   name: string;
   ingredients: string[];
   quantity_ingredient: string;
-  total_time: number,
+  total_time: number;
   mixer_settings: string[];
   cooker_settings: string[];
   extruder_settings: string[];
@@ -39,6 +41,7 @@ const toHoursAndMinutes = (totalMinutes: number) => {
   const minutes = totalMinutes % 60;
   return `${hours}h${minutes}min`;
 };
+
 const ProductionOrderDetailsPage = () => {
   return (
     <Suspense>
@@ -47,30 +50,22 @@ const ProductionOrderDetailsPage = () => {
   );
 };
 
-const giveRemainingTime = (total_time: number) => {
-  const curr = new Date();
-  const currNano = curr.getTime();
-  const waitTime = currNano + total_time*60000;
-
-  
-  const diff = waitTime - currNano;
-  return toHoursAndMinutes(diff / 60000);
-
-}
 function Page() {
-  const { data } = useGetCandyTypeQuery({});
-  const orderDetails: candyTypeData[] = data ?? [];
+  const {data} = useGetCandyTypeQuery({});
+  const orderDetails : candyTypeData[]  = data ?? [];
+  console.log(orderDetails);
   const searchParams2 = useSearchParams();
-  const search = searchParams2.get("candyName");
-  const assemblyLineName = searchParams2.get("assemblyLine");
-  const {data : assemblyLineData} = useGetAssemblyLineTimeStampQuery({assemblyLine : assemblyLineName});
-  console.log(assemblyLineData);
-  const totalTime = assemblyLineData?.end;
-  const timeRemaining = giveRemainingTime(totalTime)
+  const search = searchParams2.get('candyName');
+  console.log(search)
+  const {data : suggestion , isLoading,isSuccess,isError,error} = useGetAssemblyLineSuggestionsQuery({search});
   
-  const order: candyTypeData | undefined = orderDetails.find((order) => {
-    return order.name == search ?? "";
-  });
+  const [addCandyToAssemblyLine] = useAddCandyToAssemblyLineMutation({})
+  
+  const order: candyTypeData | undefined =
+    orderDetails.find((order) => {
+      return order.name == search?? "";
+    } );
+  console.log(order)
   return (
     <div
       className={
@@ -91,16 +86,16 @@ function Page() {
               className={"flex flex-row justify-between items-start pb-0"}
             >
               <h1 className={"text-4xl font-extrabold"}>
-                {order.name}
-                <span className={"text-muted-foreground font-normal"}>#1</span>
+                {order.name.toUpperCase()}
+                {/* <span className={"text-muted-foreground font-normal"}>#1</span> */}
               </h1>
 
               <div className={"!mt-0"}>
-                <h1 className={"text-xl font-extrabold"}>Estimated time:</h1>
+                {/* <h1 className={"text-xl font-extrabold"}>Estimated time:</h1> */}
                 <text
-                  className={"text-red-500 text-lg tracking-wide font-semibold"}
+                  className={"text-blue-500 text-lg tracking-wide font-semibold"}
                 >
-                  {timeRemaining}
+                  {toHoursAndMinutes(order.total_time)}
                 </text>
               </div>
             </CardHeader>
@@ -147,7 +142,7 @@ function Page() {
             className={"flex flex-col gap-4 !p-0"}
           >
             <Card>
-              <AccordionItem value="item-3" className={"border-0 px-6"}>
+              <AccordionItem value="item-1" className={"border-0 px-6"}>
                 <AccordionTrigger>
                   <CardHeader className={"px-0 py-0 text-start"}>
                     <h2 className={"text-2xl font-bold"}>Mixing Mixture</h2>
@@ -196,7 +191,7 @@ function Page() {
             </Card>
 
             <Card>
-              <AccordionItem value="item-3" className={"border-0 px-6"}>
+              <AccordionItem value="item-2" className={"border-0 px-6"}>
                 <AccordionTrigger>
                   <CardHeader className={"px-0 py-0 text-start"}>
                     <h2 className={"text-2xl font-bold"}>Cooking Mixture</h2>
@@ -276,15 +271,65 @@ function Page() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {/* {order.extruder_settings.map((setting, i) => {
-                        return(<TableRow>
-                          <TableCell>{setting}</TableCell>
-                          <TableCell>
-                            {`${JSON.parse(order.quantity_extruder_settings)[i]}`}
-                          </TableCell>
-                        </TableRow>)  
+                        {order.extruder_settings.map((setting, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>{setting}</TableCell>
+                              <TableCell>
+                                {`${JSON.parse(order.quantity_extruder_settings)[i]}`}
+                              </TableCell>
+                            </TableRow>
+                          );
                         })}
-             */}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </AccordionContent>
+              </AccordionItem>
+            </Card>
+
+            <Card>
+              <AccordionItem value="item-4" className={"border-0 px-6"}>
+                <AccordionTrigger>
+                  <CardHeader className={"px-0 py-0 text-start"}>
+                    <h2 className={"text-2xl font-bold"}>Packaging Settings</h2>
+                    {/* <h2
+                      className={"text-xl font-semibold text-muted-foreground"}
+                    >
+                      Extruder Mixture
+                    </h2> */}
+                  </CardHeader>
+                </AccordionTrigger>
+
+                <AccordionContent asChild>
+                  <CardContent className={"p-0"}>
+                    {/* <div className={"flex flex-row gap-2 items-center"}>
+                      <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
+                      <div
+                        className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
+                      >
+                        <text>Required</text>
+                      </div>
+                    </div> */}
+
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Setting</TableHead>
+                          <TableHead>Value</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {order.packaging_settings.map((setting, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>{setting}</TableCell>
+                              <TableCell>
+                                {`${JSON.parse(order.quantity_packaging_settings)[i]}`}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
                       </TableBody>
                     </Table>
                   </CardContent>
@@ -292,6 +337,18 @@ function Page() {
               </AccordionItem>
             </Card>
           </Accordion>
+          {/* <Button variant={"secondary"} onClick={()=>{
+            ////Add order to assembly line
+            console.log('click')
+            if(isError){
+              alert("All Assembly Line are occupied")
+            }else if(isSuccess){
+              console.log(suggestion.name)
+              addCandyToAssemblyLine({assemblyLine : suggestion.name, candyType : search})
+            }
+          }}>
+            Add Item
+          </Button> */}
         </>
       )}
     </div>

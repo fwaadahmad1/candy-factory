@@ -24,6 +24,8 @@ import { Button } from "@/components/ui/button";
 import { dummyinLineData } from "./dummyInLineData";
 import { useAddStopAssemblyLineMutation, useGetAssemblyLineQuery } from "@/features/ApiSlice/assemblyLineSlice";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+
 
 type assemblyLineSchema = {
   name: string,
@@ -35,6 +37,7 @@ type assemblyLineSchema = {
 }
 
 const PendingOrdersPage = () => {
+  const router = useRouter();
   const {data} = useGetAssemblyLineQuery({});
   const assemblyLineData : assemblyLineSchema[] = data;
   const [stopAssemblyLine] = useAddStopAssemblyLineMutation({});
@@ -64,28 +67,40 @@ const PendingOrdersPage = () => {
               </TableHeader>
               <TableBody>
                 {assemblyLineData?.map((data, index) => (
-                  <TableRow key={index}>
+                  <TableRow key={index} 
+                 >
                     <TableCell className="w-[150px]">{data.name}</TableCell>
                     {/* <TableCell className="w-[150px]">{data.orderId}</TableCell> */}
                     <TableCell className="w-[150px]">{data.candy ? data.candy : "No candy"}</TableCell>
-                    <TableCell onClick={
-                      () => {
-                        console.log(`l${data.name.trim()}l`, 'clicked');
-                        stopAssemblyLine(data.name)
-                      }
-                    }>
-                    <div
+                    <TableCell >
+                    {
+                      data.candy ? <div
                       className={cn(
                         "max-w-max px-4 py-0.5 text-white rounded-sm", "bg-red-500",
-                      )}
+                      )} 
+                      onClick={
+                        () => {
+                         const isTrue = window.confirm("Do you really want to stop the production");
+                         console.log(isTrue)
+                         if(isTrue){
+                           console.log(`l${data.name.trim()}l`, 'clicked');
+                         stopAssemblyLine(data.name);
+                         }
+                        }
+                      }
                     >
                       STOP
                     </div>
+                    : <></> 
+                    }
                     </TableCell>
-                    <TableCell>
+                    {data.candy ? <TableCell  onClick={() =>{
+                 
+                    router.push(`/production/inLine/orderDetails?candyName=${data.candy}&orderId=${data.order}&assemblyLine=${data.name}`)}
+                  }>
                     <ArrowRight strokeWidth={1} className={"text-secondary"} />
                     
-                  </TableCell>
+                  </TableCell> : <></>}
                     {/* <TableCell className="w-[150px]">{data.timeRemaining}</TableCell> */}
                   </TableRow>
                 ))}
