@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/accordion";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 import { useSearchParams } from "next/navigation";
+import { useGetAssemblyLineTimeStampQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
 type candyTypeData = {
   name: string;
@@ -46,11 +47,27 @@ const ProductionOrderDetailsPage = () => {
   );
 };
 
+const giveRemainingTime = (total_time: number) => {
+  const curr = new Date();
+  const currNano = curr.getTime();
+  const waitTime = currNano + total_time*60000;
+
+  
+  const diff = waitTime - currNano;
+  return toHoursAndMinutes(diff / 60000);
+
+}
 function Page() {
   const { data } = useGetCandyTypeQuery({});
   const orderDetails: candyTypeData[] = data ?? [];
   const searchParams2 = useSearchParams();
   const search = searchParams2.get("candyName");
+  const assemblyLineName = searchParams2.get("assemblyLine");
+  const {data : assemblyLineData} = useGetAssemblyLineTimeStampQuery({assemblyLine : assemblyLineName});
+  console.log(assemblyLineData);
+  const totalTime = assemblyLineData?.end;
+  const timeRemaining = giveRemainingTime(totalTime)
+  
   const order: candyTypeData | undefined = orderDetails.find((order) => {
     return order.name == search ?? "";
   });
@@ -83,7 +100,7 @@ function Page() {
                 <text
                   className={"text-red-500 text-lg tracking-wide font-semibold"}
                 >
-                  {toHoursAndMinutes(order.total_time)}
+                  {timeRemaining}
                 </text>
               </div>
             </CardHeader>

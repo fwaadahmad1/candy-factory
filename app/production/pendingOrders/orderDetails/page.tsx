@@ -347,7 +347,7 @@ function Page() {
               console.log(suggestion.name)
               addCandyToAssemblyLine({assemblyLine : suggestion.name, candyType : search, order: orderId});
               alert(`This order has been added to the production line number : ${suggestion.name}`)
-              router.push(`/production/inLine/orderDetails?candyName=${search}&orderId=${orderId}`)
+              router.push(`/production/inLine/orderDetails?candyName=${search}&orderId=${orderId}&assemblyLine=${suggestion.name}`)
             }
           }}>
             Add Item
