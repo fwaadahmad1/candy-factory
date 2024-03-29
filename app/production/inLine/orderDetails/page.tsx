@@ -36,7 +36,7 @@ type candyTypeData = {
 
 const toHoursAndMinutes = (totalMinutes: number) => {
   const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
+  const minutes = Math.round(totalMinutes % 60);
   return `${hours}h${minutes}min`;
 };
 const ProductionOrderDetailsPage = () => {
@@ -47,14 +47,11 @@ const ProductionOrderDetailsPage = () => {
   );
 };
 
-const giveRemainingTime = (total_time: number) => {
-  const curr = new Date();
-  const currNano = curr.getTime();
-  const waitTime = currNano + total_time*60000;
-
-  
-  const diff = waitTime - currNano;
-  return toHoursAndMinutes(diff / 60000);
+const giveRemainingTime = (endTime: string) => {
+  const endTimeInTimeStamp = new Date(endTime).getTime();
+  const currentTime = new Date().getTime();
+  const diff = endTimeInTimeStamp - currentTime;
+  return toHoursAndMinutes(diff/60000);
 
 }
 function Page() {
@@ -65,8 +62,8 @@ function Page() {
   const assemblyLineName = searchParams2.get("assemblyLine");
   const {data : assemblyLineData} = useGetAssemblyLineTimeStampQuery({assemblyLine : assemblyLineName});
   console.log(assemblyLineData);
-  const totalTime = assemblyLineData?.end;
-  const timeRemaining = giveRemainingTime(totalTime)
+  const endTime = assemblyLineData?.ending_timestamp;
+  const timeRemaining = giveRemainingTime(endTime)
   
   const order: candyTypeData | undefined = orderDetails.find((order) => {
     return order.name == search ?? "";

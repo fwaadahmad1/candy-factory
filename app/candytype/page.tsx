@@ -17,7 +17,17 @@ import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 
 export type CandySchema = {
   name: string;
-  total_time: string;
+  ingredients: string[];
+  quantity_ingredient: string;
+  total_time: number,
+  mixer_settings: string[];
+  cooker_settings: string[];
+  extruder_settings: string[];
+  packaging_settings: string[];
+  quantity_mixer_settings: string;
+  quantity_cooker_settings: string;
+  quantity_extruder_settings: string;
+  quantity_packaging_settings: string;
 };
 const CandyTypePage = () => {
   const router = useRouter();

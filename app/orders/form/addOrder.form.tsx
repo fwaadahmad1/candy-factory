@@ -126,19 +126,8 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
           },
           [] as Array<{ value: string; label: string }>,
         );
-      }, [candyTypeOptions]); // Use this for drop down
-      const {data : orderDetails} = useGetOrdersQuery({})
-      
-      //// USE THIS LAST ORDER'S DUE DATE lastOrder.due_data
-      const lastOrder : OrderData = orderDetails.reduce((acc : OrderData , curr : OrderData) => {
-        let date1 = converDate(curr.due_date);
-        let date2 = converDate(acc.due_date)
-        if(date1 > date2){
-          return curr
-        }
-        return acc;
-      });
-      console.log(lastOrder)
+      }, [candyTypeOptions]); // Use this for drop down      
+     
     return (
       <Form {...form}>
         <form
