@@ -37,8 +37,8 @@ export type OrderData = {
   dueDate: string;
   client_name: string;
   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
-  candies: [];
-  quantity_candies: [];
+  candies: Array<string>;
+  quantity_candies: Array<number>;
 };
 
 export type orderItemSchema = {
@@ -103,6 +103,7 @@ const OrdersPage = () => {
               </DialogHeader>
               <AddOrderForm
                 ref={addOrderFormRef}
+                orders={orders ?? []}
                 onSubmit={(values) => {
                   setAddOrderDialog(false);
                   const candyTypes: string[] = [];
