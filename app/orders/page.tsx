@@ -230,9 +230,7 @@ const OrdersPage = () => {
                       };
                     }
 
-                    // console.log("click")
                     // const candiesQty = JSON.parse(`${order.quantity_candies}`);
-                    // console.log(candiesQty)
                     // order.candies.forEach((el) => {
                     //   orderItemPopup[index] = {
                     //     candyType : order.candies[index]};

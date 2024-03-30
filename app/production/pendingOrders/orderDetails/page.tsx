@@ -62,7 +62,6 @@ function Page() {
   const searchParams2 = useSearchParams();
   const search = searchParams2.get("candyName");
   const orderId = searchParams2.get("orderId");
-  console.log(orderId);
   const {
     data: suggestion,
     isLoading,

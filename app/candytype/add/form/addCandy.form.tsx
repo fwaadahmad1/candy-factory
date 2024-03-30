@@ -175,7 +175,6 @@ const AddCandyForm = forwardRef<AddCandyFormHandle, AddCandyFormProps>(
                                         ? ""
                                         : currentValue,
                                     );
-                                    console.log(field.value);
                                     setOpen(false);
                                   }}
                                 >

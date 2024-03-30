@@ -55,10 +55,8 @@ const ProductionOrderDetailsPage = () => {
 function Page() {
   const { data } = useGetCandyTypeQuery({});
   const orderDetails: candyTypeData[] = data ?? [];
-  console.log(orderDetails);
   const searchParams2 = useSearchParams();
   const search = searchParams2.get("candyName");
-  console.log(search);
   const {
     data: suggestion,
     isLoading,
@@ -72,7 +70,6 @@ function Page() {
   const order: candyTypeData | undefined = orderDetails.find((order) => {
     return order.name == search ?? "";
   });
-  console.log(order);
   return (
     <div
       className={
@@ -348,11 +345,9 @@ function Page() {
           </Accordion>
           {/* <Button variant={"secondary"} onClick={()=>{
             ////Add order to assembly line
-            console.log('click')
             if(isError){
               alert("All Assembly Line are occupied")
             }else if(isSuccess){
-              console.log(suggestion.name)
               addCandyToAssemblyLine({assemblyLine : suggestion.name, candyType : search})
             }
           }}>
