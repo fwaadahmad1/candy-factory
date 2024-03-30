@@ -7,13 +7,13 @@ export const candyTypeSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: API_BASE_URL,
   }),
-  tagTypes: ["CandyType"],
+  tagTypes: ["Candy"],
   endpoints: (builder) => ({
     getCandyType: builder.query<CandySchema[], any>({
       query: () => "/candy",
       providesTags: [
         {
-          type: "CandyType",
+          type: "Candy",
           id: "candyType",
         },
       ],
@@ -29,7 +29,7 @@ export const candyTypeSlice = createApi({
       },
       invalidatesTags: [
         {
-          type: "CandyType",
+          type: "Candy",
           id: "candyType",
         },
       ],
@@ -43,7 +43,7 @@ export const candyTypeSlice = createApi({
       },
       invalidatesTags: [
         {
-          type: "CandyType",
+          type: "Candy",
           id: "candyType",
         },
       ],
