@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/accordion";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 import { useSearchParams } from "next/navigation";
-import { useAddStopAssemblyLineMutation, useGetAssemblyLineTimeStampQuery } from "@/features/ApiSlice/assemblyLineSlice";
+import { useGetAssemblyLineTimeStampQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
 type candyTypeData = {
   name: string;
@@ -35,7 +35,6 @@ type candyTypeData = {
   quantity_packaging_settings: string;
 };
 
-
 const ProductionOrderDetailsPage = () => {
   return (
     <Suspense>
@@ -50,9 +49,8 @@ const calculateRemainingTime = (timestamp: number) => {
   const duration = moment.duration(timeDifference);
   const hours = duration.hours();
   const minutes = duration.minutes();
-  return {hours,minutes,timeDifference};
+  return { hours, minutes, timeDifference };
 };
-
 
 function Page() {
   const { data } = useGetCandyTypeQuery({});
@@ -67,10 +65,10 @@ function Page() {
   const endTime = assemblyLineData?.ending_timestamp;
 
   const timeRemaining = calculateRemainingTime(endTime);
-// if (timeRemaining.timeDifference<0){
+  // if (timeRemaining.timeDifference<0){
   //   stopAL(assemblyLineName);
   // }
-  
+
   const order: candyTypeData | undefined = orderDetails.find((order) => {
     return order.name == search ?? "";
   });

@@ -93,7 +93,8 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
           return curr;
         }
         return acc;
-      }, {} as OrderData
+      },
+      {} as OrderData,
     );
     useImperativeHandle(
       ref,
@@ -114,10 +115,7 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
         return ((candyTypeOptions ?? []) as Array<{ name: string }>)?.reduce(
           (a, v) => {
             return v?.name
-              ? [
-                  ...a,
-                  { value: v.name, label: capitalize(v.name) },
-                ]
+              ? [...a, { value: v.name, label: capitalize(v.name) }]
               : a;
           },
           [] as Array<{ value: string; label: string }>,

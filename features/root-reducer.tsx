@@ -6,9 +6,9 @@ import { assemblyLineReducer } from "./ApiSlice/assemblyLineSlice";
 import { addSettingsReducer } from "./ApiSlice/addSettings";
 
 export const rootReducer = combineReducers({
-    orders:orderReducer,
-    ingredient:ingredientReducer,
-    candyType : candyTypeReducer,
-    assemblyLine : assemblyLineReducer,
-    addSettings : addSettingsReducer
+  orders: orderReducer,
+  ingredient: ingredientReducer,
+  candyType: candyTypeReducer,
+  assemblyLine: assemblyLineReducer,
+  addSettings: addSettingsReducer,
 });

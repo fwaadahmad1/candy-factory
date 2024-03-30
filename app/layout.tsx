@@ -38,7 +38,7 @@ export default function RootLayout({
               <TopBar />
               <div className="flex p-4">{children}</div>
             </main>
-            <Toaster richColors={true}/>
+            <Toaster richColors={true} />
           </ThemeProvider>
         </Provider>
       </body>
