@@ -20,11 +20,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   useAddCandyToAssemblyLineMutation,
+  useGetAssemblyLineQuery,
   useGetAssemblyLineSuggestionsQuery,
 } from "@/features/ApiSlice/assemblyLineSlice";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setNotifications } from "@/features/notificationSlice/notificationContext";
+import { capitalize, cn } from "@/lib/utils";
 
 //import { useGetAssemblyLineSuggestionQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
@@ -75,11 +77,21 @@ function Page() {
     isError,
     error,
   } = useGetAssemblyLineSuggestionsQuery({ search });
-
+  const {
+    data : assemblyLineInfo 
+  } = useGetAssemblyLineQuery({})
   const [addCandyToAssemblyLine, status] = useAddCandyToAssemblyLineMutation(
     {},
   );
 
+  const currAssembly = assemblyLineInfo?.find((ass) => {
+    return ass.name === suggestion?.name
+  })
+  console.log(currAssembly)
+
+  const isReconfigReq = currAssembly?.last_candy === search ? "Not Required" : "Required";
+  
+  console.log(isReconfigReq)
   useEffect(() => {
     if (status.isSuccess)
       toast.success("Candy pushed to production Successfully");
@@ -137,7 +149,39 @@ function Page() {
               </h2> */}
             </CardContent>
           </Card>
+          <Card className={""}>
+            <CardHeader
+              className={"flex flex-row justify-between items-start pb-0"}
+            >
+              <h1 className={"text-2xl font-semibold"}>
+                Suggested Assembly Line
+                <span className={"text-muted-foreground font-extrabold"}>
+                  { "  #" + suggestion?.name}
+                </span>
+              </h1>
 
+              <div className={"!mt-0"}>
+                {/* <h1 className={"text-xl font-extrabold"}>Estimated time:</h1> */}
+                <h1 className={"text-xl font-extrabold"}>Reconfiguration</h1>
+                <div
+                      className={cn(
+                        "max-w-max px-4 py-0.5 text-white rounded-sm",
+                        isReconfigReq == "Required"
+                          ? "bg-red-500"
+                            : "bg-green-500",
+                      )}
+                    >
+                      {capitalize(isReconfigReq)}
+                    </div>
+              </div>
+            </CardHeader>
+
+            <CardContent className={"flex flex-col gap-4"}>
+              {/* <h2 className={"text-xl font-semibold text-muted-foreground"}>
+                Production Line: {order.productionLine}
+              </h2> */}
+            </CardContent>
+          </Card>
           {/* Ingredients Required */}
           <Card>
             <CardHeader>
