@@ -89,7 +89,6 @@ const AddCandyType = () => {
         stageForms[i].conf_item.forEach((item, i) => {
           if (item.conf_name === "estimated time") {
             totalTime += Number(item.conf_setting);
-            console.log(totalTime, item.conf_name, item.conf_setting);
           }
           configSetting[i] = item.conf_name;
         });
@@ -115,7 +114,6 @@ const AddCandyType = () => {
         total_time: totalTime + 0.0,
         ...stageObj,
       };
-      console.log(candyData);
       try {
         addCandyType(candyData);
         router.back();

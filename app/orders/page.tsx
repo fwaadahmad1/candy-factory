@@ -117,10 +117,10 @@ const OrdersPage = () => {
 
                   const orderPostData: orderPostSchema = {
                     date: new Date()
-                      .toLocaleDateString("arn-CL")
+                      .toLocaleDateString("en-GB")
                       .replaceAll("/", "-"),
                     due_date: values.dueDate
-                      .toLocaleDateString("arn-CL")
+                      .toLocaleDateString("en-GB")
                       .replaceAll("/", "-"),
                     client_name: values.client_name,
                     status: "PENDING",
