@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -9,6 +9,8 @@ import { ReactNode } from "react";
 import TopBar from "@/components/top-bar";
 import { Provider } from "react-redux";
 import { store } from "@/features/store";
+import { Toaster } from "sonner";
+
 const inter = Inter({ subsets: ["latin"] });
 
 const metadata: Metadata = {
@@ -24,22 +26,21 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(inter.className, "flex flex-row")}>
-       <Provider store={store}>
-
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
+        <Provider store={store}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
           >
-          <SideBar className={""} />
-          <main className={"flex flex-col min-h-screen w-full"}>
-            <TopBar />
-            <div className="flex p-4 h-full">{children}</div>
-          </main>
-        </ThemeProvider>
-      </Provider>
-
+            <SideBar className={""} />
+            <main className={"flex flex-col min-h-screen w-full"}>
+              <TopBar />
+              <div className="flex p-4">{children}</div>
+            </main>
+            <Toaster richColors={true} />
+          </ThemeProvider>
+        </Provider>
       </body>
     </html>
   );

@@ -43,7 +43,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { useGetOrdersQuery } from "@/features/ApiSlice/orderSlice";
+import { OrderData } from "@/app/orders/page";
 //import { orderItemSchema } from "../helper";
 
 export type AddOrderFormHandle = {
@@ -54,36 +54,22 @@ export type AddOrderFormProps = {
   onSubmit: (
     values: Omit<z.infer<typeof addOrderSchema>, "candyType" | "quantity">,
   ) => void;
+  orders: Array<OrderData>;
 };
+const convertDate = (dateString?: String) => {
+  if (!dateString) return new Date();
+  const dateParts = dateString?.split("-");
 
-type OrderData = {
-  id:number,
-  due_date: String;
-  date: String;
-  dueDate: String;
-  client_name: string;
-  status: "COMPLETED" | "PENDING" | "IN-PROCESS";
-  candies: [];
-  quantity_candies: [];
+  // month is 0-based, that's why we need dataParts[1] - 1
+  return new Date(
+    parseInt(dateParts[2]),
+    parseInt(dateParts[1]) - 1,
+    parseInt(dateParts[0]),
+  );
 };
-
-const converDate = (dateString : String) =>{
-  // Oct 23
-
- const dateParts = dateString?.split("-");
- let newDate = "";
- if(dateParts){
- newDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`
- }
- 
- // month is 0-based, that's why we need dataParts[1] - 1
- var dateObject = new Date(newDate).getTime();
- return dateObject 
-}
-
 
 const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
-  function AddOrderForm({ onSubmit }, ref) {
+  function AddOrderForm({ onSubmit, orders }, ref) {
     const [open, setOpen] = useState(true);
 
     const form = useForm<z.infer<typeof addOrderSchema>>({
@@ -99,6 +85,17 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
       onSubmit(values);
     }
 
+    const lastOrder: OrderData = (orders ?? []).reduce(
+      (acc: OrderData, curr: OrderData) => {
+        let date1 = convertDate(curr.due_date);
+        let date2 = convertDate(acc.due_date);
+        if (date1 > date2) {
+          return curr;
+        }
+        return acc;
+      },
+      {} as OrderData,
+    );
     useImperativeHandle(
       ref,
       () => {
@@ -118,27 +115,13 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
         return ((candyTypeOptions ?? []) as Array<{ name: string }>)?.reduce(
           (a, v) => {
             return v?.name
-              ? [
-                  ...a,
-                  { value: v.name.toLowerCase(), label: capitalize(v.name) },
-                ]
+              ? [...a, { value: v.name, label: capitalize(v.name) }]
               : a;
           },
           [] as Array<{ value: string; label: string }>,
         );
       }, [candyTypeOptions]); // Use this for drop down
-      const {data : orderDetails} = useGetOrdersQuery({})
-      
-      //// USE THIS LAST ORDER'S DUE DATE lastOrder.due_data
-      const lastOrder : OrderData = orderDetails.reduce((acc : OrderData , curr : OrderData) => {
-        let date1 = converDate(curr.due_date);
-        let date2 = converDate(acc.due_date)
-        if(date1 > date2){
-          return curr
-        }
-        return acc;
-      });
-      console.log(lastOrder)
+
     return (
       <Form {...form}>
         <form
@@ -192,7 +175,8 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) =>
-                        date < new Date() || date > new Date("2200-01-01")
+                        date < convertDate(lastOrder?.due_date) ||
+                        date > new Date("2200-01-01")
                       }
                     />
                   </PopoverContent>

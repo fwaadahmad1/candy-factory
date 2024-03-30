@@ -1,4 +1,9 @@
-import React, { forwardRef, useCallback, useImperativeHandle, useState } from "react";
+import React, {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Check, ChevronsUpDown, Plus } from "lucide-react";
+import { Check, ChevronsUpDown, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -25,9 +30,21 @@ import {
   addStageSchema,
   confItemSchema,
 } from "@/app/candytype/add/form/addStage.schema";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
 export type AddStageFormHandle = {
   submit: () => void;
@@ -46,54 +63,64 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
     const form = useForm<z.infer<typeof addStageSchema>>({
       resolver: zodResolver(addStageSchema),
       defaultValues: {
-        name: name ?? "",
+        name: name,
+        conf_item: [
+          {
+            conf_name: "estimated time",
+            conf_setting: "",
+          },
+        ],
       },
     });
     // "mixer_settings","cooker_settings", "extruder_settings", "packaging_settings"
-// "mixer_settings": ["torque","estimated time"],
-// "cooker_settings":["temperature", "estimated time"],
-// "extruder_settings":["shaper", "estimated time"],
-// "packaging_settings":["per quantity", "estimated time"],
+    // "mixer_settings": ["torque","estimated time"],
+    // "cooker_settings":["temperature", "estimated time"],
+    // "extruder_settings":["shaper", "estimated time"],
+    // "packaging_settings":["per quantity", "estimated time"],
 
-    const stagesName : Array<{ value: string; label: string }> = [
+    const stagesName: Array<{ value: string; label: string }> = [
       {
-        value : "mixer_settings" ,
+        value: "mixer_settings",
         label: "mixer_settings",
       },
       {
-        value : "cooker_settings" ,
+        value: "cooker_settings",
         label: "cooker_settings",
       },
       {
-        value : "extruder_settings" ,
+        value: "extruder_settings",
         label: "extruder_settings",
       },
       {
-        value : "packaging_settings" ,
+        value: "packaging_settings",
         label: "packaging_settings",
-      }
+      },
     ];
-    const configNames : Array<{ value: string; label: string }> = [
+    const configNames: Array<{ value: string; label: string }> = [
       {
-        value : "torque" ,
+        value: "torque",
         label: "torque",
       },
       {
-        value : "temperature" ,
+        value: "temperature",
         label: "temperature",
       },
+      // {
+      //   value : "shaper" ,
+      //   label: "shaper",
+      // },
       {
-        value : "shaper" ,
-        label: "shaper",
+        value: "packet quanity",
+        label: "packet quanity",
       },
       {
-        value : "packet size" ,
+        value: "packet size",
         label: "packet size",
       },
       {
-        value : "estimated time" ,
+        value: "estimated time",
         label: "estimated time",
-      }
+      },
     ];
 
     const [open, setOpen] = useState(false);
@@ -133,69 +160,69 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className={"flex flex-col "}>
                 <FormLabel className={"font-semibold text-lg"}>
                   Stage Name
                 </FormLabel>
                 <FormControl>
                   {/* <Input placeholder="Full Name" {...field} /> */}
-                  <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open}
-                        className="justify-between"
-                      >
-                        {field.value
-                          ? stagesName?.find(
-                              (stage) => stage.value === field.value,
-                            )?.label
-                          : "Select Stage..."}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[200px] p-0">
-                      <Command>
-                        <CommandList>
-                          <CommandInput placeholder="Search candy type..." />
-                          <CommandEmpty>No Stage found.</CommandEmpty>
-                          <CommandGroup>
-                            {stagesName?.map((stage) => {
-                              return stage?.value ? (
-                                <CommandItem
-                                  key={stage.value}
-                                  value={stage.value}
-                                  onSelect={(currentValue) => {
-                                    
-                                    field.onChange(
-                                      currentValue === field.value
-                                        ? ""
-                                        : currentValue,
-                                    );
-                                    console.log(field.value);
-                                    setOpen(false);
-                                  }}
-                                >
-                                  <Check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      field.value === stage.value
-                                        ? "opacity-100"
-                                        : "opacity-0",
-                                    )}
-                                  />
-                                  {stage.value}
-                                </CommandItem>
-                              ) : (
-                                <></>
-                              );
-                            })}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                  <Label className={"text-lg"}>{field.value}</Label>
+                  {/*<Popover open={open} onOpenChange={setOpen}>*/}
+                  {/*  <PopoverTrigger asChild>*/}
+                  {/*    <Button*/}
+                  {/*      variant="outline"*/}
+                  {/*      role="combobox"*/}
+                  {/*      aria-expanded={open}*/}
+                  {/*      className="justify-between"*/}
+                  {/*    >*/}
+                  {/*      {field.value*/}
+                  {/*        ? stagesName?.find(*/}
+                  {/*            (stage) => stage.value === field.value,*/}
+                  {/*          )?.label*/}
+                  {/*        : "Select Stage..."}*/}
+                  {/*      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />*/}
+                  {/*    </Button>*/}
+                  {/*  </PopoverTrigger>*/}
+                  {/*  <PopoverContent className="w-[200px] p-0">*/}
+                  {/*    <Command>*/}
+                  {/*      <CommandList>*/}
+                  {/*        <CommandInput placeholder="Search candy type..." />*/}
+                  {/*        <CommandEmpty>No Stage found.</CommandEmpty>*/}
+                  {/*        <CommandGroup>*/}
+                  {/*          {stagesName?.map((stage) => {*/}
+                  {/*            return stage?.value ? (*/}
+                  {/*              <CommandItem*/}
+                  {/*                key={stage.value}*/}
+                  {/*                value={stage.value}*/}
+                  {/*                onSelect={(currentValue) => {*/}
+                  {/*                  field.onChange(*/}
+                  {/*                    currentValue === field.value*/}
+                  {/*                      ? ""*/}
+                  {/*                      : currentValue,*/}
+                  {/*                  );*/}
+                  {/*                  console.log(field.value);*/}
+                  {/*                  setOpen(false);*/}
+                  {/*                }}*/}
+                  {/*              >*/}
+                  {/*                <Check*/}
+                  {/*                  className={cn(*/}
+                  {/*                    "mr-2 h-4 w-4",*/}
+                  {/*                    field.value === stage.value*/}
+                  {/*                      ? "opacity-100"*/}
+                  {/*                      : "opacity-0",*/}
+                  {/*                  )}*/}
+                  {/*                />*/}
+                  {/*                {stage.value}*/}
+                  {/*              </CommandItem>*/}
+                  {/*            ) : (*/}
+                  {/*              <></>*/}
+                  {/*            );*/}
+                  {/*          })}*/}
+                  {/*        </CommandGroup>*/}
+                  {/*      </CommandList>*/}
+                  {/*    </Command>*/}
+                  {/*  </PopoverContent>*/}
+                  {/*</Popover>*/}
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -207,10 +234,10 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
             control={form.control}
             name="conf_name"
             render={({ field }) => (
-              <FormItem className={"row-start-2"}>
+              <FormItem className={"row-start-2 flex flex-col mt-2"}>
                 <FormLabel>Configuration Setting Name</FormLabel>
                 <FormControl>
-                <Popover open={openConfig} onOpenChange={setOpenConfig}>
+                  <Popover open={openConfig} onOpenChange={setOpenConfig}>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
@@ -238,7 +265,6 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
                                   key={config.value}
                                   value={config.value}
                                   onSelect={(currentValue) => {
-                                    
                                     field.onChange(
                                       currentValue === field.value
                                         ? ""
@@ -336,6 +362,7 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
                       <TableRow className={"bg-muted text-muted-foreground"}>
                         <TableHead>Name</TableHead>
                         <TableHead>Value</TableHead>
+                        <TableHead></TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -354,6 +381,19 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
                                 field.onChange(newValue);
                               }}
                             />
+                          </TableCell>
+                          <TableCell>
+                            {item.conf_name !== "estimated time" && (
+                              <X
+                                onClick={() => {
+                                  field.onChange(
+                                    field.value.filter(
+                                      (o) => o.conf_name !== item.conf_name,
+                                    ),
+                                  );
+                                }}
+                              />
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}

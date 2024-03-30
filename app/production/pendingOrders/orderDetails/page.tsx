@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -18,7 +18,11 @@ import {
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useAddCandyToAssemblyLineMutation, useGetAssemblyLineQuery, useGetAssemblyLineSuggestionsQuery } from "@/features/ApiSlice/assemblyLineSlice";
+import {
+  useAddCandyToAssemblyLineMutation,
+  useGetAssemblyLineSuggestionsQuery,
+} from "@/features/ApiSlice/assemblyLineSlice";
+import { toast } from "sonner";
 
 //import { useGetAssemblyLineSuggestionQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
@@ -53,20 +57,33 @@ const ProductionOrderDetailsPage = () => {
 
 function Page() {
   const router = useRouter();
-  const {data} = useGetCandyTypeQuery({});
-  const orderDetails : candyTypeData[]  = data ?? [];
+  const { data } = useGetCandyTypeQuery({});
+  const orderDetails: candyTypeData[] = data ?? [];
   const searchParams2 = useSearchParams();
-  const search = searchParams2.get('candyName');
-  const orderId = searchParams2.get('orderId');
-  console.log(orderId)
-  const {data : suggestion , isLoading,isSuccess,isError,error} = useGetAssemblyLineSuggestionsQuery({search});
-  
-  const [addCandyToAssemblyLine] = useAddCandyToAssemblyLineMutation({})
-  
-  const order: candyTypeData | undefined =
-    orderDetails.find((order) => {
-      return order.name == search?? "";
-    } );
+  const search = searchParams2.get("candyName");
+  const orderId = searchParams2.get("orderId");
+  console.log(orderId);
+  const {
+    data: suggestion,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetAssemblyLineSuggestionsQuery({ search });
+
+  const [addCandyToAssemblyLine, status] = useAddCandyToAssemblyLineMutation(
+    {},
+  );
+
+  useEffect(() => {
+    if (status.isSuccess)
+      toast.success("Candy pushed to production Successfully");
+    if (status.isError) toast.error("Candy could not be pushed to production");
+  }, [status.isSuccess, status.isError]);
+
+  const order: candyTypeData | undefined = orderDetails.find((order) => {
+    return order.name == search ?? "";
+  });
   return (
     <div
       className={
@@ -88,13 +105,18 @@ function Page() {
             >
               <h1 className={"text-4xl font-extrabold"}>
                 {order.name.toUpperCase()}
-                <span className={"text-muted-foreground font-normal"}> #{orderId}</span>
+                <span className={"text-muted-foreground font-normal"}>
+                  {" "}
+                  #{orderId}
+                </span>
               </h1>
 
               <div className={"!mt-0"}>
                 {/* <h1 className={"text-xl font-extrabold"}>Estimated time:</h1> */}
                 <text
-                  className={"text-blue-500 text-lg tracking-wide font-semibold"}
+                  className={
+                    "text-blue-500 text-lg tracking-wide font-semibold"
+                  }
                 >
                   {toHoursAndMinutes(order.total_time)}
                 </text>
@@ -157,14 +179,14 @@ function Page() {
 
                 <AccordionContent asChild>
                   <CardContent className={"p-0"}>
-                    <div className={"flex flex-row gap-2 items-center"}>
-                      <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
-                      <div
-                        className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
-                      >
-                        <text>Required</text>
-                      </div>
-                    </div>
+                    {/*<div className={"flex flex-row gap-2 items-center"}>*/}
+                    {/*  <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>*/}
+                    {/*  <div*/}
+                    {/*    className={"px-4 py-1 bg-red-500 text-white rounded-sm"}*/}
+                    {/*  >*/}
+                    {/*    <text>Required</text>*/}
+                    {/*  </div>*/}
+                    {/*</div>*/}
 
                     <Table>
                       <TableHeader>
@@ -206,14 +228,14 @@ function Page() {
 
                 <AccordionContent asChild>
                   <CardContent className={"p-0"}>
-                    <div className={"flex flex-row gap-2 items-center"}>
-                      <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
-                      <div
-                        className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
-                      >
-                        <text>Required</text>
-                      </div>
-                    </div>
+                    {/*<div className={"flex flex-row gap-2 items-center"}>*/}
+                    {/*  <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>*/}
+                    {/*  <div*/}
+                    {/*    className={"px-4 py-1 bg-red-500 text-white rounded-sm"}*/}
+                    {/*  >*/}
+                    {/*    <text>Required</text>*/}
+                    {/*  </div>*/}
+                    {/*</div>*/}
 
                     <Table>
                       <TableHeader>
@@ -255,14 +277,14 @@ function Page() {
 
                 <AccordionContent asChild>
                   <CardContent className={"p-0"}>
-                    <div className={"flex flex-row gap-2 items-center"}>
-                      <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
-                      <div
-                        className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
-                      >
-                        <text>Required</text>
-                      </div>
-                    </div>
+                    {/*<div className={"flex flex-row gap-2 items-center"}>*/}
+                    {/*  <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>*/}
+                    {/*  <div*/}
+                    {/*    className={"px-4 py-1 bg-red-500 text-white rounded-sm"}*/}
+                    {/*  >*/}
+                    {/*    <text>Required</text>*/}
+                    {/*  </div>*/}
+                    {/*</div>*/}
 
                     <Table>
                       <TableHeader>
@@ -304,14 +326,14 @@ function Page() {
 
                 <AccordionContent asChild>
                   <CardContent className={"p-0"}>
-                    <div className={"flex flex-row gap-2 items-center"}>
-                      <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
-                      <div
-                        className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
-                      >
-                        <text>Required</text>
-                      </div>
-                    </div>
+                    {/*<div className={"flex flex-row gap-2 items-center"}>*/}
+                    {/*  <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>*/}
+                    {/*  <div*/}
+                    {/*    className={"px-4 py-1 bg-red-500 text-white rounded-sm"}*/}
+                    {/*  >*/}
+                    {/*    <text>Required</text>*/}
+                    {/*  </div>*/}
+                    {/*</div>*/}
 
                     <Table>
                       <TableHeader>
@@ -338,19 +360,25 @@ function Page() {
               </AccordionItem>
             </Card>
           </Accordion>
-          <Button variant={"secondary"} onClick={()=>{
-            ////Add order to assembly line
-            console.log('click')
-            if(isError){
-              alert("All Assembly Line are occupied")
-            }else if(isSuccess){
-              console.log(suggestion.name)
-              addCandyToAssemblyLine({assemblyLine : suggestion.name, candyType : search, order: orderId});
-              alert(`This order has been added to the production line number : ${suggestion.name}`)
-              router.push(`/production/inLine/orderDetails?candyName=${search}&orderId=${orderId}&assemblyLine=${suggestion.name}`)
-            }
-          }}>
-            Add Item
+          <Button
+            variant={"secondary"}
+            onClick={() => {
+              ////Add order to assembly line
+              if (isError) {
+                toast.error("All Assembly Line are occupied");
+              } else if (isSuccess) {
+                addCandyToAssemblyLine({
+                  assemblyLine: suggestion.name,
+                  candyType: search,
+                  order: orderId,
+                });
+                router.push(
+                  `/production/inLine/orderDetails?candyName=${search}&orderId=${orderId}&assemblyLine=${suggestion.name}`,
+                );
+              }
+            }}
+          >
+            Push to Production
           </Button>
         </>
       )}
