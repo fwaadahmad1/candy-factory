@@ -37,7 +37,7 @@ export type OrderData = {
   dueDate: string;
   client_name: string;
   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
-  candies_status: [];
+
   candies: Array<string>;
   quantity_candies: Array<number>;
   candies_status: string;

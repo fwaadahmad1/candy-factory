@@ -151,6 +151,7 @@ const TopBar = () => {
           >
             {notifications.map((message, i) => {
               return(<NotificationContent
+               key={i}
                 title={`Message ${i+1}`}
                 description= {message}
               />)

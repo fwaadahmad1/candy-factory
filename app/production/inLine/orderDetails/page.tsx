@@ -46,8 +46,8 @@ type OrderData = {
   dueDate: String;
   client_name: string;
   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
-  candies: [];
-  quantity_candies: [];
+  candies: string[];
+  quantity_candies: number[];
   candies_status: string;
 };
 
@@ -60,8 +60,8 @@ type pendingOrderSchema = {
   dueDate: string;
   client_name: string;
   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
-  candies_status: [];
-  candies: [];
+  candies_status: string[];
+  candies: string[];
 };
 const convertToPending = (data?: OrderData[]) => {
   const candies: any = [];

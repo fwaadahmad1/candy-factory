@@ -73,7 +73,7 @@ const PendingOrdersPage = () => {
       stopAssemblyLine(assemblyLineContext);
       dispatch(setAssemblyContext(""));
     }
-  },[assemblyLineContext])
+  },[assemblyLineContext,dispatch,stopAssemblyLine])
   useEffect(() => {
     if (addAssemblyLineStatus.isSuccess)
       toast.success("Assembly Line added Successfully");
