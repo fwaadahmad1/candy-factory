@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import {
@@ -31,6 +31,8 @@ import { addAssemblyLineSchema } from "@/app/production/inLine/form/addAssemblyL
 import AddAssemblyLineForm, {
   AddAssemblyLineFormHandle,
 } from "@/app/production/inLine/form/addAssemblyLine.form";
+import { toast } from "sonner";
+import { DialogBody } from "next/dist/client/components/react-dev-overlay/internal/components/Dialog";
 
 export type AssemblyLineSchema = {
   name: string;
@@ -44,14 +46,35 @@ export type AssemblyLineSchema = {
 const PendingOrdersPage = () => {
   const router = useRouter();
   const { data: assemblyLineData } = useGetAssemblyLineQuery({});
-  const [stopAssemblyLine] = useAddStopAssemblyLineMutation({});
-  const [addAssemblyLine] = useAddAssemblyLineMutation({});
+  const [stopAssemblyLine, stopAssemblyLineStatus] =
+    useAddStopAssemblyLineMutation({});
+  const [addAssemblyLine, addAssemblyLineStatus] = useAddAssemblyLineMutation(
+    {},
+  );
 
   const addAssemblyLineFormRef = useRef<AddAssemblyLineFormHandle | null>(null);
 
   const [addAssemblyLineDialog, setAddAssemblyLineDialog] = useState<
     z.infer<typeof addAssemblyLineSchema> | boolean
   >(false);
+
+  const [stopAssemblyLineDialog, setStopAssemblyLineDialog] = useState<
+    string | boolean
+  >(false);
+
+  useEffect(() => {
+    if (addAssemblyLineStatus.isSuccess)
+      toast.success("Assembly Line added Successfully");
+    if (addAssemblyLineStatus.isError)
+      toast.error("Assembly Line could not be added");
+  }, [addAssemblyLineStatus.isSuccess, addAssemblyLineStatus.isError]);
+
+  useEffect(() => {
+    if (stopAssemblyLineStatus.isSuccess)
+      toast.success("Assembly Line stopped Successfully");
+    if (stopAssemblyLineStatus.isError)
+      toast.error("Assembly Line could not be stopped");
+  }, [stopAssemblyLineStatus.isSuccess, stopAssemblyLineStatus.isError]);
   return (
     <div className={"flex flex-col w-full gap-2"}>
       {/*<Card className={"w-full"}>*/}
@@ -113,6 +136,37 @@ const PendingOrdersPage = () => {
         </Dialog>
       </div>
 
+      <Dialog
+        open={!!stopAssemblyLineDialog}
+        onOpenChange={(open) => !open && setStopAssemblyLineDialog(false)}
+      >
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Stop Assembly Line</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <div>Do you really want to stop the production?</div>
+          </DialogBody>
+          <DialogFooter>
+            <DialogClose asChild={true}>
+              <Button variant={"ghost"}>Cancel</Button>
+            </DialogClose>
+            <DialogClose>
+              <Button
+                variant={"secondary"}
+                onClick={(e) => {
+                  e.preventDefault();
+                  stopAssemblyLine(stopAssemblyLineDialog);
+                  setStopAssemblyLineDialog(false);
+                }}
+              >
+                Confirm
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Card className={"w-full"}>
         <CardContent className={"p-2"}>
           <Table className={"h-full w-full"}>
@@ -141,14 +195,15 @@ const PendingOrdersPage = () => {
                           "bg-red-500",
                         )}
                         onClick={() => {
-                          const isTrue = window.confirm(
-                            "Do you really want to stop the production",
-                          );
-                          console.log(isTrue);
-                          if (isTrue) {
-                            console.log(`l${data.name.trim()}l`, "clicked");
-                            stopAssemblyLine(data.name);
-                          }
+                          setStopAssemblyLineDialog(data.name);
+                          // const isTrue = window.confirm(
+                          //   "Do you really want to stop the production",
+                          // );
+                          // console.log(isTrue);
+                          // if (isTrue) {
+                          //   console.log(`l${data.name.trim()}l`, "clicked");
+                          //   stopAssemblyLine(data.name);
+                          // }
                         }}
                       >
                         STOP

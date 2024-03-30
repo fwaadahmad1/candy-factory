@@ -11,7 +11,7 @@ import { addSettingsSlice } from "./ApiSlice/addSettings";
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([
-    logger,
+    // logger,
     orderSlice.middleware,
     ingredientSlice.middleware,
     candyTypeSlice.middleware,

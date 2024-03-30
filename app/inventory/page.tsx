@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Pencil } from "lucide-react";
 import {
@@ -30,6 +30,7 @@ import AddInventoryForm, {
 } from "@/app/inventory/form/addInventory.form";
 import { z } from "zod";
 import { addInventorySchema } from "@/app/inventory/form/addInventory.schema";
+import { toast } from "sonner";
 
 type ingredientSchema = {
   name: string;
@@ -44,14 +45,25 @@ type ingredientAddSchema = {
 };
 const InventoryPage = () => {
   const { data } = useGetIngredientQuery({});
-  const [addInventory] = useAddIngredientMutation({});
-  const [updateInventory] = useUpdateIngredientMutation({});
+  const [addInventory, addStatus] = useAddIngredientMutation({});
+  const [updateInventory, updateStatus] = useUpdateIngredientMutation({});
   const ingredientsData: ingredientSchema[] = data;
 
   const addInventoryFormRef = useRef<AddInventoryFormHandle | null>(null);
   const [addInventoryDialog, setAddInventoryDialog] = useState<
     z.infer<typeof addInventorySchema> | boolean
   >(false);
+
+  useEffect(() => {
+    if (addStatus.isSuccess) toast.success("Ingredient added Successfully");
+    if (addStatus.isError) toast.error("Ingredient could not be added");
+  }, [addStatus.isSuccess, addStatus.isError]);
+
+  useEffect(() => {
+    if (updateStatus.isSuccess)
+      toast.success("Ingredient updated Successfully");
+    if (updateStatus.isError) toast.error("Ingredient could not be updated");
+  }, [updateStatus.isSuccess, updateStatus.isError]);
 
   return (
     <div className={"flex flex-col w-full gap-2"}>
