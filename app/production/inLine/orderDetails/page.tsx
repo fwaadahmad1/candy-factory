@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/accordion";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 import { useSearchParams } from "next/navigation";
-import { useGetAssemblyLineTimeStampQuery } from "@/features/ApiSlice/assemblyLineSlice";
+import { useAddStopAssemblyLineMutation, useGetAssemblyLineTimeStampQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
 type candyTypeData = {
   name: string;
@@ -35,11 +35,7 @@ type candyTypeData = {
   quantity_packaging_settings: string;
 };
 
-const toHoursAndMinutes = (totalMinutes: number) => {
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = Math.round(totalMinutes % 60);
-  return `${hours}h${minutes}min`;
-};
+
 const ProductionOrderDetailsPage = () => {
   return (
     <Suspense>
@@ -54,8 +50,9 @@ const calculateRemainingTime = (timestamp: number) => {
   const duration = moment.duration(timeDifference);
   const hours = duration.hours();
   const minutes = duration.minutes();
-  return `${hours} hours ${minutes} minutes`;
+  return {hours,minutes,timeDifference};
 };
+
 
 function Page() {
   const { data } = useGetCandyTypeQuery({});
@@ -66,10 +63,14 @@ function Page() {
   const { data: assemblyLineData } = useGetAssemblyLineTimeStampQuery({
     assemblyLine: assemblyLineName,
   });
-  console.log(assemblyLineData);
+  // const [stopAL] = useAddStopAssemblyLineMutation({})
   const endTime = assemblyLineData?.ending_timestamp;
-  const timeRemaining = calculateRemainingTime(endTime);
 
+  const timeRemaining = calculateRemainingTime(endTime);
+// if (timeRemaining.timeDifference<0){
+  //   stopAL(assemblyLineName);
+  // }
+  
   const order: candyTypeData | undefined = orderDetails.find((order) => {
     return order.name == search ?? "";
   });
@@ -102,7 +103,7 @@ function Page() {
                 <text
                   className={"text-red-500 text-lg tracking-wide font-semibold"}
                 >
-                  {timeRemaining}
+                  {`${timeRemaining.hours}H${timeRemaining.minutes}M`}
                 </text>
               </div>
             </CardHeader>

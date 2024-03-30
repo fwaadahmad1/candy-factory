@@ -59,7 +59,7 @@ const CandyTypePage = () => {
             router.push("/candytype/add/");
           }}
         >
-          Add New Candy Type
+          Add New Candy
         </Button>
       </div>
 
