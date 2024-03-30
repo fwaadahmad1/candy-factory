@@ -48,12 +48,12 @@ export default function useDashboard(): {
       chartData.push({
         type: "pending",
         date: date.toLocaleDateString(),
-        orders: totalOrders.filter((o) => !(o.status === "COMPLETED")).length,
+        orders: totalOrders.filter((o) => o.status === "PENDING").length,
       });
       chartData.push({
         type: "completed",
         date: date.toLocaleDateString(),
-        orders: totalOrders.length,
+        orders: totalOrders.filter((o) => o.status === "COMPLETED").length,
       });
     }
 
