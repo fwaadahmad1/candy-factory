@@ -1,9 +1,10 @@
+import { API_BASE_URL } from "@/constants";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const addSettingsSlice = createApi({
   reducerPath: "addSettings",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://15.206.80.216",
+    baseUrl: API_BASE_URL,
   }),
   tagTypes: ["AddSettings"],
   endpoints: (builder) => ({
