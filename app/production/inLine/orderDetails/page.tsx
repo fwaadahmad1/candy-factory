@@ -1,5 +1,6 @@
 "use client";
 import React, { Suspense } from "react";
+import moment from 'moment';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -47,13 +48,16 @@ const ProductionOrderDetailsPage = () => {
   );
 };
 
-const giveRemainingTime = (endTime: string) => {
-  const endTimeInTimeStamp = new Date(endTime).getTime();
-  const currentTime = new Date().getTime();
-  const diff = endTimeInTimeStamp - currentTime;
-  return toHoursAndMinutes(diff/60000);
 
-}
+
+const calculateRemainingTime = (timestamp: number) => {
+  const currentTime = Date.now(); 
+  const timeDifference = timestamp - currentTime;
+  const duration = moment.duration(timeDifference);
+  const hours = duration.hours();
+  const minutes = duration.minutes();
+  return `${hours} hours ${minutes} minutes`;
+};
 function Page() {
   const { data } = useGetCandyTypeQuery({});
   const orderDetails: candyTypeData[] = data ?? [];
@@ -63,7 +67,7 @@ function Page() {
   const {data : assemblyLineData} = useGetAssemblyLineTimeStampQuery({assemblyLine : assemblyLineName});
   console.log(assemblyLineData);
   const endTime = assemblyLineData?.ending_timestamp;
-  const timeRemaining = giveRemainingTime(endTime)
+  const timeRemaining = calculateRemainingTime(endTime)
   
   const order: candyTypeData | undefined = orderDetails.find((order) => {
     return order.name == search ?? "";
