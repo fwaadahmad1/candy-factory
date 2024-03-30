@@ -37,10 +37,23 @@ export type OrderData = {
   dueDate: string;
   client_name: string;
   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
+  candies_status: [];
   candies: Array<string>;
   quantity_candies: Array<number>;
 };
 
+export type pendingOrdersSchema = {
+  candyName: string;
+  qty: string;
+  id: number;
+  due_date: string;
+  date: string;
+  dueDate: string;
+  client_name: string;
+  status: "COMPLETED" | "PENDING" | "IN-PROCESS";
+  candies_status: [];
+  candies: [];
+}
 export type orderItemSchema = {
   candyType: string;
   quantity: string;

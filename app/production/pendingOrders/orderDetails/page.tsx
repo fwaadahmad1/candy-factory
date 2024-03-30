@@ -58,11 +58,13 @@ const ProductionOrderDetailsPage = () => {
 function Page() {
   const router = useRouter();
   const { data } = useGetCandyTypeQuery({});
+
   const orderDetails: candyTypeData[] = data ?? [];
   const searchParams2 = useSearchParams();
   const search = searchParams2.get("candyName");
   const orderId = searchParams2.get("orderId");
-  console.log(orderId);
+  const batchSize = Number(searchParams2.get("size"));
+
   const {
     data: suggestion,
     isLoading,
@@ -81,9 +83,12 @@ function Page() {
     if (status.isError) toast.error("Candy could not be pushed to production");
   }, [status.isSuccess, status.isError]);
 
+  
   const order: candyTypeData | undefined = orderDetails.find((order) => {
     return order.name == search ?? "";
   });
+
+
   return (
     <div
       className={
@@ -118,7 +123,7 @@ function Page() {
                     "text-blue-500 text-lg tracking-wide font-semibold"
                   }
                 >
-                  {toHoursAndMinutes(order.total_time)}
+                  {toHoursAndMinutes(order.total_time * batchSize)}
                 </text>
               </div>
             </CardHeader>
