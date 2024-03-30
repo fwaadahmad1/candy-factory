@@ -123,7 +123,7 @@ const AddCandyForm = forwardRef<AddCandyFormHandle, AddCandyFormProps>(
             control={form.control}
             name="ingredient"
             render={({ field }) => (
-              <FormItem className={"row-start-2"}>
+              <FormItem className={"row-start-2 flex flex-col mt-2"}>
                 <FormLabel>Ingredient</FormLabel>
                 <FormControl>
                   {/* <Input placeholder="Type of Ingredient" {...field} /> */}
