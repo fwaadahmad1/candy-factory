@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowRight, Search, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,13 +13,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
-import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
+import {
+  useDeleteCandyTypeMutation,
+  useGetCandyTypeQuery,
+} from "@/features/ApiSlice/candyTypeSlice";
 
 export type CandySchema = {
   name: string;
   ingredients: string[];
   quantity_ingredient: string;
-  total_time: number,
+  total_time: number;
   mixer_settings: string[];
   cooker_settings: string[];
   extruder_settings: string[];
@@ -32,6 +35,7 @@ export type CandySchema = {
 const CandyTypePage = () => {
   const router = useRouter();
   const { data: candyData } = useGetCandyTypeQuery({});
+  const [deleteCandyType] = useDeleteCandyTypeMutation({});
   return (
     <div className={"flex flex-col w-full h-full gap-2"}>
       <Card className={"w-full"}>
@@ -56,25 +60,51 @@ const CandyTypePage = () => {
               <TableRow>
                 <TableHead>Candy Type</TableHead>
                 <TableHead className={"w-2"}></TableHead>
+                <TableHead className={"w-2"}></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {candyData ? candyData.map((candy, index) => (
-                <TableRow key={index} onClick={() =>
-                  router.push(
-                    `candytype/candyDescription?candyName=${candy.name}`,
-                  )
-                }>
-                  <TableCell className="font-medium">{candy.name}</TableCell>
-                  <TableCell>
-                    <ArrowRight strokeWidth={1} className={"text-secondary"} />
-                  </TableCell>
+              {candyData ? (
+                candyData.map((candy, index) => (
+                  <TableRow key={index}>
+                    <TableCell
+                      className="font-medium"
+                      onClick={() =>
+                        router.push(
+                          `candytype/candyDescription?candyName=${candy.name}`,
+                        )
+                      }
+                    >
+                      {candy.name}
+                    </TableCell>
+                    <TableCell
+                      onClick={() =>
+                        router.push(
+                          `candytype/candyDescription?candyName=${candy.name}`,
+                        )
+                      }
+                    >
+                      <ArrowRight
+                        strokeWidth={1}
+                        className={"text-secondary"}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Trash
+                        strokeWidth={1}
+                        className={"text-secondary"}
+                        onClick={() => {
+                          deleteCandyType(candy);
+                        }}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell>No Data Available</TableCell>
                 </TableRow>
-              )) :
-              <TableRow> 
-                <TableCell>No Data Available</TableCell>
-              </TableRow>
-              }
+              )}
             </TableBody>
           </Table>
         </CardContent>

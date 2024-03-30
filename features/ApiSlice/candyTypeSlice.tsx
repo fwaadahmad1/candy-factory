@@ -27,11 +27,34 @@ export const candyTypeSlice = createApi({
           body: candyData,
         };
       },
-      invalidatesTags: [{ type: "CandyType", id: "candyType" }],
+      invalidatesTags: [
+        {
+          type: "CandyType",
+          id: "candyType",
+        },
+      ],
+    }),
+    deleteCandyType: builder.mutation({
+      query: (candyData: CandySchema) => {
+        return {
+          url: `candy/delete/${candyData.name}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: [
+        {
+          type: "CandyType",
+          id: "candyType",
+        },
+      ],
     }),
   }),
 });
 
-export const { useAddCandyTypeMutation, useGetCandyTypeQuery } = candyTypeSlice;
+export const {
+  useAddCandyTypeMutation,
+  useGetCandyTypeQuery,
+  useDeleteCandyTypeMutation,
+} = candyTypeSlice;
 
 export const candyTypeReducer = candyTypeSlice.reducer;

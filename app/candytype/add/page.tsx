@@ -51,10 +51,13 @@ const AddCandyType = () => {
       name: "extruder_settings",
       conf_item: [],
     },
-    { name: "packaging_settings", conf_item: [] },
+    {
+      name: "packaging_settings",
+      conf_item: [],
+    },
   ]);
 
-  const [addCandyType, error] = useAddCandyTypeMutation({});
+  const [addCandyType, status] = useAddCandyTypeMutation({});
   // const[addAddSettings] = useAddCandyTypeMutation({})
   const stageFormRefs = useRef<Array<AddStageFormHandle | null>>([]);
   const candyFormRef = useRef<AddCandyFormHandle>(null);
@@ -116,12 +119,15 @@ const AddCandyType = () => {
       };
       try {
         addCandyType(candyData);
-        router.back();
       } catch (error) {
         console.log(error);
       }
     }
   }, [addCandyType, candyForm, hasErrors, router, stageForms]);
+
+  useEffect(() => {
+    status.isSuccess && router.back();
+  }, [router, status.isSuccess]);
 
   function onError() {
     setHasErrors(true);

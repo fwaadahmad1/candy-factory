@@ -64,6 +64,12 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
       resolver: zodResolver(addStageSchema),
       defaultValues: {
         name: name,
+        conf_item: [
+          {
+            conf_name: "estimated time",
+            conf_setting: "",
+          },
+        ],
       },
     });
     // "mixer_settings","cooker_settings", "extruder_settings", "packaging_settings"
@@ -377,15 +383,17 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
                             />
                           </TableCell>
                           <TableCell>
-                            <X
-                              onClick={() => {
-                                field.onChange(
-                                  field.value.filter(
-                                    (o) => o.conf_name !== item.conf_name,
-                                  ),
-                                );
-                              }}
-                            />
+                            {item.conf_name !== "estimated time" && (
+                              <X
+                                onClick={() => {
+                                  field.onChange(
+                                    field.value.filter(
+                                      (o) => o.conf_name !== item.conf_name,
+                                    ),
+                                  );
+                                }}
+                              />
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}
