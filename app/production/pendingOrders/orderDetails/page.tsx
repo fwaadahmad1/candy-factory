@@ -350,7 +350,7 @@ function Page() {
               router.push(`/production/inLine/orderDetails?candyName=${search}&orderId=${orderId}&assemblyLine=${suggestion.name}`)
             }
           }}>
-            Add Item
+            Push to Production
           </Button>
         </>
       )}

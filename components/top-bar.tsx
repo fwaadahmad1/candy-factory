@@ -111,16 +111,16 @@ const TopBar = () => {
             <AvatarFallback
               className={"bg-secondary/80 text-secondary-foreground"}
             >
-              S
+              SA
             </AvatarFallback>
           </Avatar>
 
           <div className={"flex flex-col items-start"}>
-            <p className={"text-sm font-semibold"}>Sabrina</p>
-            <p className={"text-xs text-muted-foreground"}>Admin</p>
+            {/* <p className={"text-sm font-semibold"}>Sabrina</p> */}
+            <p className={"text-xs text-muted-foreground"}>System Admin</p>
           </div>
 
-          <ChevronDownCircle strokeWidth={1} size={20} />
+          {/* <ChevronDownCircle strokeWidth={1} size={20} /> */}
         </Button>
       </div>
     </div>

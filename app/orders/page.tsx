@@ -90,7 +90,7 @@ const OrdersPage = () => {
             <Input placeholder="Your search..." className="rounded-full pl-8" />
           </div>
           <Button variant={"secondary"} onClick={() => setAddOrderDialog(true)}>
-            Add Item
+            Add Order
           </Button>
           <Dialog
             open={addOrderDialog}

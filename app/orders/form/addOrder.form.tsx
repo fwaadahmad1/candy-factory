@@ -85,7 +85,7 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
       onSubmit(values);
     }
 
-    const lastOrder: OrderData = orders?.reduce(
+    const lastOrder: OrderData = (orders ?? []).reduce(
       (acc: OrderData, curr: OrderData) => {
         let date1 = convertDate(curr.due_date);
         let date2 = convertDate(acc.due_date);
@@ -93,7 +93,7 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
           return curr;
         }
         return acc;
-      },
+      }, {} as OrderData
     );
     useImperativeHandle(
       ref,
@@ -116,7 +116,7 @@ const AddOrderForm = forwardRef<AddOrderFormHandle, AddOrderFormProps>(
             return v?.name
               ? [
                   ...a,
-                  { value: v.name.toLowerCase(), label: capitalize(v.name) },
+                  { value: v.name, label: capitalize(v.name) },
                 ]
               : a;
           },

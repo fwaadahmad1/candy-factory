@@ -82,9 +82,13 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
         value : "temperature" ,
         label: "temperature",
       },
+      // {
+      //   value : "shaper" ,
+      //   label: "shaper",
+      // },
       {
-        value : "shaper" ,
-        label: "shaper",
+        value : "packet quanity" ,
+        label: "packet quanity",
       },
       {
         value : "packet size" ,

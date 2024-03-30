@@ -23,6 +23,7 @@ type OrderData = {
   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
   candies: [];
   quantity_candies: [];
+  candies_status: string;
 };
 
 type pendingOrderSchema = {
@@ -34,8 +35,8 @@ type pendingOrderSchema = {
   dueDate: string;
   client_name: string;
   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
+  candies_status: [];
   candies: [];
-  quantity_candies: [];
 };
 
 const converDate = (dateString : String) =>{
@@ -56,10 +57,16 @@ const convertToPending = (data?: OrderData[]) => {
   const candies: any = [];
   data?.forEach((order) => {
     const quantity = JSON.parse(`${order.quantity_candies}`);
+    const candies_status = JSON.parse(order.candies_status);
 
     order.candies.forEach((candy, i) => {
-      const newObj = { ...order, [`candyName`]: candy, [`qty`]: quantity[i] };
-      candies.push(newObj);
+      if (candies_status[candy]=="PENDING"){
+
+        const newObj = { ...order, [`candyName`]: candy, [`qty`]: quantity[i] };
+        candies.push(newObj);
+
+      }
+     
     });
   });
 
@@ -69,7 +76,6 @@ const ProductsInLinePage = () => {
   const { data: pendingOrders, isLoading, error } = useGetOrdersQuery({});
   const { data: candyData } = useGetCandyTypeQuery({});
   const pen: pendingOrderSchema[] = convertToPending(pendingOrders);
-  console.log(pen);
   const router = useRouter();
   console.log(converDate(pen[0]?.due_date))
   pen?.sort((a,b) => {
