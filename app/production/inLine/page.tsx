@@ -33,6 +33,10 @@ import AddAssemblyLineForm, {
 } from "@/app/production/inLine/form/addAssemblyLine.form";
 import { toast } from "sonner";
 import { DialogBody } from "next/dist/client/components/react-dev-overlay/internal/components/Dialog";
+import { useDispatch, useSelector } from "react-redux";
+import { setNotifications } from "@/features/notificationSlice/notificationContext";
+import { RootState } from "@/features/store";
+import { setAssemblyContext } from "@/features/currAssembly/currAssemblySlice";
 
 export type AssemblyLineSchema = {
   name: string;
@@ -44,6 +48,9 @@ export type AssemblyLineSchema = {
 };
 
 const PendingOrdersPage = () => {
+  const assemblyLineContext = useSelector((state : RootState) => state.currAssembly.asseblyLineName );
+ 
+  const dispatch = useDispatch();
   const router = useRouter();
   const { data: assemblyLineData } = useGetAssemblyLineQuery({});
   const [stopAssemblyLine, stopAssemblyLineStatus] =
@@ -61,7 +68,12 @@ const PendingOrdersPage = () => {
   const [stopAssemblyLineDialog, setStopAssemblyLineDialog] = useState<
     string | boolean
   >(false);
-
+  useEffect(()=> {
+    if(assemblyLineContext != ""){
+      stopAssemblyLine(assemblyLineContext);
+      dispatch(setAssemblyContext(""));
+    }
+  },[assemblyLineContext,dispatch,stopAssemblyLine])
   useEffect(() => {
     if (addAssemblyLineStatus.isSuccess)
       toast.success("Assembly Line added Successfully");
@@ -196,6 +208,7 @@ const PendingOrdersPage = () => {
                         )}
                         onClick={() => {
                           setStopAssemblyLineDialog(data.name);
+                          dispatch(setNotifications(`Production of ${data.candy} has been stoped`))
                           // const isTrue = window.confirm(
                           //   "Do you really want to stop the production",
                           // );

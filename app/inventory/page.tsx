@@ -136,7 +136,7 @@ const InventoryPage = () => {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[150px]">Ingredient</TableHead>
-                <TableHead className="w-[150px]">Quantity</TableHead>
+                <TableHead className="w-[150px]">Quantity (Kg)</TableHead>
                 <TableHead className="w-[200px]">Refill</TableHead>
                 <TableHead></TableHead>
               </TableRow>
