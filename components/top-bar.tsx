@@ -12,15 +12,33 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/features/store";
+import { setNotifications } from "@/features/notificationSlice/notificationContext";
 
 const TopBar = () => {
+  const notifications = useSelector((state : RootState) => state.notifications.notifications);
+  // const dispatch = useDispatch();
+  // console.log(notifications);
+  // useEffect(() => {
+  //   const data = window.localStorage.getItem('notifications') ?? null;
+  //   if(data != null){
+
+  //     dispatch(setNotifications(data));
+  //   }
+    
+  // },[])
+  // useEffect(() => {
+  //   window.localStorage.setItem('notifications' , JSON.stringify(notifications))
+  // }, [notifications]);
+  
   const path = usePathname().split("/").filter(Boolean);
 
   const navLink = NavRoutes.find((o) => o.path.includes(`/${path[0]}`));
@@ -131,18 +149,21 @@ const TopBar = () => {
             className="bg-background p-2 flex flex-col gap-2"
             side={"bottom"}
           >
-            <NotificationContent
-              title="Task 1"
-              description="Task 1 Completed"
-            />
-            <NotificationContent
+            {notifications.map((message, i) => {
+              return(<NotificationContent
+                title={`Message ${i+1}`}
+                description= {message}
+              />)
+            })}
+            
+            {/* <NotificationContent
               title="Task 2"
               description="Task 2 Completed"
             />
             <NotificationContent
               title="Task 3"
               description="Task 3 Completed"
-            />
+            /> */}
           </PopoverContent>
         </Popover>
       </div>

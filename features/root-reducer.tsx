@@ -4,6 +4,8 @@ import { ingredientReducer } from "./ApiSlice/ingredientSlice";
 import { candyTypeReducer } from "./ApiSlice/candyTypeSlice";
 import { assemblyLineReducer } from "./ApiSlice/assemblyLineSlice";
 import { addSettingsReducer } from "./ApiSlice/addSettings";
+import { notificationReducer } from "./notificationSlice/notificationContext";
+import { currAssemblyReducer } from "./currAssembly/currAssemblySlice";
 
 export const rootReducer = combineReducers({
   orders: orderReducer,
@@ -11,4 +13,6 @@ export const rootReducer = combineReducers({
   candyType: candyTypeReducer,
   assemblyLine: assemblyLineReducer,
   addSettings: addSettingsReducer,
+  notifications : notificationReducer,
+  currAssembly: currAssemblyReducer,
 });

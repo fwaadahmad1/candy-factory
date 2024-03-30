@@ -23,6 +23,8 @@ import {
   useGetAssemblyLineSuggestionsQuery,
 } from "@/features/ApiSlice/assemblyLineSlice";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { setNotifications } from "@/features/notificationSlice/notificationContext";
 
 //import { useGetAssemblyLineSuggestionQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
@@ -56,6 +58,7 @@ const ProductionOrderDetailsPage = () => {
 };
 
 function Page() {
+  const dispatch = useDispatch();
   const router = useRouter();
   const { data } = useGetCandyTypeQuery({});
 
@@ -377,6 +380,7 @@ function Page() {
                   candyType: search,
                   order: orderId,
                 });
+                dispatch(setNotifications(`${search} was added to the production line ${suggestion.name}`))
                 router.push(
                   `/production/inLine/orderDetails?candyName=${search}&orderId=${orderId}&assemblyLine=${suggestion.name}`,
                 );

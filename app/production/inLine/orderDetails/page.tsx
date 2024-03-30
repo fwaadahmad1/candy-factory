@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import moment from "moment";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -21,6 +21,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAddStopAssemblyLineMutation, useGetAssemblyLineTimeStampQuery } from "@/features/ApiSlice/assemblyLineSlice";
 import { useGetOrdersQuery } from "@/features/ApiSlice/orderSlice";
 import { BATCH_SIZE } from "@/constants";
+import { useDispatch } from "react-redux";
+import { setNotifications } from "@/features/notificationSlice/notificationContext";
+import { setAssemblyContext } from "@/features/currAssembly/currAssemblySlice";
 
 type candyTypeData = {
   name: string;
@@ -97,6 +100,7 @@ const calculateRemainingTime = (timestamp: number, batchNumber : number) => {
 };
 
 function Page() {
+  const dispatch = useDispatch();
   const router = useRouter();
   const { data } = useGetCandyTypeQuery({});
   const { data: pendingOrders, isLoading, error } = useGetOrdersQuery({});
@@ -124,13 +128,17 @@ function Page() {
   
   const timeRemaining = calculateRemainingTime(endTime, batchNumber) ;
   
-  if (timeRemaining.timeDifference<0){
-    router.push(`/production/inLine`);
-    stopAL(assemblyLineName);
-  }
+ 
   const order: candyTypeData | undefined = orderDetails.find((order) => {
     return order.name == search ?? "";
   });
+
+    if (timeRemaining.timeDifference<=0){
+      dispatch(setAssemblyContext(assemblyLineName));
+      dispatch(setNotifications(`Production of ${order?.name} is completed`));
+      router.push(`/production/inLine`);
+    }
+
   return (
     <div
       className={

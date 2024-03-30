@@ -17,7 +17,10 @@ export const store = configureStore({
       candyTypeSlice.middleware,
       assemblyLineSlice.middleware,
       addSettingsSlice.middleware,
+      
     ]),
 });
 
 setupListeners(store.dispatch);
+
+export type RootState = ReturnType<typeof store.getState>
