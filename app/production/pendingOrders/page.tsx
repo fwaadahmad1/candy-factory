@@ -91,17 +91,17 @@ const ProductsInLinePage = () => {
   });
   pen.filter((candy) => {
     candy.status === "PENDING";
-  })
+  });
   return (
     <div className={"flex flex-col w-full gap-2"}>
-      <Card className={"w-full"}>
-        <CardContent className={"p-2"}>
-          <div className="relative flex items-center max-w-md rounded-full ml-4 my-2">
-            <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Your search..." className="rounded-full pl-8" />
-          </div>
-        </CardContent>
-      </Card>
+      {/*<Card className={"w-full"}>*/}
+      {/*  <CardContent className={"p-2"}>*/}
+      {/*    <div className="relative flex items-center max-w-md rounded-full ml-4 my-2">*/}
+      {/*      <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />*/}
+      {/*      <Input placeholder="Your search..." className="rounded-full pl-8" />*/}
+      {/*    </div>*/}
+      {/*  </CardContent>*/}
+      {/*</Card>*/}
 
       <Card className={"w-full"}>
         <CardContent className={"p-2"}>

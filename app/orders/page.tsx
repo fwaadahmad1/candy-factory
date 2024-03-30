@@ -1,7 +1,6 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -83,74 +82,77 @@ const OrdersPage = () => {
   const [addOrderDialog, setAddOrderDialog] = useState<boolean>(false);
   return (
     <div className={"flex flex-col w-full gap-2"}>
-      <Card className={"w-full"}>
-        <CardContent className={"py-2 px-6 flex items-center justify-between"}>
-          <div className="relative flex items-center max-w-md rounded-full my-2">
-            <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Your search..." className="rounded-full pl-8" />
-          </div>
-          <Button variant={"secondary"} onClick={() => setAddOrderDialog(true)}>
-            Add Order
-          </Button>
-          <Dialog
-            open={addOrderDialog}
-            onOpenChange={(open) => !open && setAddOrderDialog(false)}
-          >
-            <DialogContent className="sm:max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Add Order</DialogTitle>
-                <DialogDescription>Add an order to queue</DialogDescription>
-              </DialogHeader>
-              <AddOrderForm
-                ref={addOrderFormRef}
-                orders={orders ?? []}
-                onSubmit={(values) => {
-                  setAddOrderDialog(false);
-                  const candyTypes: string[] = [];
-                  const quantities: Number[] = [];
-                  values.orderItem.forEach((item, i) => {
-                    candyTypes[i] = item.candyType;
-                  });
-                  values.orderItem.forEach((item, i) => {
-                    quantities[i] = item.quantity;
-                  });
+      {/*<Card className={"w-full"}>*/}
+      {/*  <CardContent className={"py-2 px-6 flex items-center justify-between"}>*/}
+      {/*    <div className="relative flex items-center max-w-md rounded-full my-2">*/}
+      {/*      <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />*/}
+      {/*      <Input placeholder="Your search..." className="rounded-full pl-8" />*/}
+      {/*    </div>*/}
+      {/*    */}
+      {/*  </CardContent>*/}
+      {/*</Card>*/}
 
-                  const orderPostData: orderPostSchema = {
-                    date: new Date()
-                      .toLocaleDateString("en-GB")
-                      .replaceAll("/", "-"),
-                    due_date: values.dueDate
-                      .toLocaleDateString("en-GB")
-                      .replaceAll("/", "-"),
-                    client_name: values.client_name,
-                    status: "PENDING",
-                    candies: [...candyTypes],
-                    quantity_candies: JSON.stringify(quantities),
-                  };
-                  addOrder(orderPostData);
-                }}
-              />
-              <DialogFooter>
-                <DialogClose asChild={true}>
-                  <Button variant={"ghost"}>Cancel</Button>
-                </DialogClose>
-                <DialogClose>
-                  <Button
-                    variant={"secondary"}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      addOrderFormRef.current?.submit();
-                    }}
-                  >
-                    Confirm
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </CardContent>
-      </Card>
+      <div className={"w-full flex flex-row justify-end"}>
+        <Button variant={"secondary"} onClick={() => setAddOrderDialog(true)}>
+          Add Order
+        </Button>
+        <Dialog
+          open={addOrderDialog}
+          onOpenChange={(open) => !open && setAddOrderDialog(false)}
+        >
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Add Order</DialogTitle>
+              <DialogDescription>Add an order to queue</DialogDescription>
+            </DialogHeader>
+            <AddOrderForm
+              ref={addOrderFormRef}
+              orders={orders ?? []}
+              onSubmit={(values) => {
+                setAddOrderDialog(false);
+                const candyTypes: string[] = [];
+                const quantities: Number[] = [];
+                values.orderItem.forEach((item, i) => {
+                  candyTypes[i] = item.candyType;
+                });
+                values.orderItem.forEach((item, i) => {
+                  quantities[i] = item.quantity;
+                });
 
+                const orderPostData: orderPostSchema = {
+                  date: new Date()
+                    .toLocaleDateString("en-GB")
+                    .replaceAll("/", "-"),
+                  due_date: values.dueDate
+                    .toLocaleDateString("en-GB")
+                    .replaceAll("/", "-"),
+                  client_name: values.client_name,
+                  status: "PENDING",
+                  candies: [...candyTypes],
+                  quantity_candies: JSON.stringify(quantities),
+                };
+                addOrder(orderPostData);
+              }}
+            />
+            <DialogFooter>
+              <DialogClose asChild={true}>
+                <Button variant={"ghost"}>Cancel</Button>
+              </DialogClose>
+              <DialogClose>
+                <Button
+                  variant={"secondary"}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    addOrderFormRef.current?.submit();
+                  }}
+                >
+                  Confirm
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
       <Card className={"w-full"}>
         <CardContent className={"p-2"}>
           <Dialog

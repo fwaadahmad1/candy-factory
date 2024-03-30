@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Search, Trash } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { ArrowRight, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -38,20 +37,23 @@ const CandyTypePage = () => {
   const [deleteCandyType] = useDeleteCandyTypeMutation({});
   return (
     <div className={"flex flex-col w-full h-full gap-2"}>
-      <Card className={"w-full"}>
-        <CardContent className={"p-2 flex items-center justify-between"}>
-          <div className="relative flex items-center max-w-md rounded-full ml-4 my-2">
-            <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Your search..." className="rounded-full pl-8" />
-          </div>
-          <Button
-            variant={"secondary"}
-            onClick={() => router.push("/candytype/add/")}
-          >
-            Add New Candy Type
-          </Button>
-        </CardContent>
-      </Card>
+      {/*<Card className={"w-full"}>*/}
+      {/*  <CardContent className={"p-2 flex items-center justify-end"}>*/}
+      {/*    /!*<div className="relative flex items-center max-w-md rounded-full ml-4 my-2">*!/*/}
+      {/*    /!*  <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />*!/*/}
+      {/*    /!*  <Input placeholder="Your search..." className="rounded-full pl-8" />*!/*/}
+      {/*    /!*</div>*!/*/}
+
+      {/*  </CardContent>*/}
+      {/*</Card>*/}
+      <div className={"w-full flex flex-row justify-end"}>
+        <Button
+          variant={"secondary"}
+          onClick={() => router.push("/candytype/add/")}
+        >
+          Add New Candy Type
+        </Button>
+      </div>
 
       <Card className={"w-full h-full"}>
         <CardContent className={"p-2"}>

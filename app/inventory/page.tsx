@@ -1,8 +1,7 @@
 "use client";
 import React, { useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Pencil, Search } from "lucide-react";
+import { Pencil } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -56,66 +55,68 @@ const InventoryPage = () => {
 
   return (
     <div className={"flex flex-col w-full gap-2"}>
-      <Card className={"w-full"}>
-        <CardContent className={"p-2 flex items-center justify-between"}>
-          <div className="relative flex items-center max-w-md rounded-full ml-4 my-2">
-            <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Your search..." className="rounded-full pl-8" />
-          </div>
+      {/*<Card className={"w-full"}>*/}
+      {/*  <CardContent className={"p-2 flex items-center justify-between"}>*/}
+      {/*    <div className="relative flex items-center max-w-md rounded-full ml-4 my-2">*/}
+      {/*      <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground"/>*/}
+      {/*      <Input placeholder="Your search..." className="rounded-full pl-8"/>*/}
+      {/*    </div>*/}
+      {/*  </CardContent>*/}
+      {/*</Card>*/}
 
-          <Button
-            variant={"secondary"}
-            onClick={() => setAddInventoryDialog(true)}
-          >
-            Add Item
-          </Button>
-          <Dialog
-            open={!!addInventoryDialog}
-            onOpenChange={(open) => !open && setAddInventoryDialog(false)}
-          >
-            <DialogContent className="sm:max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Add Inventory</DialogTitle>
-              </DialogHeader>
-              <AddInventoryForm
-                formData={
-                  typeof addInventoryDialog != "boolean"
-                    ? addInventoryDialog
-                    : undefined
-                }
-                ref={addInventoryFormRef}
-                onSubmit={(values) => {
-                  const ingredientData: ingredientAddSchema = {
-                    name: values.ingredient,
-                    current_quantity: values.quantity,
-                    reorder_level: values.reorderLevel,
-                  };
-                  if (typeof addInventoryDialog === "boolean")
-                    addInventory(ingredientData);
-                  else updateInventory(ingredientData);
-                  setAddInventoryDialog(false);
+      <div className={"w-full flex flex-row justify-end"}>
+        <Button
+          variant={"secondary"}
+          onClick={() => setAddInventoryDialog(true)}
+        >
+          Add Item
+        </Button>
+      </div>
+      <Dialog
+        open={!!addInventoryDialog}
+        onOpenChange={(open) => !open && setAddInventoryDialog(false)}
+      >
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Add Inventory</DialogTitle>
+          </DialogHeader>
+          <AddInventoryForm
+            formData={
+              typeof addInventoryDialog != "boolean"
+                ? addInventoryDialog
+                : undefined
+            }
+            ref={addInventoryFormRef}
+            onSubmit={(values) => {
+              const ingredientData: ingredientAddSchema = {
+                name: values.ingredient,
+                current_quantity: values.quantity,
+                reorder_level: values.reorderLevel,
+              };
+              if (typeof addInventoryDialog === "boolean")
+                addInventory(ingredientData);
+              else updateInventory(ingredientData);
+              setAddInventoryDialog(false);
+            }}
+          />
+          <DialogFooter>
+            <DialogClose asChild={true}>
+              <Button variant={"ghost"}>Cancel</Button>
+            </DialogClose>
+            <DialogClose>
+              <Button
+                variant={"secondary"}
+                onClick={(e) => {
+                  e.preventDefault();
+                  addInventoryFormRef.current?.submit();
                 }}
-              />
-              <DialogFooter>
-                <DialogClose asChild={true}>
-                  <Button variant={"ghost"}>Cancel</Button>
-                </DialogClose>
-                <DialogClose>
-                  <Button
-                    variant={"secondary"}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      addInventoryFormRef.current?.submit();
-                    }}
-                  >
-                    Confirm
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </CardContent>
-      </Card>
+              >
+                Confirm
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Card className={"w-full"}>
         <CardContent className={"p-2"}>
