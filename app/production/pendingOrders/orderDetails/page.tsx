@@ -20,9 +20,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   useAddCandyToAssemblyLineMutation,
+  useGetAssemblyLineQuery,
   useGetAssemblyLineSuggestionsQuery,
 } from "@/features/ApiSlice/assemblyLineSlice";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { setNotifications } from "@/features/notificationSlice/notificationContext";
+import { capitalize, cn } from "@/lib/utils";
 
 //import { useGetAssemblyLineSuggestionQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
@@ -56,12 +60,16 @@ const ProductionOrderDetailsPage = () => {
 };
 
 function Page() {
+  const dispatch = useDispatch();
   const router = useRouter();
   const { data } = useGetCandyTypeQuery({});
+
   const orderDetails: candyTypeData[] = data ?? [];
   const searchParams2 = useSearchParams();
   const search = searchParams2.get("candyName");
   const orderId = searchParams2.get("orderId");
+  const batchSize = Number(searchParams2.get("size"));
+
   const {
     data: suggestion,
     isLoading,
@@ -69,20 +77,33 @@ function Page() {
     isError,
     error,
   } = useGetAssemblyLineSuggestionsQuery({ search });
-
+  const {
+    data : assemblyLineInfo 
+  } = useGetAssemblyLineQuery({})
   const [addCandyToAssemblyLine, status] = useAddCandyToAssemblyLineMutation(
     {},
   );
 
+  const currAssembly = assemblyLineInfo?.find((ass) => {
+    return ass.name === suggestion?.name
+  })
+  console.log(currAssembly)
+
+  const isReconfigReq = currAssembly?.last_candy === search ? "Not Required" : "Required";
+  
+  console.log(isReconfigReq)
   useEffect(() => {
     if (status.isSuccess)
       toast.success("Candy pushed to production Successfully");
     if (status.isError) toast.error("Candy could not be pushed to production");
   }, [status.isSuccess, status.isError]);
 
+  
   const order: candyTypeData | undefined = orderDetails.find((order) => {
     return order.name == search ?? "";
   });
+
+
   return (
     <div
       className={
@@ -117,7 +138,7 @@ function Page() {
                     "text-blue-500 text-lg tracking-wide font-semibold"
                   }
                 >
-                  {toHoursAndMinutes(order.total_time)}
+                  {toHoursAndMinutes(order.total_time * batchSize)}
                 </text>
               </div>
             </CardHeader>
@@ -128,7 +149,39 @@ function Page() {
               </h2> */}
             </CardContent>
           </Card>
+          <Card className={""}>
+            <CardHeader
+              className={"flex flex-row justify-between items-start pb-0"}
+            >
+              <h1 className={"text-2xl font-semibold"}>
+                Suggested Assembly Line
+                <span className={"text-muted-foreground font-extrabold"}>
+                  { "  #" + suggestion?.name}
+                </span>
+              </h1>
 
+              <div className={"!mt-0"}>
+                {/* <h1 className={"text-xl font-extrabold"}>Estimated time:</h1> */}
+                <h1 className={"text-xl font-extrabold"}>Reconfiguration</h1>
+                <div
+                      className={cn(
+                        "max-w-max px-4 py-0.5 text-white rounded-sm",
+                        isReconfigReq == "Required"
+                          ? "bg-red-500"
+                            : "bg-green-500",
+                      )}
+                    >
+                      {capitalize(isReconfigReq)}
+                    </div>
+              </div>
+            </CardHeader>
+
+            <CardContent className={"flex flex-col gap-4"}>
+              {/* <h2 className={"text-xl font-semibold text-muted-foreground"}>
+                Production Line: {order.productionLine}
+              </h2> */}
+            </CardContent>
+          </Card>
           {/* Ingredients Required */}
           <Card>
             <CardHeader>
@@ -371,6 +424,7 @@ function Page() {
                   candyType: search,
                   order: orderId,
                 });
+                dispatch(setNotifications(`${search} was added to the production line ${suggestion.name}`))
                 router.push(
                   `/production/inLine/orderDetails?candyName=${search}&orderId=${orderId}&assemblyLine=${suggestion.name}`,
                 );

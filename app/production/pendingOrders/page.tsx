@@ -12,8 +12,9 @@ import {
 import { useRouter } from "next/navigation";
 import { useGetOrdersQuery } from "@/features/ApiSlice/orderSlice";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
+import { BATCH_SIZE } from "@/constants";
 import { OrderData } from "@/app/orders/page";
-//
+
 // type OrderData = {
 //   id: number;
 //   due_date: String;
@@ -74,6 +75,7 @@ const ProductsInLinePage = () => {
   const { data: candyData } = useGetCandyTypeQuery({});
   const pen: pendingOrderSchema[] = convertToPending(pendingOrders);
   const router = useRouter();
+  console.log(converDate(pen[0]?.due_date))
   pen?.sort((a, b) => {
     let d1 = converDate(a.due_date);
     let d2 = converDate(b.due_date);
@@ -114,32 +116,37 @@ const ProductsInLinePage = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {pen.map((order, index) => (
-                <TableRow
-                  key={index}
-                  onClick={() =>
-                    router.push(
-                      `/production/pendingOrders/orderDetails?candyName=${order.candyName}&orderId=${order.id}`,
-                    )
+            {pen.map((order, index) => {
+                let batchNumber : number = 1 ;
+                if(Number(order.qty) > BATCH_SIZE){
+                  batchNumber = Number(order.qty) / BATCH_SIZE;
+                }
+
+                return <TableRow
+                key={index}
+                onClick={() =>
+                  router.push(
+                    `/production/pendingOrders/orderDetails?candyName=${order.candyName}&orderId=${order.id}&size=${batchNumber}`,
+                  )
+                }
+              >
+                <TableCell className="font-medium">{order.id}</TableCell>
+                <TableCell>{order.candyName}</TableCell>
+                <TableCell>{order.qty}</TableCell>
+                <TableCell>{`${order.due_date}`}</TableCell>
+                <TableCell>
+                  {
+                    ` ${ Number(candyData?.find(
+                      (candy: any) => candy.name === order.candyName,
+                    )?.total_time)* batchNumber}`
                   }
-                >
-                  <TableCell className="font-medium">{order.id}</TableCell>
-                  <TableCell>{order.candyName}</TableCell>
-                  <TableCell>{order.qty}</TableCell>
-                  <TableCell>{`${order.due_date}`}</TableCell>
-                  <TableCell>
-                    {
-                      candyData?.find(
-                        (candy: any) => candy.name === order.candyName,
-                      )?.total_time
-                    }
-                  </TableCell>
-                  {/* <TableCell>{order.productionLine}</TableCell> */}
-                  <TableCell>
-                    <ArrowRight strokeWidth={1} className={"text-secondary"} />
-                  </TableCell>
-                </TableRow>
-              ))}
+                </TableCell>
+                {/* <TableCell>{order.productionLine}</TableCell> */}
+                <TableCell>
+                  <ArrowRight strokeWidth={1} className={"text-secondary"} />
+                </TableCell>
+              </TableRow>
+              })}
             </TableBody>
           </Table>
         </CardContent>

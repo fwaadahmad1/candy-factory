@@ -17,10 +17,9 @@ import {
 } from "@/components/ui/accordion";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 import { useSearchParams } from "next/navigation";
-import {
-  useAddCandyToAssemblyLineMutation,
-  useGetAssemblyLineSuggestionsQuery,
-} from "@/features/ApiSlice/assemblyLineSlice";
+import { Button } from "@/components/ui/button";
+import { useAddCandyToAssemblyLineMutation, useGetAssemblyLineQuery, useGetAssemblyLineSuggestionsQuery } from "@/features/ApiSlice/assemblyLineSlice";
+import { useGetAddSettingsQuery } from "@/features/ApiSlice/addSettings";
 //import { useGetAssemblyLineSuggestionQuery } from "@/features/ApiSlice/assemblyLineSlice";
 
 type candyTypeData = {
@@ -44,6 +43,16 @@ const toHoursAndMinutes = (totalMinutes: number) => {
   return `${hours}h${minutes}min`;
 };
 
+const processSettings = (settings: [{name: string, unit: string}])=> {
+  let result:any={}
+  settings?.forEach(obj => {
+    const { name, unit } = obj;
+    result[name] = unit;
+  });
+
+  return result;
+}
+
 const ProductionOrderDetailsPage = () => {
   return (
     <Suspense>
@@ -53,23 +62,20 @@ const ProductionOrderDetailsPage = () => {
 };
 
 function Page() {
-  const { data } = useGetCandyTypeQuery({});
-  const orderDetails: candyTypeData[] = data ?? [];
+  const {data} = useGetCandyTypeQuery({});
+  const {data:settings} = useGetAddSettingsQuery({})
+  const settingsObj = processSettings(settings);
+  const orderDetails : candyTypeData[]  = data ?? [];
   const searchParams2 = useSearchParams();
-  const search = searchParams2.get("candyName");
-  const {
-    data: suggestion,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useGetAssemblyLineSuggestionsQuery({ search });
-
-  const [addCandyToAssemblyLine] = useAddCandyToAssemblyLineMutation({});
-
-  const order: candyTypeData | undefined = orderDetails.find((order) => {
-    return order.name == search ?? "";
-  });
+  const search = searchParams2.get('candyName');
+  const {data : suggestion , isLoading,isSuccess,isError,error} = useGetAssemblyLineSuggestionsQuery({search});
+  
+  const [addCandyToAssemblyLine] = useAddCandyToAssemblyLineMutation({})
+  
+  const order: candyTypeData | undefined =
+    orderDetails.find((order) => {
+      return order.name == search?? "";
+    } );
   return (
     <div
       className={
@@ -96,13 +102,11 @@ function Page() {
 
               <div className={"!mt-0"}>
                 {/* <h1 className={"text-xl font-extrabold"}>Estimated time:</h1> */}
-                <text
-                  className={
-                    "text-blue-500 text-lg tracking-wide font-semibold"
-                  }
+                <span
+                  className={"text-blue-500 text-lg tracking-wide font-semibold"}
                 >
                   {toHoursAndMinutes(order.total_time)}
-                </text>
+                </span>
               </div>
             </CardHeader>
 
@@ -123,7 +127,7 @@ function Page() {
                 <TableHeader className={"bg-muted text-muted-foreground"}>
                   <TableRow>
                     <TableHead className={"w-1/2"}>Ingredients</TableHead>
-                    <TableHead>Required Quantity</TableHead>
+                    <TableHead>Required Quantity (Kg)</TableHead>
                     {/* <TableHead>Current Quantity</TableHead> */}
                   </TableRow>
                 </TableHeader>
@@ -176,6 +180,7 @@ function Page() {
                         <TableRow>
                           <TableHead>Setting</TableHead>
                           <TableHead>Value</TableHead>
+                          <TableHead>Unit</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -186,6 +191,7 @@ function Page() {
                               <TableCell>
                                 {`${JSON.parse(order.quantity_mixer_settings)[i]}`}
                               </TableCell>
+                              <TableCell>{settingsObj[setting]}</TableCell>
                             </TableRow>
                           );
                         })}
@@ -225,6 +231,7 @@ function Page() {
                         <TableRow>
                           <TableHead>Setting</TableHead>
                           <TableHead>Value</TableHead>
+                          <TableHead>Unit</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -235,6 +242,7 @@ function Page() {
                               <TableCell>
                                 {`${JSON.parse(order.quantity_cooker_settings)[i]}`}
                               </TableCell>
+                              <TableCell>{settingsObj[setting]}</TableCell>
                             </TableRow>
                           );
                         })}
@@ -274,6 +282,7 @@ function Page() {
                         <TableRow>
                           <TableHead>Setting</TableHead>
                           <TableHead>Value</TableHead>
+                          <TableHead>Unit</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -284,6 +293,7 @@ function Page() {
                               <TableCell>
                                 {`${JSON.parse(order.quantity_extruder_settings)[i]}`}
                               </TableCell>
+                              <TableCell>{settingsObj[setting]}</TableCell>
                             </TableRow>
                           );
                         })}
@@ -323,6 +333,7 @@ function Page() {
                         <TableRow>
                           <TableHead>Setting</TableHead>
                           <TableHead>Value</TableHead>
+                          <TableHead>Unit</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -333,6 +344,7 @@ function Page() {
                               <TableCell>
                                 {`${JSON.parse(order.quantity_packaging_settings)[i]}`}
                               </TableCell>
+                              <TableCell>{settingsObj[setting]}</TableCell>
                             </TableRow>
                           );
                         })}
@@ -345,9 +357,11 @@ function Page() {
           </Accordion>
           {/* <Button variant={"secondary"} onClick={()=>{
             ////Add order to assembly line
+            console.log('click')
             if(isError){
               alert("All Assembly Line are occupied")
             }else if(isSuccess){
+              console.log(suggestion.name)
               addCandyToAssemblyLine({assemblyLine : suggestion.name, candyType : search})
             }
           }}>

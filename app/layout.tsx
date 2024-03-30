@@ -8,8 +8,9 @@ import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 import TopBar from "@/components/top-bar";
 import { Provider } from "react-redux";
-import { store } from "@/features/store";
+import { persistor, store } from "@/features/store";
 import { Toaster } from "sonner";
+import { PersistGate } from "redux-persist/integration/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={cn(inter.className, "flex flex-row")}>
         <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
@@ -40,6 +42,7 @@ export default function RootLayout({
             </main>
             <Toaster richColors={true} />
           </ThemeProvider>
+          </PersistGate>
         </Provider>
       </body>
     </html>
