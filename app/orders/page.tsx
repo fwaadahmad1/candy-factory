@@ -39,6 +39,7 @@ export type OrderData = {
   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
   candies: Array<string>;
   quantity_candies: Array<number>;
+  candies_status: string;
 };
 
 export type orderItemSchema = {

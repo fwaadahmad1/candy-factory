@@ -281,7 +281,7 @@ function Page() {
                       <TableBody>
                         {order.extruder_settings.map((setting, i) => {
                           return (
-                            <TableRow>
+                            <TableRow key={i}>
                               <TableCell>{setting}</TableCell>
                               <TableCell>
                                 {`${JSON.parse(order.quantity_extruder_settings)[i]}`}
@@ -330,7 +330,7 @@ function Page() {
                       <TableBody>
                         {order.packaging_settings.map((setting, i) => {
                           return (
-                            <TableRow>
+                            <TableRow key={i}>
                               <TableCell>{setting}</TableCell>
                               <TableCell>
                                 {`${JSON.parse(order.quantity_packaging_settings)[i]}`}
