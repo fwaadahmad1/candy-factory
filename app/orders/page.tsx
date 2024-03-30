@@ -22,12 +22,13 @@ import {
 import AddOrderForm, {
   AddOrderFormHandle,
 } from "@/app/orders/form/addOrder.form";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { capitalize, cn } from "@/lib/utils";
 import {
   useAddOrdersMutation,
   useGetOrdersQuery,
 } from "@/features/ApiSlice/orderSlice";
+import { toast } from "sonner";
 
 export type OrderData = {
   id: number;
@@ -74,10 +75,15 @@ const OrdersPage = () => {
   //     quantity : qty,
   //   }
   // });
-  const [addOrder, err] = useAddOrdersMutation();
+  const [addOrder, status] = useAddOrdersMutation();
   const [orderDetailsDialog, setOrderDetailsDialog] = useState<
     Array<orderItemSchema> | undefined
   >(undefined);
+
+  useEffect(() => {
+    if (status.isSuccess) toast.success("Order added Successfully");
+    if (status.isError) toast.error("Order could not be added");
+  }, [status.isSuccess, status.isError]);
 
   const [addOrderDialog, setAddOrderDialog] = useState<boolean>(false);
   return (

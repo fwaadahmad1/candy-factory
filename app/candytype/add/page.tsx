@@ -19,6 +19,7 @@ import { addCandySchema } from "@/app/candytype/add/form/addCandy.schema";
 import { Separator } from "@/components/ui/separator";
 import { useAddCandyTypeMutation } from "@/features/ApiSlice/candyTypeSlice";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type candyTypeData = {
   name: string;
@@ -56,7 +57,6 @@ const AddCandyType = () => {
       conf_item: [],
     },
   ]);
-
   const [addCandyType, status] = useAddCandyTypeMutation({});
   // const[addAddSettings] = useAddCandyTypeMutation({})
   const stageFormRefs = useRef<Array<AddStageFormHandle | null>>([]);
@@ -126,8 +126,16 @@ const AddCandyType = () => {
   }, [addCandyType, candyForm, hasErrors, router, stageForms]);
 
   useEffect(() => {
-    status.isSuccess && router.back();
-  }, [router, status.isSuccess]);
+    if (status.isSuccess) {
+      toast.success("Candy Added Successfully");
+      router.back();
+    }
+    if (status.isError) {
+      toast.error("Candy Could not be added", {
+        description: "Please check the data entered",
+      });
+    }
+  }, [router, status.isSuccess, status.isError]);
 
   function onError() {
     setHasErrors(true);

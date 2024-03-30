@@ -9,6 +9,7 @@ import { ReactNode } from "react";
 import TopBar from "@/components/top-bar";
 import { Provider } from "react-redux";
 import { store } from "@/features/store";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,6 +38,7 @@ export default function RootLayout({
               <TopBar />
               <div className="flex p-4">{children}</div>
             </main>
+            <Toaster richColors={true}/>
           </ThemeProvider>
         </Provider>
       </body>

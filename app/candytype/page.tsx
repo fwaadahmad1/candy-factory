@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
   useDeleteCandyTypeMutation,
   useGetCandyTypeQuery,
 } from "@/features/ApiSlice/candyTypeSlice";
+import { toast } from "sonner";
 
 export type CandySchema = {
   name: string;
@@ -34,7 +35,12 @@ export type CandySchema = {
 const CandyTypePage = () => {
   const router = useRouter();
   const { data: candyData } = useGetCandyTypeQuery({});
-  const [deleteCandyType] = useDeleteCandyTypeMutation({});
+  const [deleteCandyType, status] = useDeleteCandyTypeMutation({});
+  useEffect(() => {
+    if (status.isSuccess) toast.success("Candy deleted Successfully");
+    if (status.isError) toast.error("Candy could not be deleted");
+  }, [status.isSuccess, status.isError]);
+
   return (
     <div className={"flex flex-col w-full h-full gap-2"}>
       {/*<Card className={"w-full"}>*/}
@@ -49,7 +55,9 @@ const CandyTypePage = () => {
       <div className={"w-full flex flex-row justify-end"}>
         <Button
           variant={"secondary"}
-          onClick={() => router.push("/candytype/add/")}
+          onClick={() => {
+            router.push("/candytype/add/");
+          }}
         >
           Add New Candy
         </Button>
