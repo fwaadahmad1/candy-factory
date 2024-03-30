@@ -1,6 +1,6 @@
 "use client";
 import React, { Suspense } from "react";
-import moment from 'moment';
+import moment from "moment";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -26,7 +26,7 @@ type candyTypeData = {
   name: string;
   ingredients: string[];
   quantity_ingredient: string;
-  total_time: number,
+  total_time: number;
   mixer_settings: string[];
   cooker_settings: string[];
   extruder_settings: string[];
@@ -93,9 +93,8 @@ const calculateRemainingTime = (timestamp: number, batchNumber : number) => {
   const duration = moment.duration(timeDifference);
   const hours = duration.hours();
   const minutes = duration.minutes();
-  return {hours,minutes,timeDifference};
+  return { hours, minutes, timeDifference };
 };
-
 
 function Page() {
   const router = useRouter();
@@ -208,7 +207,7 @@ function Page() {
             className={"flex flex-col gap-4 !p-0"}
           >
             <Card>
-              <AccordionItem value="item-3" className={"border-0 px-6"}>
+              <AccordionItem value="item-1" className={"border-0 px-6"}>
                 <AccordionTrigger>
                   <CardHeader className={"px-0 py-0 text-start"}>
                     <h2 className={"text-2xl font-bold"}>Mixing Mixture</h2>
@@ -257,7 +256,7 @@ function Page() {
             </Card>
 
             <Card>
-              <AccordionItem value="item-3" className={"border-0 px-6"}>
+              <AccordionItem value="item-2" className={"border-0 px-6"}>
                 <AccordionTrigger>
                   <CardHeader className={"px-0 py-0 text-start"}>
                     <h2 className={"text-2xl font-bold"}>Cooking Mixture</h2>
@@ -337,15 +336,65 @@ function Page() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {/* {order.extruder_settings.map((setting, i) => {
-                        return(<TableRow>
-                          <TableCell>{setting}</TableCell>
-                          <TableCell>
-                            {`${JSON.parse(order.quantity_extruder_settings)[i]}`}
-                          </TableCell>
-                        </TableRow>)  
+                        {order.extruder_settings.map((setting, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>{setting}</TableCell>
+                              <TableCell>
+                                {`${JSON.parse(order.quantity_extruder_settings)[i]}`}
+                              </TableCell>
+                            </TableRow>
+                          );
                         })}
-             */}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </AccordionContent>
+              </AccordionItem>
+            </Card>
+
+            <Card>
+              <AccordionItem value="item-4" className={"border-0 px-6"}>
+                <AccordionTrigger>
+                  <CardHeader className={"px-0 py-0 text-start"}>
+                    <h2 className={"text-2xl font-bold"}>Packaging</h2>
+                    {/* <h2
+                      className={"text-xl font-semibold text-muted-foreground"}
+                    >
+                      Extruder Mixture
+                    </h2> */}
+                  </CardHeader>
+                </AccordionTrigger>
+
+                <AccordionContent asChild>
+                  <CardContent className={"p-0"}>
+                    {/* <div className={"flex flex-row gap-2 items-center"}>
+                      <h2 className={"text-lg font-bold"}>Reconfiguration: </h2>
+                      <div
+                        className={"px-4 py-1 bg-red-500 text-white rounded-sm"}
+                      >
+                        <text>Required</text>
+                      </div>
+                    </div> */}
+
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Setting</TableHead>
+                          <TableHead>Value</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {order.packaging_settings.map((setting, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>{setting}</TableCell>
+                              <TableCell>
+                                {`${JSON.parse(order.quantity_packaging_settings)[i]}`}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
                       </TableBody>
                     </Table>
                   </CardContent>

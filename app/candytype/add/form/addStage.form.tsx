@@ -105,22 +105,22 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
         value: "temperature",
         label: "temperature",
       },
-      // {
-      //   value : "shaper" ,
-      //   label: "shaper",
-      // },
+      {
+        value : "shape" ,
+        label: "shape",
+      },
       {
         value: "packet quanity",
         label: "packet quanity",
       },
-      {
-        value: "packet size",
-        label: "packet size",
-      },
-      {
-        value: "estimated time",
-        label: "estimated time",
-      },
+      // {
+      //   value: "packet size",
+      //   label: "packet size",
+      // },
+      // {
+      //   value: "estimated time",
+      //   label: "estimated time",
+      // },
     ];
 
     const [open, setOpen] = useState(false);
@@ -200,7 +200,6 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
                   {/*                      ? ""*/}
                   {/*                      : currentValue,*/}
                   {/*                  );*/}
-                  {/*                  console.log(field.value);*/}
                   {/*                  setOpen(false);*/}
                   {/*                }}*/}
                   {/*              >*/}
@@ -270,7 +269,6 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
                                         ? ""
                                         : currentValue,
                                     );
-                                    console.log(field.value);
                                     setOpenConfig(false);
                                   }}
                                 >

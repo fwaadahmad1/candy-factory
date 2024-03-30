@@ -1,7 +1,6 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -14,18 +13,19 @@ import { useRouter } from "next/navigation";
 import { useGetOrdersQuery } from "@/features/ApiSlice/orderSlice";
 import { useGetCandyTypeQuery } from "@/features/ApiSlice/candyTypeSlice";
 import { BATCH_SIZE } from "@/constants";
+import { OrderData } from "@/app/orders/page";
 
-type OrderData = {
-  id: number;
-  due_date: String;
-  date: String;
-  dueDate: String;
-  client_name: string;
-  status: "COMPLETED" | "PENDING" | "IN-PROCESS";
-  candies: [];
-  quantity_candies: [];
-  candies_status: string;
-};
+// type OrderData = {
+//   id: number;
+//   due_date: String;
+//   date: String;
+//   dueDate: String;
+//   client_name: string;
+//   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
+//   candies: [];
+//   quantity_candies: [];
+//   candies_status: string;
+// };
 
 type pendingOrderSchema = {
   candyName: string;
@@ -40,34 +40,31 @@ type pendingOrderSchema = {
   candies: [];
 };
 
-const converDate = (dateString : String) =>{
-   // Oct 23
+const converDate = (dateString: String) => {
+  // Oct 23
 
   const dateParts = dateString?.split("-");
   let newDate = "";
-  if(dateParts){
-  newDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`
+  if (dateParts) {
+    newDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
   }
 
   // month is 0-based, that's why we need dataParts[1] - 1
   var dateObject = new Date(newDate).getTime();
-  return dateObject
-}
+  return dateObject;
+};
 
 const convertToPending = (data?: OrderData[]) => {
   const candies: any = [];
   data?.forEach((order) => {
     const quantity = JSON.parse(`${order.quantity_candies}`);
-    const candies_status = order?.candies_status ? JSON.parse(order?.candies_status) : "";
+    const candies_status = JSON.parse(order.candies_status);
 
     order.candies.forEach((candy, i) => {
-      if (candies_status[candy]=="PENDING"){
-
+      if (candies_status[candy] == "PENDING") {
         const newObj = { ...order, [`candyName`]: candy, [`qty`]: quantity[i] };
         candies.push(newObj);
-
       }
-     
     });
   });
 
@@ -79,16 +76,16 @@ const ProductsInLinePage = () => {
   const pen: pendingOrderSchema[] = convertToPending(pendingOrders);
   const router = useRouter();
   console.log(converDate(pen[0]?.due_date))
-  pen?.sort((a,b) => {
+  pen?.sort((a, b) => {
     let d1 = converDate(a.due_date);
-      let d2 = converDate(b.due_date);
+    let d2 = converDate(b.due_date);
 
-      if (d1 < d2) {
-        return -1;
-      } else if (d1 > d2) {
-        return 1;
-      }
-      return 0;
+    if (d1 < d2) {
+      return -1;
+    } else if (d1 > d2) {
+      return 1;
+    }
+    return 0;
   });
   pen.filter((candy) => {
     candy.status === "PENDING";
@@ -119,7 +116,7 @@ const ProductsInLinePage = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {pen.map((order, index) => {
+            {pen.map((order, index) => {
                 let batchNumber : number = 1 ;
                 if(Number(order.qty) > BATCH_SIZE){
                   batchNumber = Number(order.qty) / BATCH_SIZE;

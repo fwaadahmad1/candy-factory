@@ -55,7 +55,6 @@ export const assemblyLineSlice = createApi({
     }),
     addCandyToAssemblyLine: builder.mutation({
       query: ({ assemblyLine, candyType, order }) => {
-        console.log(assemblyLine, candyType);
         return {
           url: `/assembly_line/start/${assemblyLine}/${candyType}/${Number(
             order,

@@ -40,6 +40,7 @@ export type OrderData = {
   candies_status: [];
   candies: Array<string>;
   quantity_candies: Array<number>;
+  candies_status: string;
 };
 
 export type pendingOrdersSchema = {
@@ -242,9 +243,7 @@ const OrdersPage = () => {
                       };
                     }
 
-                    // console.log("click")
                     // const candiesQty = JSON.parse(`${order.quantity_candies}`);
-                    // console.log(candiesQty)
                     // order.candies.forEach((el) => {
                     //   orderItemPopup[index] = {
                     //     candyType : order.candies[index]};
