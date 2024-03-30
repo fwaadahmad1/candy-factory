@@ -200,7 +200,6 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
                   {/*                      ? ""*/}
                   {/*                      : currentValue,*/}
                   {/*                  );*/}
-                  {/*                  console.log(field.value);*/}
                   {/*                  setOpen(false);*/}
                   {/*                }}*/}
                   {/*              >*/}
@@ -270,7 +269,6 @@ const AddStageForm = forwardRef<AddStageFormHandle, AddStageFormProps>(
                                         ? ""
                                         : currentValue,
                                     );
-                                    console.log(field.value);
                                     setOpenConfig(false);
                                   }}
                                 >

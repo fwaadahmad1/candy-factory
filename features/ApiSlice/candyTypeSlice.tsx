@@ -20,7 +20,6 @@ export const candyTypeSlice = createApi({
     }),
     addCandyType: builder.mutation({
       query: (candyData) => {
-        console.log(candyData);
         return {
           url: "/candy",
           method: "POST",

@@ -19,7 +19,6 @@ export const ingredientSlice = createApi({
     }),
     addIngredient: builder.mutation({
       query: (candyData) => {
-        console.log(candyData);
         return {
           url: "/ingredient",
           method: "POST",

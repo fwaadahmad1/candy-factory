@@ -18,7 +18,6 @@ export const addSettingsSlice = createApi({
     }),
     addAddSettings: builder.mutation({
       query: (candyData) => {
-        console.log(candyData);
         return {
           url: "/setting",
           method: "POST",

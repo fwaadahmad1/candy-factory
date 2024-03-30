@@ -74,7 +74,6 @@ const ProductsInLinePage = () => {
   const { data: candyData } = useGetCandyTypeQuery({});
   const pen: pendingOrderSchema[] = convertToPending(pendingOrders);
   const router = useRouter();
-  console.log(converDate(pen[0]?.due_date));
   pen?.sort((a, b) => {
     let d1 = converDate(a.due_date);
     let d2 = converDate(b.due_date);

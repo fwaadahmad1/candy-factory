@@ -80,7 +80,6 @@ const AddCandyType = () => {
         ingQty[i] = Number(item.quantity);
       });
       // API call for submit goes here
-      // console.log(ingredientName,ingQty);
 
       const stageObj: any = {};
       //const addSettingsObj : any ={}
@@ -105,10 +104,7 @@ const AddCandyType = () => {
           quantitiesConfigSetting,
         );
       }
-      // console.log(stageObj)
-      //console.log(addSettingsObj);
       //   for (const entry of addSettingsObj) {
-      //     console.log(entry)
       // }
       const candyData: candyTypeData = {
         name: candyForm.candyName,
@@ -119,9 +115,7 @@ const AddCandyType = () => {
       };
       try {
         addCandyType(candyData);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (_) {}
     }
   }, [addCandyType, candyForm, hasErrors, router, stageForms]);
 

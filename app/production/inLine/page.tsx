@@ -199,9 +199,7 @@ const PendingOrdersPage = () => {
                           // const isTrue = window.confirm(
                           //   "Do you really want to stop the production",
                           // );
-                          // console.log(isTrue);
                           // if (isTrue) {
-                          //   console.log(`l${data.name.trim()}l`, "clicked");
                           //   stopAssemblyLine(data.name);
                           // }
                         }}
