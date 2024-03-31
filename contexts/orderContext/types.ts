@@ -1,5 +1,3 @@
-import { string, z } from "zod";
-
 // export const orderItems = z.object({
 //   candyType: z.string().min(1),
 //   quantity: z.number().positive(),
@@ -14,16 +12,16 @@ import { string, z } from "zod";
 // });
 
 export type OrderSchema = {
-    orderId: string;
-    clientName : string;
-    dueDate : Date;
-    orderDate : Date;
-    orderItems : OrderItems[];
-}
+  orderId: string;
+  clientName: string;
+  dueDate: Date;
+  orderDate: Date;
+  orderItems: OrderItems[];
+};
 export type OrderItems = {
-    candyType : string;
-    qty : string;
-}
+  candyType: string;
+  qty: string;
+};
 
 export type OrdersContextType = {
   orders: OrderSchema[];

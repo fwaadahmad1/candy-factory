@@ -12,30 +12,29 @@ import AddCandyForm, {
 import AddStageForm, {
   AddStageFormHandle,
 } from "@/app/candytype/add/form/addStage.form";
-import { string, z } from "zod";
+import { z } from "zod";
 import { addStageSchema } from "@/app/candytype/add/form/addStage.schema";
 import { Button } from "@/components/ui/button";
 import { addCandySchema } from "@/app/candytype/add/form/addCandy.schema";
 import { Separator } from "@/components/ui/separator";
-import { X } from "lucide-react";
 import { useAddCandyTypeMutation } from "@/features/ApiSlice/candyTypeSlice";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type candyTypeData = {
-  
-    name : string,
-    ingredients : string[],
-    quantity_ingredient : string,
-    total_time: number,
-    mixer_settings: string[],
-    cooker_settings:string[],
-    extruder_settings:string[],
-    packaging_settings:string[],
-    quantity_mixer_settings: string,
-    quantity_cooker_settings: string,
-    quantity_extruder_settings: string,
-    quantity_packaging_settings: string,
-  
-}
+  name: string;
+  ingredients: string[];
+  quantity_ingredient: string;
+  total_time: number;
+  mixer_settings: string[];
+  cooker_settings: string[];
+  extruder_settings: string[];
+  packaging_settings: string[];
+  quantity_mixer_settings: string;
+  quantity_cooker_settings: string;
+  quantity_extruder_settings: string;
+  quantity_packaging_settings: string;
+};
 
 // type addSettings = {
 //   mixer_settings: string[],
@@ -46,9 +45,19 @@ type candyTypeData = {
 const AddCandyType = () => {
   const [stageForms, setStageForms] = useState<
     Array<Omit<z.infer<typeof addStageSchema>, "conf_name" | "conf_setting">>
-  >([]);
-
-  const [addCandyType,error] = useAddCandyTypeMutation({});
+  >([
+    { name: "mixer_settings", conf_item: [] },
+    { name: "cooker_settings", conf_item: [] },
+    {
+      name: "extruder_settings",
+      conf_item: [],
+    },
+    {
+      name: "packaging_settings",
+      conf_item: [],
+    },
+  ]);
+  const [addCandyType, status] = useAddCandyTypeMutation({});
   // const[addAddSettings] = useAddCandyTypeMutation({})
   const stageFormRefs = useRef<Array<AddStageFormHandle | null>>([]);
   const candyFormRef = useRef<AddCandyFormHandle>(null);
@@ -56,66 +65,71 @@ const AddCandyType = () => {
     Omit<z.infer<typeof addCandySchema>, "ingredient" | "quantity">
   >({ candyName: "", ingredientItem: [] });
 
+  const router = useRouter();
+
   const [hasErrors, setHasErrors] = useState(true);
 
   useEffect(() => {
     if (!hasErrors && candyForm.candyName) {
       const ingredientName: string[] = [];
-        const ingQty: number[] = [];
-        candyForm.ingredientItem.forEach((item, i) => {
-          ingredientName[i] = item.ingredient;
-        });
-        candyForm.ingredientItem.forEach((item, i) => {
-          ingQty[i] = Number(item.quantity);
-        });
+      const ingQty: number[] = [];
+      candyForm.ingredientItem.forEach((item, i) => {
+        ingredientName[i] = item.ingredient;
+      });
+      candyForm.ingredientItem.forEach((item, i) => {
+        ingQty[i] = Number(item.quantity);
+      });
       // API call for submit goes here
-      // console.log(ingredientName,ingQty);
 
-      
-      const stageObj :any = {}
+      const stageObj: any = {};
       //const addSettingsObj : any ={}
-      let totalTime : number = 0.0 ;
-      
-      
-      for(let i =0 ; i< (stageForms.length) ; i++){
+      let totalTime: number = 0.0;
+
+      for (let i = 0; i < stageForms.length; i++) {
         const configSetting: String[] = [];
         const quantitiesConfigSetting: number[] = [];
         stageForms[i].conf_item.forEach((item, i) => {
-          if(item.conf_name === 'estimated time'){
-            totalTime +=Number(item.conf_setting);
-            console.log(totalTime,item.conf_name,item.conf_setting )
+          if (item.conf_name === "estimated time") {
+            totalTime += Number(item.conf_setting);
           }
           configSetting[i] = item.conf_name;
-          
         });
         stageForms[i].conf_item.forEach((item, i) => {
           quantitiesConfigSetting[i] = Number(item.conf_setting);
         });
-        
+
         stageObj[stageForms[i].name] = configSetting;
         //addSettingsObj[stageForms[i].name] = configSetting;
-        stageObj[`quantity_${stageForms[i].name}`] = JSON.stringify(quantitiesConfigSetting);
+        stageObj[`quantity_${stageForms[i].name}`] = JSON.stringify(
+          quantitiesConfigSetting,
+        );
       }
-      // console.log(stageObj)
-      //console.log(addSettingsObj);
-    //   for (const entry of addSettingsObj) {
-    //     console.log(entry)
-    // }
-      const candyData : candyTypeData = {
-        name : candyForm.candyName,
-        ingredients : ingredientName,
-        quantity_ingredient : JSON.stringify(ingQty),
-        total_time:totalTime + 0.0,
-        ...stageObj
-      }
-      console.log(candyData);
+      //   for (const entry of addSettingsObj) {
+      // }
+      const candyData: candyTypeData = {
+        name: candyForm.candyName,
+        ingredients: ingredientName,
+        quantity_ingredient: JSON.stringify(ingQty),
+        total_time: totalTime + 0.0,
+        ...stageObj,
+      };
       try {
         addCandyType(candyData);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (_) {}
     }
-  }, [addCandyType, candyForm, hasErrors, stageForms]);
+  }, [addCandyType, candyForm, hasErrors, router, stageForms]);
+
+  useEffect(() => {
+    if (status.isSuccess) {
+      toast.success("Candy Added Successfully");
+      router.back();
+    }
+    if (status.isError) {
+      toast.error("Candy Could not be added", {
+        description: "Please check the data entered",
+      });
+    }
+  }, [router, status.isSuccess, status.isError]);
 
   function onError() {
     setHasErrors(true);
@@ -143,26 +157,26 @@ const AddCandyType = () => {
           {stageForms.map((data, index) => {
             return (
               <div className={"relative w-full"} key={data.name}>
-                <Button
-                  variant={"ghost"}
-                  size={"icon"}
-                  className={"absolute right-0"}
-                  onClick={() => {
-                    setStageForms((prevState) => {
-                      const newState = [...prevState];
-                      newState.splice(index, 1);
-                      return newState;
-                    });
-                    stageFormRefs.current.splice(index, 1);
-                    // stageFormRefs.current[index] = null;
-                    // setStageForms([]);
-                  }}
-                >
-                  <X />
-                </Button>
+                {/*<Button*/}
+                {/*  variant={"ghost"}*/}
+                {/*  size={"icon"}*/}
+                {/*  className={"absolute right-0"}*/}
+                {/*  onClick={() => {*/}
+                {/*    setStageForms((prevState) => {*/}
+                {/*      const newState = [...prevState];*/}
+                {/*      newState.splice(index, 1);*/}
+                {/*      return newState;*/}
+                {/*    });*/}
+                {/*    stageFormRefs.current.splice(index, 1);*/}
+                {/*    // stageFormRefs.current[index] = null;*/}
+                {/*    // setStageForms([]);*/}
+                {/*  }}*/}
+                {/*>*/}
+                {/*  <X />*/}
+                {/*</Button>*/}
                 <AddStageForm
                   ref={(element) => (stageFormRefs.current[index] = element)}
-                  name={data.name}
+                  name={data.name ?? undefined}
                   onSubmit={(data) =>
                     setStageForms((prevState) => {
                       let newState = [...prevState];
@@ -178,19 +192,19 @@ const AddCandyType = () => {
           })}
 
           <CardFooter className={"w-full p-6 flex gap-4 justify-end items-end"}>
-            <Button
-              variant={"outline"}
-              onClick={() =>
-                setStageForms((prevState) => {
-                  return [
-                    ...prevState,
-                    { name: `Stage ${prevState.length + 1}`, conf_item: [] },
-                  ];
-                })
-              }
-            >
-              Add Stage
-            </Button>
+            {/*<Button*/}
+            {/*  variant={"outline"}*/}
+            {/*  onClick={() =>*/}
+            {/*    setStageForms((prevState) => {*/}
+            {/*      return [*/}
+            {/*        ...prevState,*/}
+            {/*        { name: `Stage ${prevState.length + 1}`, conf_item: [] },*/}
+            {/*      ];*/}
+            {/*    })*/}
+            {/*  }*/}
+            {/*>*/}
+            {/*  Add Stage*/}
+            {/*</Button>*/}
             <Button
               variant={"secondary"}
               onClick={(e) => {

@@ -8,7 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Line, LineConfig } from "@ant-design/plots";
+import dynamic from "next/dynamic";
+import { LineConfig } from "@ant-design/plots";
 import { TooltipItemValue } from "@antv/g2";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -16,6 +17,12 @@ import { cn } from "@/lib/utils";
 import useDashboard from "@/app/dashboard/useDashboard";
 import { AssemblyLineSchema } from "@/app/production/inLine/page";
 
+const Line = dynamic(
+  () => import("@ant-design/plots").then((lib) => lib.Line),
+  {
+    ssr: false,
+  },
+);
 const DashboardPage = () => {
   const {
     candyTypes,
@@ -26,8 +33,6 @@ const DashboardPage = () => {
     chartData,
     maxOrdersInChartsData,
   } = useDashboard();
-  console.log(chartData);
-  console.log(maxOrdersInChartsData);
   return (
     <div className={"grid grid-cols-6 w-full gap-2"}>
       <NumberWidget
@@ -96,17 +101,19 @@ const DashboardPage = () => {
           </CardHeader>
           <CardContent className={"py-0"}>
             <ul>
-              {assemblyLines?.slice(0,3).map((assemblyLine) => (
-                <SingleLine
-                  key={assemblyLine.name}
-                  lineName={assemblyLine.name}
-                  status={
-                    assemblyLine.occupied
-                      ? `Processing Candy: ${assemblyLine.candy}`
-                      : "Open"
-                  }
-                />
-              ))}
+              {assemblyLines
+                ?.slice(0, 3)
+                .map((assemblyLine) => (
+                  <SingleLine
+                    key={assemblyLine.name}
+                    lineName={assemblyLine.name}
+                    status={
+                      assemblyLine.occupied
+                        ? `Processing Candy: ${assemblyLine.candy}`
+                        : "Open"
+                    }
+                  />
+                ))}
             </ul>
             {assemblyLines?.length > 3 && (
               <div className={"text-muted-foreground"}>...more</div>

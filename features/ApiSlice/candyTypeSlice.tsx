@@ -7,31 +7,53 @@ export const candyTypeSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: API_BASE_URL,
   }),
-  tagTypes: ["CandyType"],
+  tagTypes: ["Candy"],
   endpoints: (builder) => ({
     getCandyType: builder.query<CandySchema[], any>({
       query: () => "/candy",
       providesTags: [
         {
-          type: "CandyType",
+          type: "Candy",
           id: "candyType",
         },
       ],
     }),
     addCandyType: builder.mutation({
       query: (candyData) => {
-        console.log(candyData);
         return {
           url: "/candy",
           method: "POST",
           body: candyData,
         };
       },
-      invalidatesTags: [{ type: "CandyType", id: "candyType" }],
+      invalidatesTags: [
+        {
+          type: "Candy",
+          id: "candyType",
+        },
+      ],
+    }),
+    deleteCandyType: builder.mutation({
+      query: (candyData: CandySchema) => {
+        return {
+          url: `candy/delete/${candyData.name}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: [
+        {
+          type: "Candy",
+          id: "candyType",
+        },
+      ],
     }),
   }),
 });
 
-export const { useAddCandyTypeMutation, useGetCandyTypeQuery } = candyTypeSlice;
+export const {
+  useAddCandyTypeMutation,
+  useGetCandyTypeQuery,
+  useDeleteCandyTypeMutation,
+} = candyTypeSlice;
 
 export const candyTypeReducer = candyTypeSlice.reducer;

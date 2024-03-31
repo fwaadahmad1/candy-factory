@@ -48,7 +48,7 @@ export const NavRoutes: Array<NavRoute> = [
     path: "/inventory",
   },
   {
-    title: "CandyType",
+    title: "Candy",
     path: "/candytype",
     subLinks: [
       {

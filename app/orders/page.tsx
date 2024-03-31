@@ -1,7 +1,6 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -23,12 +22,13 @@ import {
 import AddOrderForm, {
   AddOrderFormHandle,
 } from "@/app/orders/form/addOrder.form";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { capitalize, cn } from "@/lib/utils";
 import {
   useAddOrdersMutation,
   useGetOrdersQuery,
 } from "@/features/ApiSlice/orderSlice";
+import { toast } from "sonner";
 
 export type OrderData = {
   id: number;
@@ -37,10 +37,24 @@ export type OrderData = {
   dueDate: string;
   client_name: string;
   status: "COMPLETED" | "PENDING" | "IN-PROCESS";
+
   candies: Array<string>;
   quantity_candies: Array<number>;
+  candies_status: string;
 };
 
+export type pendingOrdersSchema = {
+  candyName: string;
+  qty: string;
+  id: number;
+  due_date: string;
+  date: string;
+  dueDate: string;
+  client_name: string;
+  status: "COMPLETED" | "PENDING" | "IN-PROCESS";
+  candies_status: [];
+  candies: [];
+}
 export type orderItemSchema = {
   candyType: string;
   quantity: string;
@@ -75,82 +89,90 @@ const OrdersPage = () => {
   //     quantity : qty,
   //   }
   // });
-  const [addOrder, err] = useAddOrdersMutation();
+  const [addOrder, status] = useAddOrdersMutation();
   const [orderDetailsDialog, setOrderDetailsDialog] = useState<
     Array<orderItemSchema> | undefined
   >(undefined);
 
+  useEffect(() => {
+    if (status.isSuccess) toast.success("Order added Successfully");
+    if (status.isError) toast.error("Order could not be added");
+  }, [status.isSuccess, status.isError]);
+
   const [addOrderDialog, setAddOrderDialog] = useState<boolean>(false);
   return (
     <div className={"flex flex-col w-full gap-2"}>
-      <Card className={"w-full"}>
-        <CardContent className={"py-2 px-6 flex items-center justify-between"}>
-          <div className="relative flex items-center max-w-md rounded-full my-2">
-            <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Your search..." className="rounded-full pl-8" />
-          </div>
-          <Button variant={"secondary"} onClick={() => setAddOrderDialog(true)}>
-            Add Item
-          </Button>
-          <Dialog
-            open={addOrderDialog}
-            onOpenChange={(open) => !open && setAddOrderDialog(false)}
-          >
-            <DialogContent className="sm:max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Add Order</DialogTitle>
-                <DialogDescription>Add an order to queue</DialogDescription>
-              </DialogHeader>
-              <AddOrderForm
-                ref={addOrderFormRef}
-                orders={orders ?? []}
-                onSubmit={(values) => {
-                  setAddOrderDialog(false);
-                  const candyTypes: string[] = [];
-                  const quantities: Number[] = [];
-                  values.orderItem.forEach((item, i) => {
-                    candyTypes[i] = item.candyType;
-                  });
-                  values.orderItem.forEach((item, i) => {
-                    quantities[i] = item.quantity;
-                  });
+      {/*<Card className={"w-full"}>*/}
+      {/*  <CardContent className={"py-2 px-6 flex items-center justify-between"}>*/}
+      {/*    <div className="relative flex items-center max-w-md rounded-full my-2">*/}
+      {/*      <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />*/}
+      {/*      <Input placeholder="Your search..." className="rounded-full pl-8" />*/}
+      {/*    </div>*/}
+      {/*    */}
+      {/*  </CardContent>*/}
+      {/*</Card>*/}
 
-                  const orderPostData: orderPostSchema = {
-                    date: new Date()
-                      .toLocaleDateString("arn-CL")
-                      .replaceAll("/", "-"),
-                    due_date: values.dueDate
-                      .toLocaleDateString("arn-CL")
-                      .replaceAll("/", "-"),
-                    client_name: values.client_name,
-                    status: "PENDING",
-                    candies: [...candyTypes],
-                    quantity_candies: JSON.stringify(quantities),
-                  };
-                  addOrder(orderPostData);
-                }}
-              />
-              <DialogFooter>
-                <DialogClose asChild={true}>
-                  <Button variant={"ghost"}>Cancel</Button>
-                </DialogClose>
-                <DialogClose>
-                  <Button
-                    variant={"secondary"}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      addOrderFormRef.current?.submit();
-                    }}
-                  >
-                    Confirm
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </CardContent>
-      </Card>
+      <div className={"w-full flex flex-row justify-end"}>
+        <Button variant={"secondary"} onClick={() => setAddOrderDialog(true)}>
+          Add Order
+        </Button>
+        <Dialog
+          open={addOrderDialog}
+          onOpenChange={(open) => !open && setAddOrderDialog(false)}
+        >
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Add Order</DialogTitle>
+              <DialogDescription>Add an order to queue</DialogDescription>
+            </DialogHeader>
+            <AddOrderForm
+              ref={addOrderFormRef}
+              orders={orders ?? []}
+              onSubmit={(values) => {
+                setAddOrderDialog(false);
+                const candyTypes: string[] = [];
+                const quantities: Number[] = [];
+                values.orderItem.forEach((item, i) => {
+                  candyTypes[i] = item.candyType;
+                });
+                values.orderItem.forEach((item, i) => {
+                  quantities[i] = item.quantity;
+                });
 
+                const orderPostData: orderPostSchema = {
+                  date: new Date()
+                    .toLocaleDateString("en-GB")
+                    .replaceAll("/", "-"),
+                  due_date: values.dueDate
+                    .toLocaleDateString("en-GB")
+                    .replaceAll("/", "-"),
+                  client_name: values.client_name,
+                  status: "PENDING",
+                  candies: [...candyTypes],
+                  quantity_candies: JSON.stringify(quantities),
+                };
+                addOrder(orderPostData);
+              }}
+            />
+            <DialogFooter>
+              <DialogClose asChild={true}>
+                <Button variant={"ghost"}>Cancel</Button>
+              </DialogClose>
+              <DialogClose>
+                <Button
+                  variant={"secondary"}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    addOrderFormRef.current?.submit();
+                  }}
+                >
+                  Confirm
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
       <Card className={"w-full"}>
         <CardContent className={"p-2"}>
           <Dialog
@@ -221,9 +243,7 @@ const OrdersPage = () => {
                       };
                     }
 
-                    // console.log("click")
                     // const candiesQty = JSON.parse(`${order.quantity_candies}`);
-                    // console.log(candiesQty)
                     // order.candies.forEach((el) => {
                     //   orderItemPopup[index] = {
                     //     candyType : order.candies[index]};

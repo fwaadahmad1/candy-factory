@@ -1,4 +1,10 @@
-import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from "react";
+import React, {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,11 +31,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { useGetIngredientQuery } from "@/features/ApiSlice/ingredientSlice";
-import { capitalize, cn } from "@/lib/utils";
-
+import { cn } from "@/lib/utils";
 
 export type AddCandyFormHandle = {
   submit: () => void;
@@ -44,8 +60,7 @@ export type AddCandyFormProps = {
 
 const AddCandyForm = forwardRef<AddCandyFormHandle, AddCandyFormProps>(
   function AddCandyForm({ onSubmit, onError }, ref) {
-    const {data : ingredients} = useGetIngredientQuery({});
-    
+    const { data: ingredients } = useGetIngredientQuery({});
 
     let ingredientsNameOptions: Array<{ value: string; label: string }> =
       useMemo(() => {
@@ -63,7 +78,7 @@ const AddCandyForm = forwardRef<AddCandyFormHandle, AddCandyFormProps>(
       }, [ingredients]); // Use this for drop down
 
     const [open, setOpen] = useState(false);
-   
+
     const form = useForm<z.infer<typeof addCandySchema>>({
       resolver: zodResolver(addCandySchema),
       defaultValues: {
@@ -123,7 +138,7 @@ const AddCandyForm = forwardRef<AddCandyFormHandle, AddCandyFormProps>(
             control={form.control}
             name="ingredient"
             render={({ field }) => (
-              <FormItem className={"row-start-2"}>
+              <FormItem className={"row-start-2 flex flex-col mt-2"}>
                 <FormLabel>Ingredient</FormLabel>
                 <FormControl>
                   {/* <Input placeholder="Type of Ingredient" {...field} /> */}
@@ -155,13 +170,11 @@ const AddCandyForm = forwardRef<AddCandyFormHandle, AddCandyFormProps>(
                                   key={ingredient.value}
                                   value={ingredient.value}
                                   onSelect={(currentValue) => {
-                                    
                                     field.onChange(
                                       currentValue === field.value
                                         ? ""
                                         : currentValue,
                                     );
-                                    console.log(field.value);
                                     setOpen(false);
                                   }}
                                 >
