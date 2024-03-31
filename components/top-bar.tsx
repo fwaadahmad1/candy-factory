@@ -95,42 +95,7 @@ const TopBar = () => {
       </Breadcrumb>
     );
   }
-  function NotificationBell() {
-    function NotificationContent({ title, description }: {
-      title: string
-      description: string
-    }) {
-      return (
-        <Card className="space-y-4 p-1">
-          <CardHeader className="py-0 px-1">
-            <CardTitle className="text-base">
-              {title}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0 !m-1 text-sm">
-            {description}
-          </CardContent>
-          {/* <h3 className="font-bold text">{title}</h3>
-          <p className="text-sm">{description}</p> */}
-        </Card>
-      );
-    }
-    return (
-      <div className={"flex flex-row items-center"}>
-        <Popover>
-          <PopoverTrigger asChild={true}>
-            <Button variant={"ghost"} size="icon" className={"mx-8"}>
-              {hasNotification ? <BellDot size={26} /> : <Bell size={26} />}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="bg-background p-2 flex flex-col gap-2" side={"bottom"}>
-            <NotificationContent title="Task 1" description="Task 1 Completed" />
-            <NotificationContent title="Task 2" description="Task 2 Completed" />
-            <NotificationContent title="Task 3" description="Task 3 Completed" />
-          </PopoverContent>
-        </Popover>
-      </div>)
-  }
+  
 
   return (
     <div
