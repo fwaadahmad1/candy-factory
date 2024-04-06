@@ -24,20 +24,8 @@ import { RootState } from "@/features/store";
 import { setNotifications } from "@/features/notificationSlice/notificationContext";
 
 const TopBar = () => {
-  const notifications = useSelector((state : RootState) => state.notifications.notifications);
-  // const dispatch = useDispatch();
-  // console.log(notifications);
-  // useEffect(() => {
-  //   const data = window.localStorage.getItem('notifications') ?? null;
-  //   if(data != null){
+  const notifications = useSelector((state : RootState) => state.notifications.notifications.slice(-3));
 
-  //     dispatch(setNotifications(data));
-  //   }
-    
-  // },[])
-  // useEffect(() => {
-  //   window.localStorage.setItem('notifications' , JSON.stringify(notifications))
-  // }, [notifications]);
   
   const path = usePathname().split("/").filter(Boolean);
 
@@ -117,6 +105,7 @@ const TopBar = () => {
     );
   }
 
+
   function NotificationBell() {
     function NotificationContent({
       title,
@@ -157,19 +146,13 @@ const TopBar = () => {
               />)
             })}
             
-            {/* <NotificationContent
-              title="Task 2"
-              description="Task 2 Completed"
-            />
-            <NotificationContent
-              title="Task 3"
-              description="Task 3 Completed"
-            /> */}
+           
           </PopoverContent>
         </Popover>
       </div>
     );
   }
+
 
   return (
     <div
