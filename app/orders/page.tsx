@@ -22,9 +22,10 @@ import {
 import AddOrderForm, {
   AddOrderFormHandle,
 } from "@/app/orders/form/addOrder.form";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { capitalize, cn } from "@/lib/utils";
 import {
+  orderSlice,
   useAddOrdersMutation,
   useGetOrdersQuery,
 } from "@/features/ApiSlice/orderSlice";
@@ -81,6 +82,15 @@ const OrdersPage = () => {
   const addOrderFormRef = useRef<AddOrderFormHandle>(null);
 
   const { data: orders, isLoading, error } = useGetOrdersQuery({});
+
+  useLayoutEffect(() => {
+    orderSlice.util.invalidateTags([
+      {
+        type: "Orders",
+        id: "orderItem",
+      },
+    ])
+  }, [])
   // orders?.forEach((order,i) => {
 
   //   const qty = JSON.parse(`${order.quantity_candies}`)

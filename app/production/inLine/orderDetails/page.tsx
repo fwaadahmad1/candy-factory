@@ -90,9 +90,9 @@ const ProductionOrderDetailsPage = () => {
   );
 };
 
-const calculateRemainingTime = (timestamp: number, batchNumber : number) => {
+const calculateRemainingTime = (timestamp: number) => {
   const currentTime = Date.now(); 
-  const timeDifference = (timestamp - currentTime)*3;
+  const timeDifference = (timestamp - currentTime);
   const duration = moment.duration(timeDifference);
   const hours = duration.hours();
   const minutes = duration.minutes();
@@ -126,7 +126,7 @@ function Page() {
   const [stopAL] = useAddStopAssemblyLineMutation({})
   const endTime = assemblyLineData?.ending_timestamp;
   
-  const timeRemaining = calculateRemainingTime(endTime, batchNumber) ;
+  const timeRemaining = calculateRemainingTime(endTime);
   
  
   const order: candyTypeData | undefined = orderDetails.find((order) => {

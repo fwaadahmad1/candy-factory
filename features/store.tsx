@@ -8,11 +8,17 @@ import { assemblyLineSlice } from "./ApiSlice/assemblyLineSlice";
 import { addSettingsSlice } from "./ApiSlice/addSettings";
 import storage from "redux-persist/lib/storage"
 import {persistReducer, persistStore} from "redux-persist"
-
+// orders: orderReducer,
+//   ingredient: ingredientReducer,
+//   candyType: candyTypeReducer,
+//   assemblyLine: assemblyLineReducer,
+//   addSettings: addSettingsReducer,
+//   notifications : notificationReducer,
+//   currAssembly: currAssemblyReducer,
 const persistConfig = {
   key : 'root',
   storage,
-  blacklist : [''],
+  blacklist : ['ingredient','candyType','assemblyLine','addSettings','currAssembly','orders'],
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
